@@ -22,8 +22,23 @@ npm run typecheck  # route types + tsc
 npm run build      # production build
 ```
 
-## Design tokens
+## Themes & design tokens
 
-Defined in `src/app/globals.css` (`@theme`): `void` #05080D, `night` #131925, `slate` #3F4B59,
-`dusk` #68798D, `mist` #C7D0D9. Small muted text uses `text-muted` (mist at 70%) so it passes
-WCAG AA on both void and night; `dusk` is reserved for icons, eyebrows on void and decoration.
+Light and dark themes are CSS variables in `src/app/globals.css`, switched by `data-theme` on `<html>`.
+Tailwind utilities read them: `bg-bg`, `bg-surface`, `border-border`, `text-muted`, `text-text`,
+`bg-btn-bg`, `text-btn-fg`. Tailwind's default colour palette is disabled, so only these tokens exist.
+
+| Token   | Dark    | Light   |
+|---------|---------|---------|
+| bg      | #1A1A1A | #E0E0E0 |
+| surface | #222526 | #FFFFFF |
+| border  | #353A3E | #BFBFBF |
+| muted   | #BFBFBF | #353A3E |
+| text    | #E0E0E0 | #1A1A1A |
+| btn-bg  | #E0E0E0 | #1A1A1A |
+| btn-fg  | #1A1A1A | #E0E0E0 |
+
+The theme follows the system until the visitor uses the nav toggle, which saves the choice
+in `localStorage`. An inline script in `<head>` applies it before first paint, so there's no flash.
+Places that can't read CSS variables (manifest, `theme-color` meta, OG image) use
+`src/theme/palette.ts`. Keep it in sync with `globals.css`.

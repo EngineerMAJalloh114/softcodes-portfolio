@@ -1,10 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { contact, nav, site } from "@/content/site";
 import { CloseIcon, MenuIcon } from "./Icons";
+import { ThemeImage } from "./ThemeImage";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -17,10 +18,10 @@ export function Nav() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate/60 bg-night/75 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-surface/75 backdrop-blur-xl">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-full focus:bg-mist focus:px-4 focus:py-2 focus:text-void"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-full focus:bg-btn-bg focus:px-4 focus:py-2 focus:text-btn-fg"
       >
         Skip to content
       </a>
@@ -31,27 +32,18 @@ export function Nav() {
           aria-label={`${site.shortName} — home`}
         >
           {/* < 1024px: koala icon + text */}
-          <Image
-            src="/brand/softcodes-icon-white.svg"
-            alt=""
-            width={977}
-            height={977}
-            priority
-            unoptimized
-            className="h-9 w-9 lg:hidden"
-          />
-          <span className="text-lg font-extrabold tracking-tight text-mist lg:hidden">
+          <ThemeImage name="softcodes-icon" alt="" width={977} height={977} priority className="block h-9 w-9 lg:hidden" />
+          <span className="text-lg font-extrabold tracking-tight text-text lg:hidden">
             {site.shortName}
           </span>
           {/* ≥ 1024px: full wordmark */}
-          <Image
-            src="/brand/softcodes-logo-white.svg"
+          <ThemeImage
+            name="softcodes-logo"
             alt=""
             width={2121}
             height={579}
             priority
-            unoptimized
-            className="hidden h-auto w-[200px] min-w-[200px] lg:block"
+            className="hidden w-[200px] min-w-[200px] lg:block"
           />
         </Link>
 
@@ -61,7 +53,7 @@ export function Nav() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="text-sm font-semibold text-muted transition-colors duration-300 hover:text-mist"
+                  className="text-sm font-semibold text-muted transition-colors duration-300 hover:text-text"
                 >
                   {l.label}
                 </Link>
@@ -71,17 +63,18 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <a
             href={contact.whatsappHireUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden rounded-full bg-mist px-5 py-2.5 text-sm font-semibold text-void transition duration-300 hover:bg-white hover:shadow-[0_0_32px_-8px_rgba(199,208,217,0.6)] sm:inline-flex"
+            className="hidden rounded-full bg-btn-bg px-5 py-2.5 text-sm font-semibold text-btn-fg transition duration-300 hover:bg-btn-bg/85 hover:shadow-[0_0_40px_-8px_var(--glow-strong)] sm:inline-flex"
           >
             {nav.hireLabel}
           </a>
           <button
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate text-mist md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-text md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -95,7 +88,7 @@ export function Nav() {
       <div
         id="mobile-menu"
         hidden={!open}
-        className="border-t border-slate/60 bg-night md:hidden"
+        className="border-t border-border bg-surface md:hidden"
       >
         <nav aria-label="Mobile" className="mx-auto max-w-6xl px-6 py-6">
           <ul className="flex flex-col gap-1">
@@ -104,7 +97,7 @@ export function Nav() {
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-xl px-3 py-3 text-lg font-semibold text-mist hover:bg-void/60"
+                  className="block rounded-xl px-3 py-3 text-lg font-semibold text-text hover:bg-bg/60"
                 >
                   {l.label}
                 </Link>
@@ -115,7 +108,7 @@ export function Nav() {
             href={contact.whatsappHireUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 flex justify-center rounded-full bg-mist px-5 py-3 text-sm font-semibold text-void"
+            className="mt-4 flex justify-center rounded-full bg-btn-bg px-5 py-3 text-sm font-semibold text-btn-fg"
           >
             {nav.hireLabel}
           </a>

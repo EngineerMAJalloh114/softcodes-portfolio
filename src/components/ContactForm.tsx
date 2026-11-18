@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { contact, contactSection } from "@/content/site";
 
 const field =
-  "mt-2 w-full rounded-xl border border-slate bg-void px-4 py-3 text-mist placeholder:text-dusk transition-colors duration-300 focus:border-mist/70 focus:outline-none focus-visible:outline-2 focus-visible:outline-mist";
+  "mt-2 w-full rounded-xl border border-field bg-bg px-4 py-3 text-text placeholder:text-muted/70 transition-colors duration-300 focus:border-text focus:outline-none focus-visible:outline-2 focus-visible:outline-text";
 
 /** No backend: builds a mailto: link with the form contents and opens the user's mail app. */
 export function ContactForm() {
@@ -29,19 +29,19 @@ export function ContactForm() {
       action={`mailto:${contact.email}`}
       method="post"
       encType="text/plain"
-      className="rounded-2xl border border-slate bg-night p-7 sm:p-10"
+      className="rounded-2xl border border-border bg-surface p-7 sm:p-10"
     >
       <div className="grid gap-6 sm:grid-cols-2">
-        <label className="block text-sm font-semibold text-mist">
+        <label className="block text-sm font-semibold text-text">
           {f.nameLabel}
           <input name="name" required autoComplete="name" className={field} />
         </label>
-        <label className="block text-sm font-semibold text-mist">
+        <label className="block text-sm font-semibold text-text">
           {f.emailLabel}
           <input name="email" type="email" required autoComplete="email" className={field} />
         </label>
       </div>
-      <label className="mt-6 block text-sm font-semibold text-mist">
+      <label className="mt-6 block text-sm font-semibold text-text">
         {f.messageLabel}
         <textarea name="message" required rows={6} className={`${field} resize-y`} />
       </label>
@@ -51,7 +51,7 @@ export function ContactForm() {
         </p>
         <button
           type="submit"
-          className="inline-flex shrink-0 items-center justify-center rounded-full bg-mist px-6 py-3 text-sm font-semibold text-void transition duration-300 hover:bg-white hover:shadow-[0_0_40px_-8px_rgba(199,208,217,0.55)]"
+          className="inline-flex shrink-0 items-center justify-center rounded-full bg-btn-bg px-6 py-3 text-sm font-semibold text-btn-fg transition duration-300 hover:bg-btn-bg/85 hover:shadow-[0_0_40px_-8px_var(--glow-strong)]"
         >
           {f.submitLabel}
         </button>

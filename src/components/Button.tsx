@@ -13,9 +13,9 @@ const base =
 
 const variants = {
   primary:
-    "bg-mist text-void hover:bg-white hover:shadow-[0_0_40px_-8px_rgba(199,208,217,0.55)]",
+    "bg-btn-bg text-btn-fg hover:bg-btn-bg/85 hover:shadow-[0_0_40px_-8px_var(--glow-strong)]",
   secondary:
-    "border border-slate text-mist hover:border-mist/60 hover:shadow-[0_0_40px_-12px_rgba(199,208,217,0.35)]",
+    "border border-border text-text hover:border-[var(--border-hover)] hover:shadow-[0_0_40px_-12px_var(--glow)]",
 };
 
 export function isExternal(href: string) {

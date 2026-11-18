@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { palette } from "@/theme/palette";
 
 export const alt = "Soft CODES — Mohamed Abass Jalloh";
 export const size = { width: 1200, height: 630 };
@@ -19,7 +20,7 @@ export default async function Image() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#05080D",
+          background: palette.dark.bg, // Jet Black
         }}
       >
         {/* eslint-disable-next-line jsx-a11y/alt-text -- next/og (Satori) needs a plain img */}
