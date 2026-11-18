@@ -6,6 +6,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { ArrowRight, SparkIcon } from "@/components/Icons";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
+import { ThemeImage } from "@/components/ThemeImage";
 import { Container, Eyebrow, Section } from "@/components/Section";
 import {
   about,
@@ -40,7 +41,7 @@ function Hero() {
             <Eyebrow>{hero.eyebrow}</Eyebrow>
           </Reveal>
           <Reveal delay={100}>
-            <h1 className="mt-6 text-5xl font-extrabold tracking-tighter text-mist sm:text-7xl">
+            <h1 className="mt-6 text-5xl font-extrabold tracking-tighter text-text sm:text-7xl">
               {hero.name}
             </h1>
           </Reveal>
@@ -48,7 +49,7 @@ function Hero() {
             <p className="mt-5 text-lg font-semibold text-muted sm:text-xl">{hero.title}</p>
           </Reveal>
           <Reveal delay={300}>
-            <p className="mt-8 max-w-xl text-2xl leading-snug font-semibold text-mist sm:text-3xl">
+            <p className="mt-8 max-w-xl text-2xl leading-snug font-semibold text-text sm:text-3xl">
               {hero.pitch}
             </p>
           </Reveal>
@@ -72,7 +73,7 @@ function Hero() {
 
 function Portrait() {
   return (
-    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-slate bg-night shadow-[0_0_80px_-30px_rgba(199,208,217,0.35)]">
+    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_0_80px_-30px_var(--glow)]">
       {person.photo ? (
         <Image
           src={person.photo}
@@ -87,17 +88,10 @@ function Portrait() {
         <div
           role="img"
           aria-label={`${person.photoAlt} (placeholder)`}
-          className="flex h-full flex-col items-center justify-center gap-6 bg-gradient-to-b from-night to-void"
+          className="flex h-full flex-col items-center justify-center gap-6 bg-gradient-to-b from-surface to-bg"
         >
-          <Image
-            src="/brand/softcodes-icon-white.svg"
-            alt=""
-            width={977}
-            height={977}
-            unoptimized
-            className="h-28 w-28 opacity-60"
-          />
-          <span className="text-xs font-semibold uppercase tracking-[0.25em] text-dusk">
+          <ThemeImage name="softcodes-icon" alt="" width={977} height={977} className="block h-28 w-28 opacity-60" />
+          <span className="text-xs font-semibold uppercase tracking-[0.25em] text-muted">
             Photo coming soon
           </span>
         </div>
@@ -117,13 +111,13 @@ function About() {
           ))}
         </Reveal>
         <Reveal delay={150}>
-          <dl className="divide-y divide-slate/70 rounded-2xl border border-slate bg-night">
+          <dl className="divide-y divide-border rounded-2xl border border-border bg-surface">
             {about.facts.map((f) => (
               <div key={f.label} className="p-6">
                 <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
                   {f.label}
                 </dt>
-                <dd className="mt-2 font-semibold text-mist">{f.value}</dd>
+                <dd className="mt-2 font-semibold text-text">{f.value}</dd>
               </div>
             ))}
           </dl>
@@ -139,7 +133,7 @@ function Services() {
       id="services"
       eyebrow={services.eyebrow}
       heading={services.heading}
-      className="border-y border-slate/40 bg-night/40"
+      className="border-y border-border bg-surface/40"
     >
       <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {services.items.map((s, i) => (
@@ -150,11 +144,11 @@ function Services() {
             // Last card spans 2 columns so the 2- and 3-column grids have no empty slot.
             className={i === services.items.length - 1 ? "sm:col-span-2" : ""}
           >
-            <div className="glow h-full rounded-2xl border border-slate bg-night p-7 sm:p-8">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-slate text-dusk">
+            <div className="glow h-full rounded-2xl border border-border bg-surface p-7 sm:p-8">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-muted">
                 <SparkIcon />
               </span>
-              <h3 className="mt-6 text-xl font-extrabold tracking-tight text-mist">{s.title}</h3>
+              <h3 className="mt-6 text-xl font-extrabold tracking-tight text-text">{s.title}</h3>
               <p className="mt-3 leading-relaxed text-muted">{s.body}</p>
             </div>
           </Reveal>
@@ -182,7 +176,7 @@ function FeaturedProjects() {
       <Reveal className="mt-12">
         <Link
           href="/projects"
-          className="inline-flex items-center gap-2 font-semibold text-mist hover:text-white"
+          className="inline-flex items-center gap-2 font-semibold text-text hover:text-muted"
         >
           {projectsSection.allLabel}
           <ArrowRight />
@@ -198,13 +192,13 @@ function Stack() {
       id="stack"
       eyebrow={stack.eyebrow}
       heading={stack.heading}
-      className="border-y border-slate/40 bg-night/40"
+      className="border-y border-border bg-surface/40"
     >
       <Reveal as="ul" className="flex flex-wrap gap-3">
         {stack.items.map((s) => (
           <li
             key={s}
-            className="glow rounded-full border border-slate bg-night px-5 py-2.5 text-sm font-semibold text-mist"
+            className="glow rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-text"
           >
             {s}
           </li>

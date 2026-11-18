@@ -16,7 +16,7 @@ export function Container({ children, className = "" }: { children: ReactNode; c
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-dusk">{children}</p>
+    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted">{children}</p>
   );
 }
 
@@ -28,7 +28,7 @@ export function Section({ id, eyebrow, heading, intro, children, className = "" 
           <Reveal className="mb-12 max-w-2xl sm:mb-16">
             {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
             {heading && (
-              <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-mist sm:text-5xl">
+              <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-text sm:text-5xl">
                 {heading}
               </h2>
             )}

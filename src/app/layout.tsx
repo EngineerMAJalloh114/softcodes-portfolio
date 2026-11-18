@@ -3,6 +3,7 @@ import { Nunito_Sans } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { site } from "@/content/site";
+import { palette, themeInitScript } from "@/theme/palette";
 import "./globals.css";
 
 const nunito = Nunito_Sans({
@@ -49,20 +50,22 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05080D",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: palette.dark.bg },
+    { media: "(prefers-color-scheme: light)", color: palette.light.bg },
+  ],
+  colorScheme: "dark light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={site.locale} className={`${nunito.variable} antialiased`} suppressHydrationWarning>
       <head>
-        {/* Enables scroll-reveal styles only when JS runs, so content stays visible without JS. */}
-        <script
-          dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
-        />
+        {/* Sets data-theme (saved choice, else system) before first paint — no theme flash.
+            Also flags JS so scroll-reveal styles only apply when JS runs. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="flex min-h-screen flex-col bg-void font-sans text-mist">
+      <body className="flex min-h-screen flex-col bg-bg font-sans text-text">
         <Nav />
         <main id="main" className="flex-1">
           {children}

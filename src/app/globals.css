@@ -1,32 +1,80 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------
-   Soft CODES design tokens — dark, monochrome.
-   Exposed as CSS variables (--color-*) and Tailwind utilities
-   (bg-void, text-mist, border-slate, …).
+   Soft CODES design tokens — light & dark themes.
+   The palette is defined ONCE below as CSS variables, switched by
+   `data-theme` on <html> (set before paint by the inline script in
+   layout.tsx). Tailwind utilities read the variables:
+   bg-bg, bg-surface, border-border, text-muted, text-text,
+   bg-btn-bg, text-btn-fg.
    --------------------------------------------------------------- */
-@theme {
-  --color-void: #05080d; /* page background */
-  --color-night: #131925; /* cards, nav, sections */
-  --color-slate: #3f4b59; /* borders, dividers */
-  --color-dusk: #68798d; /* icons, decorative/large muted text */
-  --color-mist: #c7d0d9; /* primary text, buttons */
+
+/* Dark (also the fallback when no theme is known yet). */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1a1a1a;
+  --surface: #222526;
+  --border: #353a3e;
+  --muted: #bfbfbf;
+  --text: #e0e0e0;
+  --btn-bg: #e0e0e0;
+  --btn-fg: #1a1a1a;
+  --grain-opacity: 0.08;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #e0e0e0;
+  --surface: #ffffff;
+  --border: #bfbfbf;
+  --muted: #353a3e;
+  --text: #1a1a1a;
+  --btn-bg: #1a1a1a;
+  --btn-fg: #e0e0e0;
+  --grain-opacity: 0.06;
+}
+
+/* No-JS fallback: follow the system preference. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --bg: #e0e0e0;
+    --surface: #ffffff;
+    --border: #bfbfbf;
+    --muted: #353a3e;
+    --text: #1a1a1a;
+    --btn-bg: #1a1a1a;
+    --btn-fg: #e0e0e0;
+    --grain-opacity: 0.06;
+  }
+}
+
+:root {
+  /* Derived values — no new colours, only mixes of the tokens above. */
+  --glow: color-mix(in srgb, var(--text) 28%, transparent);
+  --glow-strong: color-mix(in srgb, var(--text) 45%, transparent);
+  --border-hover: color-mix(in srgb, var(--text) 35%, var(--border));
+  /* Form-field outline: ≥ 3:1 against surface in both themes (WCAG 1.4.11). */
+  --field-border: color-mix(in srgb, var(--muted) 65%, var(--surface));
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-text: var(--text);
+  --color-btn-bg: var(--btn-bg);
+  --color-btn-fg: var(--btn-fg);
+  --color-field: var(--field-border);
 
   --font-sans: var(--font-nunito-sans), ui-sans-serif, system-ui, sans-serif;
 
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-:root {
-  color-scheme: dark;
-  --background: var(--color-void);
-  --foreground: var(--color-mist);
-  /* Muted body text: mist at 70% keeps ≥ 6:1 contrast on void and night (WCAG AA). */
-  --color-muted: color-mix(in srgb, var(--color-mist) 70%, transparent);
-}
-
-@utility text-muted {
-  color: var(--color-muted);
 }
 
 html {
@@ -35,29 +83,69 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--text);
+  transition:
+    background-color 400ms var(--ease-soft),
+    color 400ms var(--ease-soft);
 }
 
 ::selection {
-  background: var(--color-mist);
-  color: var(--color-void);
+  background: var(--text);
+  color: var(--bg);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-mist);
+  outline: 2px solid var(--text);
   outline-offset: 3px;
   border-radius: 0.5rem;
 }
 
+/* ---------------- Theme-specific images (logo/icon swap) ---------------- */
+:root[data-theme="light"] .theme-dark-only,
+:root[data-theme="dark"] .theme-light-only,
+:root:not([data-theme]) .theme-light-only {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .theme-light-only {
+    display: block;
+  }
+  :root:not([data-theme]) .theme-dark-only {
+    display: none;
+  }
+}
+
 /* ---------------- Hero background: animated gradient + grain ---------------- */
+/* The gradient lives on a masked layer that fades to transparent at the
+   bottom, so the hero blends into the page bg with no seam. */
 .hero-bg {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--bg);
+  --hero-fade: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 55%, transparent 100%);
+}
+
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
-    radial-gradient(60% 50% at 20% 30%, var(--color-night) 0%, transparent 70%),
-    radial-gradient(50% 60% at 80% 70%, var(--color-night) 0%, transparent 70%),
-    linear-gradient(180deg, var(--color-void) 0%, var(--color-night) 55%, var(--color-void) 100%);
+    radial-gradient(60% 50% at 20% 30%, var(--surface) 0%, transparent 70%),
+    radial-gradient(50% 60% at 80% 70%, var(--surface) 0%, transparent 70%),
+    linear-gradient(180deg, var(--bg) 0%, var(--surface) 55%, var(--bg) 100%);
   background-size: 200% 200%, 200% 200%, 100% 100%;
   animation: dunes 24s var(--ease-soft) infinite alternate;
+  -webkit-mask-image: var(--hero-fade);
+  mask-image: var(--hero-fade);
+}
+
+.hero-bg.grain::after {
+  -webkit-mask-image: var(--hero-fade);
+  mask-image: var(--hero-fade);
 }
 
 @keyframes dunes {
@@ -69,15 +157,16 @@ body {
   }
 }
 
-/* Grain: procedural SVG noise inlined in CSS (no image files). */
+/* Grain: procedural greyscale SVG noise inlined in CSS (no image files).
+   soft-light blending makes it read on both light and dark backgrounds. */
 .grain::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.07;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: var(--grain-opacity);
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 /* ---------------- Scroll reveal ---------------- */
@@ -106,15 +195,15 @@ body {
 
 .glow:hover,
 .glow:focus-within {
-  border-color: color-mix(in srgb, var(--color-mist) 35%, transparent);
-  box-shadow: 0 0 48px -12px color-mix(in srgb, var(--color-mist) 25%, transparent);
+  border-color: var(--border-hover);
+  box-shadow: 0 0 48px -12px var(--glow);
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .hero-bg {
+  .hero-bg::before {
     animation: none;
   }
   .js .reveal {

@@ -18,7 +18,7 @@ export default function ContactPage() {
       <Container>
         <Reveal className="max-w-2xl">
           <Eyebrow>{contactSection.eyebrow}</Eyebrow>
-          <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-mist sm:text-6xl">
+          <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-text sm:text-6xl">
             {contactSection.heading}
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-muted">{contactSection.body}</p>
