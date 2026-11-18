@@ -25,15 +25,33 @@ export function Nav() {
         Skip to content
       </a>
       <div className="mx-auto flex h-18 w-full max-w-6xl items-center justify-between gap-6 px-6 sm:px-8">
-        <Link href="/" className="shrink-0" aria-label={`${site.shortName} — home`}>
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-2.5"
+          aria-label={`${site.shortName} — home`}
+        >
+          {/* < 1024px: koala icon + text */}
+          <Image
+            src="/brand/softcodes-icon-white.svg"
+            alt=""
+            width={977}
+            height={977}
+            priority
+            unoptimized
+            className="h-9 w-9 lg:hidden"
+          />
+          <span className="text-lg font-extrabold tracking-tight text-mist lg:hidden">
+            {site.shortName}
+          </span>
+          {/* ≥ 1024px: full wordmark */}
           <Image
             src="/brand/softcodes-logo-white.svg"
-            alt="Soft CODES"
+            alt=""
             width={2121}
             height={579}
             priority
             unoptimized
-            className="h-7 w-auto sm:h-8"
+            className="hidden h-auto w-[200px] min-w-[200px] lg:block"
           />
         </Link>
 

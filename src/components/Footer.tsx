@@ -22,7 +22,7 @@ export function Footer() {
               width={2121}
               height={579}
               unoptimized
-              className="h-6 w-auto"
+              className="h-auto w-[220px] min-w-[220px]"
             />
             <p className="mt-2 text-sm text-muted">{footer.tagline}</p>
           </div>

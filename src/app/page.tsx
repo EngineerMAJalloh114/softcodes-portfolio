@@ -143,7 +143,13 @@ function Services() {
     >
       <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {services.items.map((s, i) => (
-          <Reveal as="li" key={s.title} delay={i * 80}>
+          <Reveal
+            as="li"
+            key={s.title}
+            delay={i * 80}
+            // Last card spans 2 columns so the 2- and 3-column grids have no empty slot.
+            className={i === services.items.length - 1 ? "sm:col-span-2" : ""}
+          >
             <div className="glow h-full rounded-2xl border border-slate bg-night p-7 sm:p-8">
               <span className="flex h-11 w-11 items-center justify-center rounded-full border border-slate text-dusk">
                 <SparkIcon />
