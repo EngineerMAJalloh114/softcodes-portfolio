@@ -1,0 +1,37 @@
+import type { Metadata } from "next";
+import { ContactDetails } from "@/components/ContactDetails";
+import { ContactForm } from "@/components/ContactForm";
+import { Reveal } from "@/components/Reveal";
+import { Container, Eyebrow } from "@/components/Section";
+import { contactSection, pages } from "@/content/site";
+
+export const metadata: Metadata = {
+  title: pages.contact.title,
+  description: pages.contact.description,
+  alternates: { canonical: "/contact" },
+  openGraph: { title: pages.contact.title, description: pages.contact.description, url: "/contact" },
+};
+
+export default function ContactPage() {
+  return (
+    <section className="pt-36 pb-24 sm:pt-44 sm:pb-32">
+      <Container>
+        <Reveal className="max-w-2xl">
+          <Eyebrow>{contactSection.eyebrow}</Eyebrow>
+          <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-mist sm:text-6xl">
+            {contactSection.heading}
+          </h1>
+          <p className="mt-5 text-lg leading-relaxed text-muted">{contactSection.body}</p>
+        </Reveal>
+        <div className="mt-14 grid gap-8 lg:grid-cols-[1.15fr_1.5fr]">
+          <Reveal>
+            <ContactDetails />
+          </Reveal>
+          <Reveal delay={150}>
+            <ContactForm />
+          </Reveal>
+        </div>
+      </Container>
+    </section>
+  );
+}
