@@ -118,13 +118,34 @@ body {
 }
 
 /* ---------------- Hero background: animated gradient + grain ---------------- */
+/* The gradient lives on a masked layer that fades to transparent at the
+   bottom, so the hero blends into the page bg with no seam. */
 .hero-bg {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--bg);
+  --hero-fade: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 55%, transparent 100%);
+}
+
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
     radial-gradient(60% 50% at 20% 30%, var(--surface) 0%, transparent 70%),
     radial-gradient(50% 60% at 80% 70%, var(--surface) 0%, transparent 70%),
     linear-gradient(180deg, var(--bg) 0%, var(--surface) 55%, var(--bg) 100%);
   background-size: 200% 200%, 200% 200%, 100% 100%;
   animation: dunes 24s var(--ease-soft) infinite alternate;
+  -webkit-mask-image: var(--hero-fade);
+  mask-image: var(--hero-fade);
+}
+
+.hero-bg.grain::after {
+  -webkit-mask-image: var(--hero-fade);
+  mask-image: var(--hero-fade);
 }
 
 @keyframes dunes {
@@ -182,7 +203,7 @@ body {
   html {
     scroll-behavior: auto;
   }
-  .hero-bg {
+  .hero-bg::before {
     animation: none;
   }
   .js .reveal {
