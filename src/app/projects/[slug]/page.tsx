@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight } from "@/components/Icons";
 import { Reveal } from "@/components/Reveal";
 import { Container } from "@/components/Section";
+import { MascotPlaceholder } from "@/components/MascotPlaceholder";
 import { StatusBadge } from "@/components/StatusBadge";
 import { getProject, pages, projects } from "@/content/site";
 
@@ -147,16 +148,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/projects/[sl
                   <Image src={s.src} alt={s.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
                 ) : (
                   // TODO: screenshot placeholder — set `src` for this screenshot in src/content/site.ts.
-                  <div
-                    role="img"
-                    aria-label={`${s.alt} (placeholder)`}
-                    className="grain relative flex h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-surface to-bg p-6 text-center"
-                  >
-                    <span className="text-sm font-semibold text-text">{s.alt}</span>
-                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-                      {t.screenshotPlaceholder}
-                    </span>
-                  </div>
+                  <MascotPlaceholder label={s.alt} note={t.screenshotPlaceholder} />
                 )}
               </li>
             ))}
