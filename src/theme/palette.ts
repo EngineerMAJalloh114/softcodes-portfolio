@@ -26,6 +26,7 @@ export const THEME_STORAGE_KEY = "theme";
 
 /**
  * Runs inline in <head> before first paint: applies the saved theme,
- * otherwise the system preference. Also flags JS for scroll-reveal styles.
+ * otherwise the system preference. Also flags JS for scroll-reveal styles, and applies the
+ * visitor's pricing currency (USD/SLE, remembered in localStorage) so prices don't flash.
  */
-export const themeInitScript = `(function(){var d=document.documentElement;try{var s=localStorage.getItem('${THEME_STORAGE_KEY}');d.dataset.theme=(s==='light'||s==='dark')?s:(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');}catch(e){}d.classList.add('js');})();`;
+export const themeInitScript = `(function(){var d=document.documentElement;try{var s=localStorage.getItem('${THEME_STORAGE_KEY}');d.dataset.theme=(s==='light'||s==='dark')?s:(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');}catch(e){}d.classList.add('js');try{var c=localStorage.getItem('currency');if(c==='USD'||c==='SLE')d.dataset.currency=c;}catch(e){}})();`;

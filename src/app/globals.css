@@ -249,3 +249,16 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------------- Currency (pricing, DEC-25) ---------------- */
+/* Both prices are in the HTML; the visitor's choice (data-currency on <html>, set before
+   paint from localStorage) decides which shows. Default: USD. */
+.price-sle {
+  display: none;
+}
+:root[data-currency="SLE"] .price-sle {
+  display: inline;
+}
+:root[data-currency="SLE"] .price-usd {
+  display: none;
+}
