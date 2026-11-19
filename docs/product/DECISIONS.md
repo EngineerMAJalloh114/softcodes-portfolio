@@ -33,6 +33,10 @@ Every decision is recorded here with date and the features it affects. Changes c
 | DEC-25 | 2026-11-19 | Pricing shown in USD + SLE (was DEC-O7 for display) | A-08 |
 | DEC-26 | 2026-11-19 | 'From' prices: Claude researches and proposes, owner approves (DEC-O11 stays open until approval) | A-08 |
 | DEC-27 | 2026-11-19 | Domain not decided yet: launch on Vercel URL; email sending (Resend) waits for domain | M-17, H-01 |
+| DEC-28 | 2026-11-19 | Headphone koala ("Meditative Koala") is the official Soft CODES mascot | Brand, A-01 |
+| DEC-29 | 2026-11-19 | Hero: koala image as full-width background, text left / koala right; hero stays dark in both themes (supersedes DEC-09 layout) | A-02, M-02 |
+| DEC-30 | 2026-11-19 | Owner portrait moves to the About section; owner will supply the photo and the About layout reference | A-03, M-02 |
+| DEC-31 | 2026-11-19 | Koala mascot used on 404 and empty/'coming soon' states | A-01 |
 
 ## Open decisions (need owner answer)
 | # | Decision | Options | Recommendation | Why | Needed by |
