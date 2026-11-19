@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito_Sans } from "next/font/google";
 import { site } from "@/content/site";
+import { getSiteContent } from "@/lib/content/load";
 import { palette, themeInitScript } from "@/theme/palette";
 import "./globals.css";
 
@@ -11,7 +12,10 @@ const nunito = Nunito_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+/** Defaults for every page; title/description come from Admin → Content → Site identity & SEO. */
+export async function generateMetadata(): Promise<Metadata> {
+  const site = (await getSiteContent()).site;
+  return {
   metadataBase: new URL(site.url),
   title: {
     default: `${site.name} — ${site.title}`,
@@ -45,7 +49,8 @@ export const metadata: Metadata = {
     shortcut: "/brand/favicon.ico",
     apple: { url: "/brand/apple-touch-icon.png", sizes: "180x180" },
   },
-};
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [

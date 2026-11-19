@@ -8,31 +8,31 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { MascotPlaceholder } from "@/components/MascotPlaceholder";
 import { Container, Eyebrow, Section } from "@/components/Section";
-import {
-  about,
-  contactSection,
-  featuredProjects,
-  hero,
-  person,
-  projectsSection,
-  services,
-  stack,
-} from "@/content/site";
+import { getSiteContent } from "@/lib/content/load";
+import type { SiteContent } from "@/lib/content/types";
 
-export default function Home() {
+// Content comes from the CMS (cached; admin saves refresh it). Hourly safety net.
+export const revalidate = 3600;
+
+type P = { c: SiteContent };
+
+export default async function Home() {
+  const c = await getSiteContent();
   return (
     <>
-      <Hero />
-      <About />
-      <Services />
-      <FeaturedProjects />
-      <Stack />
-      <Contact />
+      <Hero c={c} />
+      <About c={c} />
+      <Services c={c} />
+      {c.process.visible && <Process c={c} />}
+      <FeaturedProjects c={c} />
+      <Stack c={c} />
+      <Contact c={c} />
     </>
   );
 }
 
-function Hero() {
+function Hero({ c }: P) {
+  const { hero } = c;
   return (
     // DEC-29: koala mascot as full-width background; text left, koala right.
     // data-theme="dark" scopes the dark tokens so the hero stays dark in both themes.
@@ -103,7 +103,8 @@ function Hero() {
   );
 }
 
-function Portrait() {
+function Portrait({ c }: P) {
+  const { person } = c;
   return (
     <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_0_80px_-30px_var(--glow)]">
       {person.photo ? (
@@ -125,18 +126,19 @@ function Portrait() {
   );
 }
 
-function About() {
+function About({ c }: P) {
+  const { about } = c;
   return (
     <Section id="about" eyebrow={about.eyebrow} heading={about.heading}>
       {/* TODO(DEC-30): interim 2-column layout (photo + bio). The owner will supply the
           final About layout reference and a new photo (public/brand/me.jpg). */}
       <div className="grid items-start gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:gap-16">
         <Reveal className="mx-auto w-full max-w-sm md:max-w-none">
-          <Portrait />
+          <Portrait c={c} />
         </Reveal>
         <div>
           <Reveal className="space-y-6 text-lg leading-relaxed text-muted">
-            {/* TODO: bio is placeholder copy — see about.paragraphs in src/content/site.ts */}
+            {/* TODO: bio is placeholder copy — edit it in Admin → Content → About (DEC-21). */}
             {about.paragraphs.map((p) => (
               <p key={p}>{p}</p>
             ))}
@@ -159,7 +161,8 @@ function About() {
   );
 }
 
-function Services() {
+function Services({ c }: P) {
+  const { services } = c;
   return (
     <Section
       id="services"
@@ -190,7 +193,28 @@ function Services() {
   );
 }
 
-function FeaturedProjects() {
+/** M-14 Process — placeholder copy; shown only when switched on in Admin → Content → Process. */
+function Process({ c }: P) {
+  const { process } = c;
+  return (
+    <Section id="process" eyebrow={process.eyebrow} heading={process.heading} intro={process.intro}>
+      <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        {process.steps.map((step, i) => (
+          <Reveal as="li" key={step.title} delay={i * 80}>
+            <div className="h-full rounded-2xl border border-border bg-surface p-6">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Step {i + 1}</span>
+              <h3 className="mt-3 text-lg font-extrabold tracking-tight text-text">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{step.body}</p>
+            </div>
+          </Reveal>
+        ))}
+      </ol>
+    </Section>
+  );
+}
+
+function FeaturedProjects({ c }: P) {
+  const { projectsSection } = c;
   return (
     <Section
       id="projects"
@@ -199,7 +223,7 @@ function FeaturedProjects() {
       intro={projectsSection.intro}
     >
       <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {featuredProjects.map((p, i) => (
+        {c.projects.filter((p) => p.featured).map((p, i) => (
           <Reveal as="li" key={p.slug} delay={i * 100}>
             <ProjectCard project={p} />
           </Reveal>
@@ -218,7 +242,8 @@ function FeaturedProjects() {
   );
 }
 
-function Stack() {
+function Stack({ c }: P) {
+  const { stack } = c;
   return (
     <Section
       id="stack"
@@ -240,7 +265,8 @@ function Stack() {
   );
 }
 
-function Contact() {
+function Contact({ c }: P) {
+  const { contactSection } = c;
   return (
     <Section
       id="contact"
@@ -250,10 +276,10 @@ function Contact() {
     >
       <div className="grid gap-8 lg:grid-cols-[1.15fr_1.5fr]">
         <Reveal>
-          <ContactDetails />
+          <ContactDetails contact={c.contact} contactSection={contactSection} />
         </Reveal>
         <Reveal delay={150}>
-          <ContactForm />
+          <ContactForm contact={c.contact} contactSection={contactSection} />
         </Reveal>
       </div>
     </Section>

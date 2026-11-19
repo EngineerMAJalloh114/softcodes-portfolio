@@ -2,9 +2,10 @@ import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Section";
 import { SiteChrome } from "@/components/SiteChrome";
-import { pages } from "@/content/site";
+import { getSiteContent } from "@/lib/content/load";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const { pages } = await getSiteContent();
   return (
     <SiteChrome>
     <section className="hero-bg grain relative isolate flex min-h-[70vh] items-center overflow-hidden pt-32 pb-24 sm:pt-36">

@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { contact, nav, site } from "@/content/site";
+import type { SiteContent } from "@/lib/content/types";
 import { CloseIcon, MenuIcon } from "./Icons";
 import { ThemeImage } from "./ThemeImage";
 import { ThemeToggle } from "./ThemeToggle";
 
-export function Nav() {
+export function Nav({ nav, contact, site }: Pick<SiteContent, "nav" | "contact" | "site">) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

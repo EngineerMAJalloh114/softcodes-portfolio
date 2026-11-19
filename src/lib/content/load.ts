@@ -139,6 +139,11 @@ const getPublished = unstable_cache(() => loadOrFallback(false), ["site-content"
   revalidate: 3600, // safety net; saves revalidate immediately via the tag
 });
 
+/** Published content only (no request needed): generateStaticParams, sitemap. */
+export function getPublishedContent(): Promise<SiteContent> {
+  return getPublished();
+}
+
 /**
  * Public site content. Published content is cached (tag "content"); in Draft Mode
  * (admin "Preview draft") drafts are read fresh on every request.
