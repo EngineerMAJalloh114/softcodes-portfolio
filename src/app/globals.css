@@ -9,9 +9,11 @@
    bg-btn-bg, text-btn-fg.
    --------------------------------------------------------------- */
 
-/* Dark (also the fallback when no theme is known yet). */
+/* Dark (also the fallback when no theme is known yet).
+   `[data-theme="dark"]` on any element scopes the dark tokens to that
+   subtree — used by sections that stay dark in both themes (DEC-29). */
 :root,
-:root[data-theme="dark"] {
+[data-theme="dark"] {
   color-scheme: dark;
   --bg: #1a1a1a;
   --surface: #222526;
@@ -50,8 +52,9 @@
   }
 }
 
-:root {
-  /* Derived values — no new colours, only mixes of the tokens above. */
+:root,
+[data-theme] {
+  /* Derived values (redeclared on scoped-theme elements so they resolve there) — no new colours, only mixes of the tokens above. */
   --glow: color-mix(in srgb, var(--text) 28%, transparent);
   --glow-strong: color-mix(in srgb, var(--text) 45%, transparent);
   --border-hover: color-mix(in srgb, var(--text) 35%, var(--border));
@@ -108,12 +111,36 @@ body {
   display: none;
 }
 
+/* Inside a dark-scoped section (e.g. the hero) always show the dark-theme asset. */
+:root[data-theme="light"] [data-theme="dark"] .theme-dark-only {
+  display: block;
+}
+:root[data-theme="light"] [data-theme="dark"] .theme-light-only {
+  display: none;
+}
+
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) .theme-light-only {
     display: block;
   }
   :root:not([data-theme]) .theme-dark-only {
     display: none;
+  }
+}
+
+/* ---------------- Home hero: koala mascot background (DEC-29) ---------------- */
+/* Mobile: the image sits below the text, its top edge fading into bg.
+   Desktop: it fills the right of the hero, its left edge fading into the
+   text-side gradient. Mask colour only needs to be opaque, so a token is used. */
+.hero-koala {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, var(--bg) 30%);
+  mask-image: linear-gradient(to bottom, transparent 0%, var(--bg) 30%);
+}
+
+@media (min-width: 1024px) {
+  .hero-koala {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, var(--bg) 30%);
+    mask-image: linear-gradient(to right, transparent 0%, var(--bg) 30%);
   }
 }
 

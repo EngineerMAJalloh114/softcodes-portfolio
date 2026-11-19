@@ -6,7 +6,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { ArrowRight, SparkIcon } from "@/components/Icons";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
-import { ThemeImage } from "@/components/ThemeImage";
+import { MascotPlaceholder } from "@/components/MascotPlaceholder";
 import { Container, Eyebrow, Section } from "@/components/Section";
 import {
   about,
@@ -34,14 +34,49 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="hero-bg grain relative isolate overflow-hidden pt-36 pb-24 sm:pt-44 sm:pb-36">
-      <Container className="relative z-10 grid items-center gap-14 lg:grid-cols-[1.4fr_1fr]">
-        <div>
+    // DEC-29: koala mascot as full-width background; text left, koala right.
+    // data-theme="dark" scopes the dark tokens so the hero stays dark in both themes.
+    <section
+      data-theme="dark"
+      aria-labelledby="hero-heading"
+      className="relative isolate flex flex-col overflow-hidden bg-bg text-text lg:min-h-[760px] lg:justify-center"
+    >
+      {/* Mascot layer: below the text on mobile, background right of centre on desktop. */}
+      <div
+        aria-hidden
+        className="hero-koala relative order-2 mt-4 h-[min(115vw,520px)] w-full lg:absolute lg:inset-y-0 lg:left-[28%] lg:right-0 lg:order-none lg:mt-0 lg:h-auto lg:w-auto"
+      >
+        <Image
+          src="/brand/mascot-koala.jpg"
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 1024px) 72vw, 100vw"
+          className="object-cover object-[50%_40%] lg:object-center"
+        />
+      </div>
+
+      {/* Text-side gradient for AA contrast (desktop: left → right). */}
+      <div
+        aria-hidden
+        className="absolute inset-y-0 left-0 hidden w-[68%] bg-gradient-to-r from-bg from-35% via-bg/90 via-55% to-transparent lg:block"
+      />
+      {/* Bottom fade into the page bg (no seam in dark theme). */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg to-transparent"
+      />
+
+      <Container className="relative z-10 order-1 pt-32 sm:pt-40 lg:py-40">
+        <div className="max-w-xl">
           <Reveal>
             <Eyebrow>{hero.eyebrow}</Eyebrow>
           </Reveal>
           <Reveal delay={100}>
-            <h1 className="mt-6 text-5xl font-extrabold tracking-tighter text-text sm:text-7xl">
+            <h1
+              id="hero-heading"
+              className="mt-6 text-5xl font-extrabold tracking-tighter text-text sm:text-7xl"
+            >
               {hero.name}
             </h1>
           </Reveal>
@@ -49,7 +84,7 @@ function Hero() {
             <p className="mt-5 text-lg font-semibold text-muted sm:text-xl">{hero.title}</p>
           </Reveal>
           <Reveal delay={300}>
-            <p className="mt-8 max-w-xl text-2xl leading-snug font-semibold text-text sm:text-3xl">
+            <p className="mt-8 text-2xl leading-snug font-semibold text-text sm:text-3xl">
               {hero.pitch}
             </p>
           </Reveal>
@@ -63,9 +98,6 @@ function Hero() {
             </Button>
           </Reveal>
         </div>
-        <Reveal delay={300} className="mx-auto w-full max-w-sm lg:max-w-none">
-          <Portrait />
-        </Reveal>
       </Container>
     </section>
   );
@@ -79,21 +111,15 @@ function Portrait() {
           src={person.photo}
           alt={person.photoAlt}
           fill
-          priority
-          sizes="(min-width: 1024px) 400px, 90vw"
+          sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 90vw"
           className="object-cover object-top"
         />
       ) : (
-        <div
-          role="img"
-          aria-label={`${person.photoAlt} (placeholder)`}
-          className="flex h-full flex-col items-center justify-center gap-6 bg-gradient-to-b from-surface to-bg"
-        >
-          <ThemeImage name="softcodes-icon" alt="" width={977} height={977} className="block h-28 w-28 opacity-60" />
-          <span className="text-xs font-semibold uppercase tracking-[0.25em] text-muted">
-            Photo coming soon
-          </span>
-        </div>
+        <MascotPlaceholder
+          label={person.photoAlt}
+          note="Photo coming soon"
+          sizes="(min-width: 1024px) 380px, 90vw"
+        />
       )}
     </div>
   );
@@ -102,25 +128,32 @@ function Portrait() {
 function About() {
   return (
     <Section id="about" eyebrow={about.eyebrow} heading={about.heading}>
-      <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
-        <Reveal className="space-y-6 text-lg leading-relaxed text-muted">
-          {/* TODO: bio is placeholder copy — see about.paragraphs in src/content/site.ts */}
-          {about.paragraphs.map((p) => (
-            <p key={p}>{p}</p>
-          ))}
+      {/* TODO(DEC-30): interim 2-column layout (photo + bio). The owner will supply the
+          final About layout reference and a new photo (public/brand/me.jpg). */}
+      <div className="grid items-start gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:gap-16">
+        <Reveal className="mx-auto w-full max-w-sm md:max-w-none">
+          <Portrait />
         </Reveal>
-        <Reveal delay={150}>
-          <dl className="divide-y divide-border rounded-2xl border border-border bg-surface">
-            {about.facts.map((f) => (
-              <div key={f.label} className="p-6">
-                <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-                  {f.label}
-                </dt>
-                <dd className="mt-2 font-semibold text-text">{f.value}</dd>
-              </div>
+        <div>
+          <Reveal className="space-y-6 text-lg leading-relaxed text-muted">
+            {/* TODO: bio is placeholder copy — see about.paragraphs in src/content/site.ts */}
+            {about.paragraphs.map((p) => (
+              <p key={p}>{p}</p>
             ))}
-          </dl>
-        </Reveal>
+          </Reveal>
+          <Reveal delay={150} className="mt-10">
+            <dl className="divide-y divide-border rounded-2xl border border-border bg-surface">
+              {about.facts.map((f) => (
+                <div key={f.label} className="p-6">
+                  <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+                    {f.label}
+                  </dt>
+                  <dd className="mt-2 font-semibold text-text">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+        </div>
       </div>
     </Section>
   );

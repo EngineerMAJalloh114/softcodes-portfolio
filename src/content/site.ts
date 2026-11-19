@@ -47,6 +47,7 @@ export const person = {
   education:
     "BSc Software Engineering with Multimedia, Limkokwing University of Creative Technology",
   experience: "IT internship at NASSIT",
+  // TODO(DEC-30): interim photo — owner will supply a new portrait for the About section.
   photo: "/brand/me.jpg" as string | null,
   photoAlt: "Portrait of Mohamed Abass Jalloh",
 };
