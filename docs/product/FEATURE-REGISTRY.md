@@ -1296,7 +1296,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Emails delivered from verified domain; templates branded.
 - **Status:** In development
-- **Evidence:** T3 (branch feat/t3-auth): email adapter interface (src/lib/email) — dev-log adapter (development) and not-configured adapter (production, explicit error). Remaining: Resend adapter + verified domain (DEC-35, DEC-27)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): email adapter interface (src/lib/email) — dev-log adapter (development) and not-configured adapter (production, explicit error). Remaining: Resend adapter + verified domain (DEC-35, DEC-27)
 - **Decisions:** DEC-17, DEC-35
 
 ### H-02 — In-app notifications
@@ -1651,7 +1651,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Sign-in/out, session expiry, secure cookies.
 - **Status:** Implemented
-- **Evidence:** T3 (branch feat/t3-auth): Better Auth 1.7 self-managed on Neon via Drizzle (src/lib/auth/index.ts, /api/auth/*); email+password, public sign-up disabled; owner created by scripts/create-owner.ts (one-time temporary password, forced change at first sign-in); 7-day sessions; secure cookies. scripts/verify-t3.ts: sign-in, sign-out, wrong password 401, sign-up refused. Client accounts reuse it in R2 (F-01)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): Better Auth 1.7 self-managed on Neon via Drizzle (src/lib/auth/index.ts, /api/auth/*); email+password, public sign-up disabled; owner created by scripts/create-owner.ts (one-time temporary password, forced change at first sign-in); 7-day sessions; secure cookies. scripts/verify-t3.ts: sign-in, sign-out, wrong password 401, sign-up refused. Client accounts reuse it in R2 (F-01)
 - **Decisions:** DEC-18, DEC-34
 
 ### K-02 — Email verification
@@ -1672,7 +1672,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Link single-use, expires in 1 hour.
 - **Status:** In development
-- **Evidence:** T3 (branch feat/t3-auth): full reset flow (/auth/forgot-password → link → /auth/reset-password), token 1 h + single-use (second use → 400 INVALID_TOKEN), all sessions revoked on reset; email adapter interface src/lib/email (dev: link logged server-side; production: 503 EMAIL_NOT_CONFIGURED). Remaining: real delivery once Resend is set up (H-01, DEC-35)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): full reset flow (/auth/forgot-password → link → /auth/reset-password), token 1 h + single-use (second use → 400 INVALID_TOKEN), all sessions revoked on reset; email adapter interface src/lib/email (dev: link logged server-side; production: 503 EMAIL_NOT_CONFIGURED). Remaining: real delivery once Resend is set up (H-01, DEC-35)
 - **Decisions:** DEC-35
 
 ### K-04 — Administrator MFA
@@ -1683,7 +1683,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Admin cannot access panel without MFA.
 - **Status:** Implemented
-- **Evidence:** T3 (branch feat/t3-auth): TOTP MFA (Better Auth twoFactor) + 10 single-use recovery codes shown once at /auth/setup-mfa; requireAdmin() (src/lib/auth/guard.ts) redirects owner/admin to MFA setup before any /admin route loads; verified: /admin blocked until MFA set, TOTP login, recovery code single-use, per-user lockout after repeated bad codes
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): TOTP MFA (Better Auth twoFactor) + 10 single-use recovery codes shown once at /auth/setup-mfa; requireAdmin() (src/lib/auth/guard.ts) redirects owner/admin to MFA setup before any /admin route loads; verified: /admin blocked until MFA set, TOTP login, recovery code single-use, per-user lockout after repeated bad codes
 
 ### K-05 — Role-based access control
 - **Description:** See G-03.
@@ -1693,7 +1693,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Server-side checks on every route/action.
 - **Status:** In development
-- **Evidence:** T3 (branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4)
 
 ### K-06 — Resource-level permissions
 - **Description:** Users access only their own records.
@@ -1773,7 +1773,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Session fixation tests pass.
 - **Status:** Implemented
-- **Evidence:** T3 (branch feat/t3-auth): session cookie __Secure-better-auth.session_token: HttpOnly; Secure; SameSite=Lax; Max-Age=604800 (7 days); new token on every sign-in (attacker-set cookie ignored — fixation test passes) and on password change; sign out + sign out everywhere (/revoke-sessions) verified
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): session cookie __Secure-better-auth.session_token: HttpOnly; Secure; SameSite=Lax; Max-Age=604800 (7 days); new token on every sign-in (attacker-set cookie ignored — fixation test passes) and on password change; sign out + sign out everywhere (/revoke-sessions) verified
 
 ### K-14 — Rate limiting
 - **Description:** Limits on forms, auth, APIs.
@@ -1783,7 +1783,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Abuse returns 429; contact/newsletter protected.
 - **Status:** In development
-- **Evidence:** T3 (branch feat/t3-auth): database-backed limits (rate_limits table, shared across instances) — sign-in 5/5 min, MFA verify 5/5 min, reset request 3/15 min, reset 5/15 min, change password 5/15 min; verified 429s. Remaining: contact/newsletter/other APIs (T7)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): database-backed limits (rate_limits table, shared across instances) — sign-in 5/5 min, MFA verify 5/5 min, reset request 3/15 min, reset 5/15 min, change password 5/15 min; verified 429s. Remaining: contact/newsletter/other APIs (T7)
 
 ### K-15 — Input validation
 - **Description:** Schema validation on every input (e.g. Zod).
@@ -1803,7 +1803,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
