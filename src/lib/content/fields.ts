@@ -13,7 +13,7 @@ export type Field =
   | { name: string; label: string; type: "boolean"; help?: string }
   | { name: string; label: string; type: "image"; help?: string }
   | { name: string; label: string; type: "select"; options: readonly { value: string; label: string }[]; help?: string }
-  | { name: string; label: string; type: "stringList"; itemLabel: string; max?: number; help?: string }
+  | { name: string; label: string; type: "stringList"; itemLabel: string; max?: number; itemMax?: number; multiline?: boolean; help?: string }
   | { name: string; label: string; type: "list"; itemLabel: string; fields: Field[]; max?: number; help?: string }
   | { name: string; label: string; type: "group"; fields: Field[]; help?: string };
 
@@ -65,7 +65,13 @@ function zodFor(field: Field): z.ZodType {
       return z.enum(field.options.map((o) => o.value) as [string, ...string[]], { error: `${field.label}: choose an option.` });
     case "stringList":
       return z
-        .array(z.string().trim().min(1, `${field.itemLabel} can't be empty.`).max(200))
+        .array(
+          z
+            .string()
+            .trim()
+            .min(1, `${field.itemLabel} can't be empty.`)
+            .max(field.itemMax ?? 200, `${field.itemLabel}: at most ${field.itemMax ?? 200} characters.`),
+        )
         .max(field.max ?? 50, `${field.label}: too many items.`);
     case "list":
       return z.array(objectSchema(field.fields)).max(field.max ?? 50, `${field.label}: too many items.`);

@@ -81,7 +81,7 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
     fields: [
       eyebrow,
       heading,
-      { name: "paragraphs", label: "Bio paragraphs", type: "stringList", itemLabel: "Paragraph", max: 8 },
+      { name: "paragraphs", label: "Bio paragraphs", type: "stringList", itemLabel: "Paragraph", max: 8, itemMax: 2000, multiline: true },
       {
         name: "facts",
         label: "Facts",
@@ -194,7 +194,7 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
       eyebrow,
       heading,
       { name: "lead", label: "Lead sentence", type: "textarea", max: 300 },
-      { name: "paragraphs", label: "Story paragraphs", type: "stringList", itemLabel: "Paragraph", max: 10 },
+      { name: "paragraphs", label: "Story paragraphs", type: "stringList", itemLabel: "Paragraph", max: 10, itemMax: 2000, multiline: true },
       {
         name: "principles",
         label: "Principles",

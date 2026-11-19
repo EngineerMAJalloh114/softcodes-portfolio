@@ -146,13 +146,26 @@ function FieldEditor({
           <ul className="mt-2 space-y-2">
             {list.map((item, i) => (
               <li key={i} className="flex items-start gap-2">
-                <input
-                  aria-label={`${field.itemLabel} ${i + 1}`}
-                  name={`${path}.${i}`}
-                  className={`${inputClass} mt-0`}
-                  value={item}
-                  onChange={(e) => onChange(list.map((x, j) => (j === i ? e.target.value : x)))}
-                />
+                {field.multiline ? (
+                  <textarea
+                    aria-label={`${field.itemLabel} ${i + 1}`}
+                    name={`${path}.${i}`}
+                    rows={4}
+                    className={`${inputClass} mt-0 resize-y`}
+                    value={item}
+                    maxLength={field.itemMax}
+                    onChange={(e) => onChange(list.map((x, j) => (j === i ? e.target.value : x)))}
+                  />
+                ) : (
+                  <input
+                    aria-label={`${field.itemLabel} ${i + 1}`}
+                    name={`${path}.${i}`}
+                    className={`${inputClass} mt-0`}
+                    value={item}
+                    maxLength={field.itemMax}
+                    onChange={(e) => onChange(list.map((x, j) => (j === i ? e.target.value : x)))}
+                  />
+                )}
                 <ListControls i={i} length={list.length} onMove={(to) => onChange(move(list, i, to))} onRemove={() => onChange(list.filter((_, j) => j !== i))} label={field.itemLabel} />
               </li>
             ))}
