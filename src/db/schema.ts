@@ -4,8 +4,8 @@
  * Content tables mirror src/content/site.ts, which is the seed source
  * (scripts/db/seed.ts). Public pages still render from site.ts until T5.
  *
- * Auth tables (users, sessions, accounts, verifications) follow the
- * Better Auth core shape so T3 can adopt them — no auth logic lives here.
+ * Auth tables (users, sessions, accounts, verifications, two_factors,
+ * rate_limits) follow the Better Auth shape; auth logic is in src/lib/auth (T3).
  */
 import { sql } from "drizzle-orm";
 import {
@@ -57,6 +57,10 @@ export const users = pgTable(
     roleId: integer("role_id")
       .notNull()
       .references(() => roles.id, { onDelete: "restrict" }),
+    /** Better Auth twoFactor plugin (T3, K-04). */
+    twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false),
+    /** Set for a one-time temporary password; cleared after the first password change (T3). */
+    mustChangePassword: boolean("must_change_password").notNull().default(false),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -115,6 +119,31 @@ export const verifications = pgTable(
   },
   (t) => [index("verifications_identifier_idx").on(t.identifier)],
 );
+
+/** TOTP secret + encrypted recovery codes (Better Auth twoFactor plugin, K-04). */
+export const twoFactors = pgTable(
+  "two_factors",
+  {
+    id: text("id").primaryKey(),
+    secret: text("secret").notNull(),
+    backupCodes: text("backup_codes").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    verified: boolean("verified").notNull().default(true),
+    failedVerificationCount: integer("failed_verification_count").notNull().default(0),
+    lockedUntil: timestamp("locked_until", { withTimezone: true }),
+  },
+  (t) => [index("two_factors_user_id_idx").on(t.userId), index("two_factors_secret_idx").on(t.secret)],
+);
+
+/** Rate-limit counters shared by all server instances (K-14). */
+export const rateLimits = pgTable("rate_limits", {
+  id: text("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  count: integer("count").notNull(),
+  lastRequest: bigint("last_request", { mode: "number" }).notNull(),
+});
 
 /* ------------------------------------------------------------------ */
 /* Settings & audit log                                                */
