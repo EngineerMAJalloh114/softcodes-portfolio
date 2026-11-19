@@ -41,6 +41,10 @@ Every decision is recorded here with date and the features it affects. Changes c
 | DEC-33 | 2026-11-19 | Neon project: org org-hidden-lake-52748571, project delicate-paper-51580609, branch production; services postgres + object-storage | M-08, M-09 |
 | DEC-34 | 2026-11-19 | Owner admin account email: engineermohamedabassjalloh3855@gmail.com | K-01, G-01 |
 | DEC-35 | 2026-11-19 | T7 (Cal.com, CV, Resend) and T8 (Vercel, Sentry) inputs deferred by owner | R1a T7, T8 |
+| DEC-36 | 2026-11-19 | Content/projects editing stays owner + admin only; staff = Dashboard + Leads (supersedes T4 staff→Projects) | G-03, K-05, A-15, G-14 |
+| DEC-37 | 2026-11-19 | All WhatsApp links derive from the Settings number (no hand-typed links) | G-20, M-06, A-02, A-10 |
+| DEC-38 | 2026-11-19 | 'From' prices approved (closes DEC-O11): Landing $150/Le 3,500 · Business site $400/Le 9,200 · Site + admin $900/Le 20,700 · E-commerce/booking $1,200/Le 27,600 · Web app/platform $2,500/Le 57,500 · UI & brand $150/Le 3,500 · Maintenance $25/Le 575 per month | A-08, G-06, M-15 |
+| DEC-39 | 2026-11-19 | Dependabot policy: merge patch/minor PRs with green CI; close major-version PRs (planned upgrades only) | K-20 |
 
 ## Open decisions (need owner answer)
 | # | Decision | Options | Recommendation | Why | Needed by |
@@ -51,3 +55,5 @@ Every decision is recorded here with date and the features it affects. Changes c
 | DEC-O8 | Deposit policy | 50% fixed · configurable per service | Configurable, default 50% | Matches addendum C-01/C-02 | R3 |
 | DEC-O9 | Domain name | e.g. softcodes.dev / softcodes.sl / other | Owner choice | Needed for email sending and SEO | R1 |
 | DEC-O11 | 'From' prices per package | Owner sets amounts | — | Owner business decision | R1 |
+
+_DEC-O11 closed by DEC-38 (2026-11-19)._
