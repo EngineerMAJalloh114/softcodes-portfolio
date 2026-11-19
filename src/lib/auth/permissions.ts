@@ -12,9 +12,8 @@ export type Role = (typeof ROLES)[number];
 export const PERMISSIONS = [
   "admin.access", // may enter /admin at all
   "dashboard.view",
-  "content.manage", // T5
-  "projects.manage", // T5
-  "media.manage", // T5
+  "content.write", // T5: sections, services, stack, projects (create/edit/publish/delete)
+  "media.manage", // T5: media library
   "pricing.manage", // T6
   "leads.view", // T7
   "audit.view",
@@ -28,14 +27,13 @@ const MATRIX: Record<Role, readonly Permission[]> = {
   admin: [
     "admin.access",
     "dashboard.view",
-    "content.manage",
-    "projects.manage",
+    "content.write",
     "media.manage",
     "pricing.manage",
     "leads.view",
     "audit.view",
   ],
-  staff: ["admin.access", "dashboard.view", "projects.manage", "leads.view"],
+  staff: ["admin.access", "dashboard.view", "leads.view"],
   client: [], // client portal is R2 (F-02); no admin access
 };
 
@@ -56,11 +54,11 @@ export function permissionsFor(role: unknown): Permission[] {
 /** Admin navigation. Each entry is protected by `permission`; `release` marks later tasks. */
 export const ADMIN_NAV = [
   { href: "/admin", label: "Dashboard", permission: "dashboard.view", release: null },
-  { href: "/admin/content", label: "Content", permission: "content.manage", release: "T5" },
-  { href: "/admin/projects", label: "Projects", permission: "projects.manage", release: "T5" },
+  { href: "/admin/content", label: "Content", permission: "content.write", release: null },
+  { href: "/admin/projects", label: "Projects", permission: "content.write", release: null },
   { href: "/admin/pricing", label: "Pricing", permission: "pricing.manage", release: "T6" },
   { href: "/admin/leads", label: "Leads", permission: "leads.view", release: "T7" },
-  { href: "/admin/media", label: "Media", permission: "media.manage", release: "T5" },
+  { href: "/admin/media", label: "Media", permission: "media.manage", release: null },
   { href: "/admin/audit", label: "Audit log", permission: "audit.view", release: null },
   { href: "/admin/settings", label: "Settings", permission: "settings.view", release: null },
 ] as const satisfies readonly {

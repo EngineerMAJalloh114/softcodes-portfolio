@@ -21,14 +21,13 @@ const EXPECTED: Record<Role, Permission[]> = {
   admin: [
     "admin.access",
     "dashboard.view",
-    "content.manage",
-    "projects.manage",
+    "content.write",
     "media.manage",
     "pricing.manage",
     "leads.view",
     "audit.view",
   ],
-  staff: ["admin.access", "dashboard.view", "projects.manage", "leads.view"],
+  staff: ["admin.access", "dashboard.view", "leads.view"],
   client: [],
 };
 
@@ -42,14 +41,20 @@ describe("RBAC matrix (G-03, K-05)", () => {
     }
   }
 
+  it("content.write and media.manage are owner + admin only (T5)", () => {
+    for (const p of ["content.write", "media.manage"] as const) {
+      assert.deepEqual(ROLES.filter((r) => can(r, p)), ["owner", "admin"]);
+    }
+  });
+
   it("owner-only permissions are exactly settings.view and settings.write", () => {
     const ownerOnly = PERMISSIONS.filter((p) => can("owner", p) && !ROLES.some((r) => r !== "owner" && can(r, p)));
     assert.deepEqual(ownerOnly, ["settings.view", "settings.write"]);
   });
 
-  it("staff and client cannot reach owner-only or audit routes", () => {
+  it("staff and client cannot reach owner-only, audit or content routes", () => {
     for (const role of ["staff", "client"] as const) {
-      for (const path of ["/admin/settings", "/admin/audit"]) {
+      for (const path of ["/admin/settings", "/admin/audit", "/admin/content", "/admin/projects", "/admin/media", "/admin/content/sections/hero", "/admin/projects/abc"]) {
         assert.equal(can(role, permissionForPath(path)!), false, `${role} ${path}`);
       }
     }

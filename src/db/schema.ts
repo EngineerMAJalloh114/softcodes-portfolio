@@ -194,11 +194,18 @@ export const contentSectionKey = pgEnum("content_section_key", [
   "soft_codes",
   "footer",
   "pages",
+  "process", // T5: process section (M-14 placeholder)
 ]);
 
+/**
+ * `data` is the published version; `draft` holds unpublished edits (T5). Publishing copies
+ * draft → data. Only `data` is ever shown publicly.
+ */
 export const contentSections = pgTable("content_sections", {
   key: contentSectionKey("key").primaryKey(),
   data: jsonb("data").notNull(),
+  draft: jsonb("draft"),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
   updatedAt: updatedAt(),
 });
 
@@ -208,6 +215,9 @@ export const services = pgTable("services", {
   body: text("body").notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
   published: boolean("published").notNull().default(true),
+  /** Unpublished edits (T5); live columns change only on publish. */
+  draft: jsonb("draft"),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
   updatedAt: updatedAt(),
 });
 
@@ -236,8 +246,14 @@ export const projects = pgTable("projects", {
     .notNull()
     .default([]),
   links: jsonb("links").$type<{ label: string; href: string }[]>().notNull().default([]),
+  /** For portfolio filters (M-11): website | platform | app | branding | other. */
+  type: text("type").notNull().default("other"),
+  tags: jsonb("tags").$type<string[]>().notNull().default([]),
   sortOrder: integer("sort_order").notNull().default(0),
   published: boolean("published").notNull().default(true),
+  /** Unpublished edits (T5); live columns change only on publish. */
+  draft: jsonb("draft"),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
   updatedAt: updatedAt(),
 });
 
@@ -245,6 +261,10 @@ export const stackItems = pgTable("stack_items", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().unique(),
   sortOrder: integer("sort_order").notNull().default(0),
+  published: boolean("published").notNull().default(true),
+  /** Unpublished edits (T5); live columns change only on publish. */
+  draft: jsonb("draft"),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
   updatedAt: updatedAt(),
 });
 
@@ -263,8 +283,11 @@ export const media = pgTable(
     mime: text("mime").notNull(),
     size: bigint("size", { mode: "number" }).notNull(),
     alt: text("alt"),
+    /** Original upload name (sanitised), for the library UI. */
+    filename: text("filename"),
     createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
     createdAt: createdAt(),
+    updatedAt: updatedAt(),
   },
   (t) => [
     uniqueIndex("media_visibility_key_idx").on(t.visibility, t.key),

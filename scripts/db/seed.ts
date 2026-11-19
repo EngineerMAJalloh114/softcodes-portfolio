@@ -1,6 +1,8 @@
 /**
  * Seed the database from src/content/site.ts (the seed source) and the R1a 'from'
- * prices (docs/product/R1A-PLAN.md). Idempotent: safe to run repeatedly (upserts).
+ * prices (docs/product/R1A-PLAN.md). Idempotent: safe to run repeatedly.
+ * Since T5 the admin CMS owns content: the seed only inserts what is missing and never
+ * overwrites content the owner has edited.
  * Prices are seeded with approved=false until the owner approves them (DEC-O11).
  */
 import { sql } from "drizzle-orm";
@@ -35,6 +37,8 @@ const projectSchema = z.object({
   status: z.enum(["Live", "In development", "Coming soon", "Concept"]),
   featured: z.boolean(),
   kind: z.string().min(1),
+  type: z.enum(content.PROJECT_TYPES),
+  tags: z.array(z.string()),
   problem: z.string().min(1),
   solution: z.string().min(1),
   features: z.array(z.string()),
@@ -79,6 +83,7 @@ export async function seed(db: ScriptDb) {
     { key: "soft_codes", data: content.softCodes },
     { key: "footer", data: content.footer },
     { key: "pages", data: content.pages },
+    { key: "process", data: content.processSection },
   ];
 
   const excluded = (col: string) => sql.raw(`excluded."${col}"`);
@@ -92,46 +97,24 @@ export async function seed(db: ScriptDb) {
         target: schema.roles.key,
         set: { name: excluded("name"), description: excluded("description") },
       }),
-    db
-      .insert(schema.contentSections)
-      .values(sections)
-      .onConflictDoUpdate({
-        target: schema.contentSections.key,
-        set: { data: excluded("data"), updatedAt: sql`now()` },
-      }),
+    db.insert(schema.contentSections).values(sections).onConflictDoNothing({ target: schema.contentSections.key }),
     db
       .insert(schema.services)
       .values(services.map((s, i) => ({ ...s, sortOrder: i })))
-      .onConflictDoUpdate({
-        target: schema.services.title,
-        set: { body: excluded("body"), sortOrder: excluded("sort_order"), updatedAt: sql`now()` },
-      }),
+      .onConflictDoNothing({ target: schema.services.title }),
     db
       .insert(schema.projects)
       .values(projects.map((p, i) => ({ ...p, sortOrder: i })))
+      // T5 backfill: fill type/tags only on rows that still have the column defaults.
       .onConflictDoUpdate({
         target: schema.projects.slug,
-        set: {
-          name: excluded("name"),
-          tagline: excluded("tagline"),
-          summary: excluded("summary"),
-          status: excluded("status"),
-          featured: excluded("featured"),
-          kind: excluded("kind"),
-          problem: excluded("problem"),
-          solution: excluded("solution"),
-          features: excluded("features"),
-          stack: excluded("stack"),
-          screenshots: excluded("screenshots"),
-          links: excluded("links"),
-          sortOrder: excluded("sort_order"),
-          updatedAt: sql`now()`,
-        },
+        set: { type: excluded("type"), tags: excluded("tags") },
+        setWhere: sql`${schema.projects.type} = 'other' and ${schema.projects.tags} = '[]'::jsonb`,
       }),
     db
       .insert(schema.stackItems)
       .values(stackNames.map((name, i) => ({ name, sortOrder: i })))
-      .onConflictDoUpdate({ target: schema.stackItems.name, set: { sortOrder: excluded("sort_order") } }),
+      .onConflictDoNothing({ target: schema.stackItems.name }),
     db
       .insert(schema.prices)
       .values(
