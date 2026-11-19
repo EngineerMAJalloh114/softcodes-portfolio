@@ -81,10 +81,9 @@ function Portrait() {
           fill
           priority
           sizes="(min-width: 1024px) 400px, 90vw"
-          className="object-cover"
+          className="object-cover object-top"
         />
       ) : (
-        // TODO: placeholder until public/brand/me.jpg is added (set person.photo in src/content/site.ts).
         <div
           role="img"
           aria-label={`${person.photoAlt} (placeholder)`}

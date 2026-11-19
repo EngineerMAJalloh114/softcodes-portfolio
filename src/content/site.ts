@@ -47,8 +47,7 @@ export const person = {
   education:
     "BSc Software Engineering with Multimedia, Limkokwing University of Creative Technology",
   experience: "IT internship at NASSIT",
-  // TODO: add a portrait at public/brand/me.jpg and set this to "/brand/me.jpg".
-  photo: null as string | null,
+  photo: "/brand/me.jpg" as string | null,
   photoAlt: "Portrait of Mohamed Abass Jalloh",
 };
 
