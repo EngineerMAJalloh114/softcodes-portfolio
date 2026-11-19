@@ -14,20 +14,20 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 
 | Category | Features | Implemented | Planned |
 |---|---|---|---|
-| A. Public website and brand experience | 16 | 12 | 4 |
+| A. Public website and brand experience | 16 | 14 | 2 |
 | B. Intelligent project acquisition | 18 | 0 | 18 |
 | C. Payments and financial management | 16 | 0 | 16 |
 | D. Official document management | 17 | 0 | 17 |
 | E. Intelligent design and preview system | 13 | 0 | 13 |
 | F. Client relationship and project management | 19 | 0 | 19 |
-| G. Business administration | 20 | 5 | 15 |
+| G. Business administration | 20 | 6 | 14 |
 | H. Automation and communication | 12 | 1 | 11 |
 | I. Maintenance and ongoing services | 11 | 0 | 11 |
 | J. Advanced business intelligence | 10 | 0 | 10 |
 | K. Security and infrastructure | 23 | 11 | 12 |
 | L. Future platform expansion | 13 | 0 | 13 |
-| M. Site features agreed in chat (2026-11-19) | 17 | 6 | 11 |
-| **Total** | **205** | **35** | **170** |
+| M. Site features agreed in chat (2026-11-19) | 17 | 7 | 10 |
+| **Total** | **205** | **39** | **166** |
 
 Counts *Implemented* includes *In development*. Nothing is Verified or Released yet: the site is not deployed.
 
@@ -58,7 +58,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Home renders every section; hero shows portrait; CTAs work.
 - **Status:** Implemented
-- **Evidence:** src/app/page.tsx. T1 (PR #3, branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png. T5 (PR #14, branch feat/t5-content): home page renders from the CMS (hero, about, services, process, featured projects, stack, contact)
+- **Evidence:** src/app/page.tsx. T1 (PR #3, branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png. T5 (PR #14, branch feat/t5-content): home page renders from the CMS (hero, about, services, process, featured projects, stack, contact). T6 (branch feat/t6-pricing-faq): hero CTAs are typed links (WhatsApp | URL | anchor; DEC-37) and the home page gains a pricing teaser and a short About with “More about me”
 - **Decisions:** DEC-09 (superseded by DEC-29 for layout), DEC-29, DEC-30
 
 ### A-03 — About page
@@ -69,7 +69,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Bio approved by owner; editable from admin.
 - **Status:** In development
-- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (PR #3, branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6). T5 (PR #14, branch feat/t5-content): About bio, facts and portrait editable in the admin (portrait can come from the media library); final layout still TODO(DEC-30)
+- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (PR #3, branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6). T5 (PR #14, branch feat/t5-content): About bio, facts and portrait editable in the admin (portrait can come from the media library); final layout still TODO(DEC-30). T6 (branch feat/t6-pricing-faq): dedicated /about page (full About: portrait, bio, facts; interim layout, TODO(DEC-30) kept), linked from the nav; home keeps a short About with “More about me” → /about. Remaining: owner-approved bio and final layout (DEC-30)
 - **Decisions:** DEC-21, DEC-30
 
 ### A-04 — Services
@@ -119,8 +119,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Pricing page shows packages with 'from' prices set in admin; links to quote/wizard.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T6 (branch feat/t6-pricing-faq): /pricing lists published packages with 'from' prices in USD and SLE (DEC-25, DEC-38 seeded), currency toggle remembered per visitor (localStorage, applied before paint), Popular badge, each card links to “Request a quote” (/contact?package=<id>; wizard is R2) and “Book a call” (placeholder until Cal.com, TODO(T7)); home pricing teaser → /pricing; FAQ/Pricing/About in nav and sitemap. Proof: scripts/verify-t6.ts (npm run t6:verify), tests/t6.test.ts; screenshots docs/screenshots/t6-pricing-{usd,sle}-*, t6-home-*
+- **Decisions:** DEC-25, DEC-38
 
 ### A-09 — FAQs
 - **Description:** Common questions on process, payment (50% deposit), timelines, ownership.
@@ -129,8 +130,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** FAQ page with accordion, FAQPage structured data, editable in admin.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T6 (branch feat/t6-pricing-faq): /faq accordion (<details>) grouped by category, FAQPage JSON-LD from published FAQs only, admin CRUD at Admin → Content → FAQs (question, answer, category, order, draft/published). 8 FAQs seeded as drafts (process, 50% deposit, timelines, ownership, revisions, hosting, maintenance, payment methods) — not public until the owner approves and publishes (DEC-21). Proof: scripts/verify-t6.ts (draft hidden, publish → live + structured data), tests/t6.test.ts; screenshots docs/screenshots/t6-faq-*, t6-faq-preview-*, t6-admin-faqs-*
+- **Decisions:** DEC-21
 
 ### A-10 — Contact
 - **Description:** Contact page with email, WhatsApp and form.
@@ -1109,7 +1111,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Permission matrix enforced server side.
 - **Status:** Implemented
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403). T5 (PR #14, branch feat/t5-content): content.write (sections, services, stack, projects) and media.manage — owner + admin; staff/client denied (unit + HTTP tests)
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403). T5 (PR #14, branch feat/t5-content): content.write (sections, services, stack, projects) and media.manage — owner + admin; staff/client denied (unit + HTTP tests). T6 (branch feat/t6-pricing-faq): pricing and FAQ admin use content.write (owner + admin; staff = Dashboard + Leads, DEC-36); the separate pricing.manage permission was folded into content.write; staff/client 403 on pages and actions (tests/rbac.test.ts, scripts/verify-t6.ts)
+- **Decisions:** DEC-36
 
 ### G-04 — Client management
 - **Description:** Client records with contacts and history.
@@ -1138,8 +1141,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Price change updates site immediately.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T6 (branch feat/t6-pricing-faq): Admin → Pricing — package CRUD (name, short ID, summary, included items, 'from' price per currency stored in minor units, unit e.g. /month, Popular, order, draft/published, preview); permission content.write (owner + admin, DEC-36); Zod-validated; audited; price change + publish is live on the next request (verified by scripts/verify-t6.ts). Screenshots docs/screenshots/t6-admin-pricing-*, t6-admin-package-edit-*
+- **Decisions:** DEC-36, DEC-38
 
 ### G-07 — Quotation management
 - **Description:** Create, revise, send quotations.
@@ -1279,8 +1283,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Settings editable and audited.
 - **Status:** Implemented
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin/settings (owner only) — contact email, WhatsApp, location; default deposit % (50, DEC-O8 still open); currencies USD+SLE (DEC-25). Zod validation; every save writes a settings.updated audit row with before/after (verified). Public site reads these values from T5
-- **Decisions:** DEC-25, DEC-O8 (open)
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin/settings (owner only) — contact email, WhatsApp, location; default deposit % (50, DEC-O8 still open); currencies USD+SLE (DEC-25). Zod validation; every save writes a settings.updated audit row with before/after (verified). Public site reads these values from T5. T6 (branch feat/t6-pricing-faq): the WhatsApp number in Settings is the single source for every WhatsApp link (hero, nav “Hire me”, contact, footer — DEC-37); saving Settings now refreshes the public site immediately (verified: change number → all pages use it, then restored)
+- **Decisions:** DEC-25, DEC-O8 (open), DEC-37
 
 ## H. Automation and communication
 
@@ -1695,7 +1699,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Server-side checks on every route/action.
 - **Status:** Implemented
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan(). T5 (PR #14, branch feat/t5-content): requirePermission on every content/media page and server action; services re-check assertCan; Draft Mode preview only for content.write; staff/client 403 verified (scripts/verify-t5.ts)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan(). T5 (PR #14, branch feat/t5-content): requirePermission on every content/media page and server action; services re-check assertCan; Draft Mode preview only for content.write; staff/client 403 verified (scripts/verify-t5.ts). T6 (branch feat/t6-pricing-faq): requirePermission(content.write) on /admin/pricing and /admin/content/faqs pages and actions; staff/client 403 verified over HTTP (scripts/verify-t6.ts)
 
 ### K-06 — Resource-level permissions
 - **Description:** Users access only their own records.
@@ -1795,7 +1799,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Invalid input rejected server side.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments. T6 (branch feat/t6-pricing-faq): Zod on packages (money in minor units, non-negative integers) and FAQs; hand-typed WhatsApp links rejected in every link field (DEC-37); CTA link type validated per kind
 
 ### K-16 — Audit logging
 - **Description:** Append-only audit log of sensitive actions.
@@ -1805,7 +1809,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted)
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted). T6 (branch feat/t6-pricing-faq): package and FAQ writes audited as content.item.* (created, published, deleted verified by scripts/verify-t6.ts)
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
@@ -2175,8 +2179,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** See A-08.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T6 (branch feat/t6-pricing-faq): see A-08 and G-06 — 'from' prices per DEC-38 on /pricing and the home teaser
+- **Decisions:** DEC-38
 
 ### M-16 — Vercel deployment
 - **Description:** Production hosting.

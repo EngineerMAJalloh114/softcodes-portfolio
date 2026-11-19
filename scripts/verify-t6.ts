@@ -165,7 +165,7 @@ async function main() {
       check("draft FAQ NOT on /faq", !(await publicText("/faq")).text.includes(faqQuestion));
       check("publish FAQ → toast", (await clickToast(page, page.getByRole("button", { name: "Publish" }))).includes("Published"));
       const faqLive = await eventually("/faq", (t) => t.includes(faqQuestion));
-      const ld = faqLive.text.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] ?? "";
+      const ld = faqLive.text.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] ?? "";
       check("published FAQ on /faq inside an accordion (<details>)", faqLive.text.includes(faqQuestion) && /<details[^>]*data-faq/.test(faqLive.text));
       check("FAQPage structured data lists only published FAQs", ld.includes('"FAQPage"') && ld.includes(faqQuestion) && !ld.includes("How does a project start?"));
 
