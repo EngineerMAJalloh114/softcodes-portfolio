@@ -24,10 +24,10 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 | H. Automation and communication | 12 | 0 | 12 |
 | I. Maintenance and ongoing services | 11 | 0 | 11 |
 | J. Advanced business intelligence | 10 | 0 | 10 |
-| K. Security and infrastructure | 23 | 0 | 23 |
+| K. Security and infrastructure | 23 | 5 | 18 |
 | L. Future platform expansion | 13 | 0 | 13 |
-| M. Site features agreed in chat (2026-11-19) | 17 | 2 | 15 |
-| **Total** | **205** | **13** | **192** |
+| M. Site features agreed in chat (2026-11-19) | 17 | 4 | 13 |
+| **Total** | **205** | **20** | **185** |
 
 Counts *Implemented* includes *In development*. Nothing is Verified or Released yet: the site is not deployed.
 
@@ -1709,8 +1709,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Parameterised queries only; separate dev/prod DBs.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): all queries via Drizzle (parameterised); TLS enforced (sslmode=require, channel_binding=require); app connects through pooled URL, migrations through direct URL. Remaining: least-privilege runtime role (app currently uses neondb_owner) and separate dev/prod branches
 
 ### K-08 — File upload protection
 - **Description:** Type, size, storage isolation.
@@ -1789,8 +1789,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Invalid input rejected server side.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7)
 
 ### K-16 — Audit logging
 - **Description:** Append-only audit log of sensitive actions.
@@ -1799,8 +1799,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4)
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
@@ -1809,8 +1809,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Point-in-time restore available; restore tested.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Neon point-in-time restore available, history retention 6 h (21600 s, project setting). Remaining: decide retention for prod and run a restore test (T8 backups check)
 
 ### K-18 — Disaster recovery
 - **Description:** Documented recovery plan and drills.
@@ -1839,8 +1839,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Dependabot (or equivalent) enabled; CI fails on critical.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): .github/dependabot.yml (npm weekly, GitHub Actions monthly); CI .github/workflows/ci.yml runs lint, typecheck, build and fails on critical npm audit findings. Dependabot security alerts must also be on in the GitHub repo settings
 
 ### K-21 — Automated security testing
 - **Description:** Security tests in CI.
@@ -2096,8 +2096,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Dev and prod databases; migrations in repo.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Neon project delicate-paper-51580609 (Postgres 18, aws-us-east-2), branch production; Drizzle schema src/db/schema.ts, migrations drizzle/0000_init.sql + 0001_audit_log_append_only.sql applied; seed from src/content/site.ts (scripts/db/seed.ts); app client src/db/index.ts (node-postgres + attachDatabasePool). Remaining: separate dev branch (only production exists)
+- **Decisions:** DEC-10, DEC-22, DEC-33
 
 ### M-09 — Separate file storage
 - **Description:** Storage service for images/files (provider to be decided).
@@ -2106,8 +2107,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Admin uploads images; served via CDN.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Neon object storage (supersedes R2) — buckets assets (private) + public-assets (public_read) in neon.ts; helper src/lib/storage.ts (upload, publicUrl, signed expiring URL, remove); scripts/verify-t2.ts proved private object → signed URL 200, unsigned 403, expired 403, delete → 404; media table (key, visibility, mime, size). Remaining: admin upload UI + CDN (T5)
+- **Decisions:** DEC-16 (superseded), DEC-32, DEC-33
 
 ### M-10 — Cal.com booking
 - **Description:** Owner decision for A-11.
