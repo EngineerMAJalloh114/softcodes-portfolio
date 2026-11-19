@@ -54,6 +54,18 @@ export async function requirePermission(permission: Permission): Promise<AdminCo
   };
 }
 
+/**
+ * Non-throwing check for route handlers (e.g. draft preview): the admin context if the
+ * request has a fully set-up session (password replaced, MFA on) with `permission`.
+ */
+export async function checkPermission(permission: Permission): Promise<AdminContext | null> {
+  const session = await getSession();
+  if (!session || session.user.mustChangePassword || !session.user.twoFactorEnabled) return null;
+  const role = await getRole(session.user.id);
+  if (!can(role, permission)) return null;
+  return { user: { id: session.user.id, email: session.user.email, name: session.user.name }, role: role as Role };
+}
+
 /** Admin shell gate (layout): any role that may enter the admin, MFA required. */
 export function requireAdminAccess() {
   return requirePermission("admin.access");

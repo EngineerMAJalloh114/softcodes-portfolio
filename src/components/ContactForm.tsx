@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { contact, contactSection } from "@/content/site";
+import type { SiteContent } from "@/lib/content/types";
 
 const field =
   "mt-2 w-full rounded-xl border border-field bg-bg px-4 py-3 text-text placeholder:text-muted/70 transition-colors duration-300 focus:border-text focus:outline-none focus-visible:outline-2 focus-visible:outline-text";
 
 /** No backend: builds a mailto: link with the form contents and opens the user's mail app. */
-export function ContactForm() {
+export function ContactForm({ contact, contactSection }: Pick<SiteContent, "contact" | "contactSection">) {
   const f = contactSection.form;
   const [opened, setOpened] = useState(false);
 

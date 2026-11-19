@@ -1,7 +1,11 @@
 import type { MetadataRoute } from "next";
-import { projects, site } from "@/content/site";
+import { site } from "@/content/site";
+import { getPublishedContent } from "@/lib/content/load";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { projects } = await getPublishedContent();
   const routes = ["", "/projects", "/soft-codes", "/contact"].map((path) => ({
     url: `${site.url}${path}`,
     changeFrequency: "monthly" as const,

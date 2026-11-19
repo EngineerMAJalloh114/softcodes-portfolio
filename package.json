@@ -15,7 +15,8 @@
     "auth:create-owner": "tsx scripts/create-owner.ts",
     "auth:verify": "tsx scripts/verify-t3.ts",
     "test": "tsx --test tests/*.test.ts",
-    "admin:verify": "tsx --conditions=react-server scripts/verify-t4.ts"
+    "admin:verify": "tsx --conditions=react-server scripts/verify-t4.ts",
+    "content:verify": "tsx --conditions=react-server scripts/verify-t5.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1172.0",

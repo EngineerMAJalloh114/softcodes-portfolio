@@ -4,16 +4,22 @@ import { ArrowRight } from "@/components/Icons";
 import { Reveal } from "@/components/Reveal";
 import { ThemeImage } from "@/components/ThemeImage";
 import { Container, Eyebrow } from "@/components/Section";
-import { pages, softCodes } from "@/content/site";
+import { getSiteContent } from "@/lib/content/load";
 
-export const metadata: Metadata = {
-  title: pages.softCodes.title,
-  description: pages.softCodes.description,
-  alternates: { canonical: "/soft-codes" },
-  openGraph: { title: pages.softCodes.title, description: pages.softCodes.description, url: "/soft-codes" },
-};
+export const revalidate = 3600;
 
-export default function SoftCodesPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const { pages } = await getSiteContent();
+  return {
+    title: pages.softCodes.title,
+    description: pages.softCodes.description,
+    alternates: { canonical: "/soft-codes" },
+    openGraph: { title: pages.softCodes.title, description: pages.softCodes.description, url: "/soft-codes" },
+  };
+}
+
+export default async function SoftCodesPage() {
+  const { softCodes } = await getSiteContent();
   return (
     <>
       <section className="hero-bg grain relative isolate overflow-hidden pt-36 pb-24 sm:pt-44 sm:pb-32">
@@ -45,7 +51,7 @@ export default function SoftCodesPage() {
       <section className="py-24 sm:py-32">
         <Container className="max-w-3xl">
           <Reveal className="space-y-6 text-lg leading-relaxed text-muted">
-            {/* TODO: company story is placeholder copy — see softCodes.paragraphs in src/content/site.ts */}
+            {/* TODO: company story is placeholder copy — edit it in Admin → Content → Soft CODES page (DEC-21) */}
             {softCodes.paragraphs.map((p) => (
               <p key={p}>{p}</p>
             ))}

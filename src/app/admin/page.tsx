@@ -30,7 +30,7 @@ export default async function DashboardPage() {
           value={counts.contentItems}
           hint={`${counts.content.sections} sections · ${counts.content.services} services · ${counts.content.stack} stack`}
         />
-        <StatCard label="Media" value={counts.media} hint={counts.media ? undefined : "Uploads arrive in T5"} />
+        <StatCard label="Media" value={counts.media} hint={counts.media ? undefined : "Upload files in Media"} />
       </section>
 
       {counts.leads === 0 && (

@@ -3,16 +3,22 @@ import { ContactDetails } from "@/components/ContactDetails";
 import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/Reveal";
 import { Container, Eyebrow } from "@/components/Section";
-import { contactSection, pages } from "@/content/site";
+import { getSiteContent } from "@/lib/content/load";
 
-export const metadata: Metadata = {
-  title: pages.contact.title,
-  description: pages.contact.description,
-  alternates: { canonical: "/contact" },
-  openGraph: { title: pages.contact.title, description: pages.contact.description, url: "/contact" },
-};
+export const revalidate = 3600;
 
-export default function ContactPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const { pages } = await getSiteContent();
+  return {
+    title: pages.contact.title,
+    description: pages.contact.description,
+    alternates: { canonical: "/contact" },
+    openGraph: { title: pages.contact.title, description: pages.contact.description, url: "/contact" },
+  };
+}
+
+export default async function ContactPage() {
+  const { contact, contactSection } = await getSiteContent();
   return (
     <section className="pt-36 pb-24 sm:pt-44 sm:pb-32">
       <Container>
@@ -25,10 +31,10 @@ export default function ContactPage() {
         </Reveal>
         <div className="mt-14 grid gap-8 lg:grid-cols-[1.15fr_1.5fr]">
           <Reveal>
-            <ContactDetails />
+            <ContactDetails contact={contact} contactSection={contactSection} />
           </Reveal>
           <Reveal delay={150}>
-            <ContactForm />
+            <ContactForm contact={contact} contactSection={contactSection} />
           </Reveal>
         </div>
       </Container>

@@ -13,7 +13,12 @@ export function ProjectCard({ project }: { project: Project }) {
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
           {project.kind}
         </span>
-        <StatusBadge status={project.status} />
+        <span className="flex items-center gap-2">
+          {project.isDraft && (
+            <span className="rounded-full bg-btn-bg px-2.5 py-0.5 text-xs font-semibold text-btn-fg">Draft</span>
+          )}
+          <StatusBadge status={project.status} />
+        </span>
       </div>
       <h3 className="mt-8 text-2xl font-extrabold tracking-tight text-text">{project.name}</h3>
       <p className="mt-2 font-semibold text-text/90">{project.tagline}</p>

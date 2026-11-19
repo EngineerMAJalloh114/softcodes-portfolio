@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { contact, footer } from "@/content/site";
+import type { SiteContent } from "@/lib/content/types";
 import { ThemeImage } from "./ThemeImage";
 
-export function Footer() {
+export function Footer({ contact, footer }: Pick<SiteContent, "contact" | "footer">) {
   return (
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-14 sm:px-8 md:flex-row md:items-end md:justify-between">

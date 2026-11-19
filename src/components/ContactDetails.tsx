@@ -1,7 +1,7 @@
-import { contact, contactSection } from "@/content/site";
+import type { SiteContent } from "@/lib/content/types";
 import { ChatIcon, MailIcon } from "./Icons";
 
-export function ContactDetails() {
+export function ContactDetails({ contact, contactSection }: Pick<SiteContent, "contact" | "contactSection">) {
   const items = [
     {
       label: contactSection.emailLabel,

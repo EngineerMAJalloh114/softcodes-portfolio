@@ -29,7 +29,7 @@ const ROUTES = ["/admin", "/admin/content", "/admin/projects", "/admin/pricing",
 const ALLOWED: Record<Role, readonly string[]> = {
   owner: ROUTES,
   admin: ["/admin", "/admin/content", "/admin/projects", "/admin/pricing", "/admin/leads", "/admin/media", "/admin/audit"],
-  staff: ["/admin", "/admin/projects", "/admin/leads"],
+  staff: ["/admin", "/admin/leads"],
   client: [],
 };
 
@@ -130,7 +130,7 @@ async function main() {
       }
       check(`${u.role}: every admin route returns the expected 200/403`, ok, results.join(" "));
     }
-    const r1 = await staffNoMfa.client.get("/admin/projects");
+    const r1 = await staffNoMfa.client.get("/admin/leads");
     check("MFA still required on every /admin route (staff without MFA → /auth/setup-mfa)", isRedirectTo(r1, "/auth/setup-mfa"), `${r1.status} → ${r1.location}`);
     const ownerOnly = await Promise.all([admin, staff, client].map((u) => u.client.get("/admin/settings")));
     check("owner-only /admin/settings: admin, staff, client all 403", ownerOnly.every((r) => r.status === 403), ownerOnly.map((r) => r.status).join(","));
@@ -144,7 +144,7 @@ async function main() {
     const ownerDash = await owner.client.get("/admin");
     check(
       "owner dashboard: counts, latest activity, 'Coming in' badges",
-      ["Leads", "Projects", "Content items", "Media", "Latest activity", "Coming in T5", "Coming in T6", "Coming in T7"].every((s) => ownerDash.text.includes(s)),
+      ["Leads", "Projects", "Content items", "Media", "Latest activity", "Coming in T6", "Coming in T7"].every((s) => ownerDash.text.includes(s)),
     );
 
     /* ---------- settings server action (HTTP) ---------- */

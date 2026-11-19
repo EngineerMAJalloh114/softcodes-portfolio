@@ -5,6 +5,10 @@
 
 export type ProjectStatus = "Live" | "In development" | "Coming soon" | "Concept";
 
+/** Portfolio filter type (M-11). */
+export const PROJECT_TYPES = ["website", "platform", "app", "branding", "other"] as const;
+export type ProjectType = (typeof PROJECT_TYPES)[number];
+
 export type ProjectLink = { label: string; href: string };
 
 export type Project = {
@@ -15,13 +19,19 @@ export type Project = {
   status: ProjectStatus;
   featured: boolean;
   kind: string;
+  /** Filter type for M-11. */
+  type: ProjectType;
+  tags: string[];
   problem: string;
   solution: string;
   features: string[];
   stack: string[];
   /** Screenshot slots. `src: null` renders a placeholder. */
+  /** Screenshot slots. `src`: a /public path, an https URL, or `media:<id>`; null renders a placeholder. */
   screenshots: { src: string | null; alt: string }[];
   links: ProjectLink[];
+  /** Set only in draft preview, for items not yet published. */
+  isDraft?: boolean;
 };
 
 export const site = {
@@ -142,6 +152,8 @@ export const projects: Project[] = [
     featured: true,
     kind: "Client website",
     // TODO: confirm problem/solution wording with the client.
+    type: "website",
+    tags: ["Admin CMS", "Supabase"],
     problem:
       "The client needed a modern online presence they could keep fresh themselves — updating text, galleries and offers without waiting on a developer.",
     solution:
@@ -171,6 +183,8 @@ export const projects: Project[] = [
     featured: true,
     kind: "Business platform",
     // TODO: confirm problem/solution wording with the client.
+    type: "platform",
+    tags: ["Booking", "Payments", "RBAC"],
     problem:
       "A business offering several services was juggling bookings, payments and staff access across separate tools.",
     solution:
@@ -198,6 +212,8 @@ export const projects: Project[] = [
     featured: true,
     kind: "Product",
     // TODO: expand the BRICX IQ case study once the product is announced.
+    type: "app",
+    tags: ["Construction", "SaaS"],
     problem:
       "Construction sites run on paper, phone calls and guesswork — making progress, materials and teams hard to track.",
     solution:
@@ -226,6 +242,8 @@ export const projects: Project[] = [
     featured: false,
     kind: "Education app",
     // TODO: refine the Keen Learner concept write-up.
+    type: "app",
+    tags: ["Education", "Africa-first"],
     problem:
       "Students across Africa need learning tools built around their own curricula, devices and connectivity.",
     solution:
@@ -252,6 +270,8 @@ export const projects: Project[] = [
     featured: false,
     kind: "Client website",
     // TODO: confirm problem/solution wording with the client.
+    type: "website",
+    tags: ["Healthcare"],
     problem:
       "Parents need clear, trustworthy information about the practice and an easy way to get in touch.",
     solution:
@@ -321,6 +341,21 @@ export const softCodes = {
     { title: "Fast everywhere", body: "Built to load quickly on any device and connection." },
   ],
   cta: { label: "Start a project", href: "/contact" },
+};
+
+export const processSection = {
+  // M-14: placeholder until the owner approves the copy (DEC-21); hidden on the site until then.
+  visible: false,
+  eyebrow: "Process",
+  heading: "How we work together.",
+  intro: "A clear path from first call to launch — and support after.",
+  steps: [
+    { title: "Discover", body: "We talk about your business, your customers and what success looks like." },
+    { title: "Design", body: "You see the look and the flow before any code is written." },
+    { title: "Build", body: "Fast, secure development with regular previews you can click through." },
+    { title: "Launch", body: "We go live together, with your admin panel ready to use." },
+    { title: "Support", body: "Updates, fixes and improvements whenever you need them." },
+  ],
 };
 
 export const footer = {

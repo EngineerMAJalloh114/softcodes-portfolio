@@ -14,20 +14,20 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 
 | Category | Features | Implemented | Planned |
 |---|---|---|---|
-| A. Public website and brand experience | 16 | 11 | 5 |
+| A. Public website and brand experience | 16 | 12 | 4 |
 | B. Intelligent project acquisition | 18 | 0 | 18 |
 | C. Payments and financial management | 16 | 0 | 16 |
 | D. Official document management | 17 | 0 | 17 |
 | E. Intelligent design and preview system | 13 | 0 | 13 |
 | F. Client relationship and project management | 19 | 0 | 19 |
-| G. Business administration | 20 | 4 | 16 |
+| G. Business administration | 20 | 5 | 15 |
 | H. Automation and communication | 12 | 1 | 11 |
 | I. Maintenance and ongoing services | 11 | 0 | 11 |
 | J. Advanced business intelligence | 10 | 0 | 10 |
 | K. Security and infrastructure | 23 | 11 | 12 |
 | L. Future platform expansion | 13 | 0 | 13 |
-| M. Site features agreed in chat (2026-11-19) | 17 | 5 | 12 |
-| **Total** | **205** | **32** | **173** |
+| M. Site features agreed in chat (2026-11-19) | 17 | 6 | 11 |
+| **Total** | **205** | **35** | **170** |
 
 Counts *Implemented* includes *In development*. Nothing is Verified or Released yet: the site is not deployed.
 
@@ -58,7 +58,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Home renders every section; hero shows portrait; CTAs work.
 - **Status:** Implemented
-- **Evidence:** src/app/page.tsx. T1 (PR #3, branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png
+- **Evidence:** src/app/page.tsx. T1 (PR #3, branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png. T5 (PR #14, branch feat/t5-content): home page renders from the CMS (hero, about, services, process, featured projects, stack, contact)
 - **Decisions:** DEC-09 (superseded by DEC-29 for layout), DEC-29, DEC-30
 
 ### A-03 — About page
@@ -69,7 +69,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Bio approved by owner; editable from admin.
 - **Status:** In development
-- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (PR #3, branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6)
+- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (PR #3, branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6). T5 (PR #14, branch feat/t5-content): About bio, facts and portrait editable in the admin (portrait can come from the media library); final layout still TODO(DEC-30)
 - **Decisions:** DEC-21, DEC-30
 
 ### A-04 — Services
@@ -90,7 +90,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** All projects listed; filterable (see M-11).
 - **Status:** Implemented
-- **Evidence:** src/app/projects/page.tsx
+- **Evidence:** src/app/projects/page.tsx. T5 (PR #14, branch feat/t5-content): projects grid from the DB (published only; order set in the admin; drafts visible only in preview)
 
 ### A-06 — Case studies
 - **Description:** Per-project page: problem, solution, features, stack, screenshots, result.
@@ -100,7 +100,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Each project has a case study with real screenshots and owner-approved text.
 - **Status:** Implemented
-- **Evidence:** src/app/projects/[slug]/page.tsx — placeholder text and screenshots
+- **Evidence:** src/app/projects/[slug]/page.tsx — placeholder text and screenshots. T5 (PR #14, branch feat/t5-content): case studies editable (problem, solution, features, stack, screenshots from the media library, links, status); new projects render on first visit (ISR)
 
 ### A-07 — Technology showcase
 - **Description:** Stack section with tools and how they are used.
@@ -189,8 +189,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner edits text, projects, photos, pricing, FAQs, blog without code; changes live without redeploy.
-- **Status:** Planned
-- **Evidence:** Content currently in src/content/site.ts
+- **Status:** In development
+- **Evidence:** Content currently in src/content/site.ts. T5 (PR #14, branch feat/t5-content): every public section (hero, about, profile/portrait, services, process, projects heading, stack, contact section, Soft CODES page, nav, footer, site SEO, page metadata/labels) plus services, stack and projects editable in /admin/content and /admin/projects; public pages read the DB (cached, tag "content", updateTag on save) — verified: hero edit → public page updated without redeploy (scripts/verify-t5.ts). Remaining: pricing + FAQs (T6), blog (R1b)
 
 ### A-16 — Customer testimonials and reviews
 - **Description:** Client quotes with name, company, photo, project link; admin-approved.
@@ -1109,7 +1109,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Permission matrix enforced server side.
 - **Status:** Implemented
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403)
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403). T5 (PR #14, branch feat/t5-content): content.write (sections, services, stack, projects) and media.manage — owner + admin; staff/client denied (unit + HTTP tests)
 
 ### G-04 — Client management
 - **Description:** Client records with contacts and history.
@@ -1218,8 +1218,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** See A-15.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T5 (PR #14, branch feat/t5-content): CMS screens — section editors, collection lists (order, publish/unpublish) and item editors driven by one field spec (src/lib/content/defs.ts); drafts + Preview draft (Next Draft Mode, content.write only); Zod validation, unsaved-changes warning, success/error toasts. Remaining: pricing/FAQ screens (T6)
 
 ### G-15 — Notification management
 - **Description:** Templates and on/off per event.
@@ -1695,7 +1695,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Server-side checks on every route/action.
 - **Status:** Implemented
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan()
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan(). T5 (PR #14, branch feat/t5-content): requirePermission on every content/media page and server action; services re-check assertCan; Draft Mode preview only for content.write; staff/client 403 verified (scripts/verify-t5.ts)
 
 ### K-06 — Resource-level permissions
 - **Description:** Users access only their own records.
@@ -1795,7 +1795,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Invalid input rejected server side.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments
 
 ### K-16 — Audit logging
 - **Description:** Append-only audit log of sensitive actions.
@@ -1805,7 +1805,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after)
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted)
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
@@ -2041,7 +2041,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner-approved photo shown, face not cropped.
 - **Status:** In development
-- **Evidence:** Temporary photo in commit b290c8f; owner will supply a new photo (DEC-20). T1 (PR #3, branch feat/hero-koala): per DEC-29/DEC-30 the hero now shows the koala mascot and the owner portrait moved to the About section (interim layout, TODO(DEC-30)); awaiting owner photo and About layout reference
+- **Evidence:** Temporary photo in commit b290c8f; owner will supply a new photo (DEC-20). T1 (PR #3, branch feat/hero-koala): per DEC-29/DEC-30 the hero now shows the koala mascot and the owner portrait moved to the About section (interim layout, TODO(DEC-30)); awaiting owner photo and About layout reference. T5 (PR #14, branch feat/t5-content): portrait editable in Admin → Content → Profile & portrait (media library)
 - **Decisions:** DEC-09, DEC-20, DEC-29, DEC-30
 
 ### M-03 — Quote request form
@@ -2092,7 +2092,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner signs in with MFA and edits all content.
 - **Status:** In development
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): admin shell — sidebar (Dashboard, Content, Projects, Pricing, Leads, Media, Audit log, Settings; later items marked Coming in T5/T6/T7), top bar (user, theme toggle, sign out), collapsible drawer on mobile; MFA required on every /admin route. Remaining: content editing (T5–T7)
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): admin shell — sidebar (Dashboard, Content, Projects, Pricing, Leads, Media, Audit log, Settings; later items marked Coming in T5/T6/T7), top bar (user, theme toggle, sign out), collapsible drawer on mobile; MFA required on every /admin route. Remaining: content editing (T5–T7). T5 (PR #14, branch feat/t5-content): Content, Projects and Media sections live in the admin (no longer "Coming in T5")
 - **Decisions:** DEC-15
 
 ### M-08 — Neon database
@@ -2114,8 +2114,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Admin uploads images; served via CDN.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Neon object storage (supersedes R2) — buckets assets (private) + public-assets (public_read) in neon.ts; helper src/lib/storage.ts (upload, publicUrl, signed expiring URL, remove); scripts/verify-t2.ts proved private object → signed URL 200, unsigned 403, expired 403, delete → 404; media table (key, visibility, mime, size). Remaining: admin upload UI + CDN (T5)
-- **Decisions:** DEC-16 (superseded), DEC-32, DEC-33
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Neon object storage (supersedes R2) — buckets assets (private) + public-assets (public_read) in neon.ts; helper src/lib/storage.ts (upload, publicUrl, signed expiring URL, remove); scripts/verify-t2.ts proved private object → signed URL 200, unsigned 403, expired 403, delete → 404; media table (key, visibility, mime, size). Remaining: admin upload UI + CDN (T5). T5 (PR #14, branch feat/t5-content): media library /admin/media — upload (JPEG/PNG/WebP/GIF/AVIF ≤ 5 MB, PDF ≤ 15 MB), byte-level MIME sniffing (SVG refused), alt text, replace (same id, new key), delete (refused while in use), public bucket for site images (Cache-Control immutable) / private for others (signed URLs); images on the site via next/image (media:<id> references). Verified upload → library → used in a project → public page. Remaining: confirm next/image CDN delivery on the Vercel deploy (T8; sandbox has no direct DNS)
+- **Decisions:** DEC-16 (superseded), DEC-32, DEC-33, DEC-32
 
 ### M-10 — Cal.com booking
 - **Description:** Owner decision for A-11.
@@ -2135,7 +2135,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Filter by website/platform/app/branding; URL reflects filter.
 - **Status:** Planned
-- **Evidence:** —
+- **Evidence:** T5 (PR #14, branch feat/t5-content): data ready — projects have a filter type (website/platform/app/branding/other) and tags, editable in the admin; filter UI still planned (R1b)
 
 ### M-12 — Analytics
 - **Description:** Vercel Analytics (privacy-friendly).
@@ -2164,8 +2164,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Section on home and services page.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T5 (PR #14, branch feat/t5-content): Process section (Discover → Design → Build → Launch → Support) editable in Admin → Content → Process, placeholder copy, hidden until switched on (DEC-21 approval); renders on the home page when visible. Remaining: owner-approved copy; services page placement
+- **Decisions:** DEC-21
 
 ### M-15 — 'From' pricing display
 - **Description:** Owner decision for A-08.

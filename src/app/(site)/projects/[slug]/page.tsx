@@ -7,17 +7,19 @@ import { Reveal } from "@/components/Reveal";
 import { Container } from "@/components/Section";
 import { MascotPlaceholder } from "@/components/MascotPlaceholder";
 import { StatusBadge } from "@/components/StatusBadge";
-import { getProject, pages, projects } from "@/content/site";
+import { getProject, getPublishedContent, getSiteContent } from "@/lib/content/load";
 
-export const dynamicParams = false;
+// Published projects are prerendered; new ones render on first visit (then cached).
+export const revalidate = 3600;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { projects } = await getPublishedContent();
   return projects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/projects/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getProject(slug);
   if (!project) return {};
   const description = `${project.summary} ${project.tagline}`;
   return {
@@ -30,9 +32,9 @@ export async function generateMetadata({ params }: PageProps<"/projects/[slug]">
 
 export default async function CaseStudyPage({ params }: PageProps<"/projects/[slug]">) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getProject(slug);
   if (!project) notFound();
-  const t = pages.caseStudy;
+  const t = (await getSiteContent()).pages.caseStudy;
 
   return (
     <article className="pt-36 pb-24 sm:pt-44 sm:pb-32">

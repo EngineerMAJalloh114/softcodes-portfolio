@@ -2,16 +2,22 @@ import type { Metadata } from "next";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { Container, Eyebrow } from "@/components/Section";
-import { pages, projects, projectsSection } from "@/content/site";
+import { getSiteContent } from "@/lib/content/load";
 
-export const metadata: Metadata = {
-  title: pages.projects.title,
-  description: pages.projects.description,
-  alternates: { canonical: "/projects" },
-  openGraph: { title: pages.projects.title, description: pages.projects.description, url: "/projects" },
-};
+export const revalidate = 3600;
 
-export default function ProjectsPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const { pages } = await getSiteContent();
+  return {
+    title: pages.projects.title,
+    description: pages.projects.description,
+    alternates: { canonical: "/projects" },
+    openGraph: { title: pages.projects.title, description: pages.projects.description, url: "/projects" },
+  };
+}
+
+export default async function ProjectsPage() {
+  const { pages, projects, projectsSection } = await getSiteContent();
   return (
     <section className="pt-36 pb-24 sm:pt-44 sm:pb-32">
       <Container>
