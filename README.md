@@ -63,3 +63,21 @@ npm run db:verify    # end-to-end checks (DB, audit log, seed, storage); APP_URL
 - **Storage:** `src/lib/storage.ts` handles `upload`, `publicUrl` (bucket `public-assets`), `signedUrl` (bucket `assets`, private, max 1 h) and `remove`.
 - **Behind an HTTPS proxy:** run scripts with `NODE_USE_ENV_PROXY=1` so Node's `fetch` uses `HTTPS_PROXY`.
 
+
+## Auth — T3
+
+Better Auth (DEC-18), self-managed on Neon via Drizzle. Endpoints live under `/api/auth/*`.
+The pages are `/auth/sign-in`, `/auth/change-password`, `/auth/setup-mfa`, `/auth/forgot-password`
+and `/auth/reset-password`. Every `/admin` page calls `requireAdmin()` (`src/lib/auth/guard.ts`), which checks four things in order:
+signed in → owner/admin role → temporary password replaced → TOTP MFA on.
+
+```bash
+npm run auth:create-owner             # owner account (DEC-34), prints a one-time temporary password
+npm run auth:create-owner -- --reset  # issue a new temporary password + sign out everywhere
+npm run auth:verify                   # end-to-end auth checks against APP_URL (see the script header)
+```
+
+- **Env:** `BETTER_AUTH_SECRET` (required) and `BETTER_AUTH_URL` (the site origin). See `.env.example`.
+- **Email:** `src/lib/email` is an adapter interface. Development logs reset links to the server log. Production returns
+  `EMAIL_NOT_CONFIGURED` until a Resend adapter is added (DEC-35).
+- **Rate limits** are stored in Postgres (`rate_limits`). The **audit log** records every sign-in/out, MFA and password event.
