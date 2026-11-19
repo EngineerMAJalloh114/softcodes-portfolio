@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito_Sans } from "next/font/google";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
 import { site } from "@/content/site";
 import { palette, themeInitScript } from "@/theme/palette";
 import "./globals.css";
@@ -66,11 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-screen flex-col bg-bg font-sans text-text">
-        <Nav />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        {children}
       </body>
     </html>
   );

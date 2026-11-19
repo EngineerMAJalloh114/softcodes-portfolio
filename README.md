@@ -81,3 +81,20 @@ npm run auth:verify                   # end-to-end auth checks against APP_URL (
 - **Email:** `src/lib/email` is an adapter interface. Development logs reset links to the server log. Production returns
   `EMAIL_NOT_CONFIGURED` until a Resend adapter is added (DEC-35).
 - **Rate limits** are stored in Postgres (`rate_limits`). The **audit log** records every sign-in/out, MFA and password event.
+
+## Admin shell — T4
+
+`/admin` uses its own layout: a sidebar, plus a top bar with the user, theme toggle and sign-out. The sidebar collapses into a drawer on mobile.
+The public pages live in the `(site)` route group, so the URLs are unchanged.
+
+- **RBAC:** `src/lib/auth/permissions.ts` is the single owner/admin/staff/client matrix (deny by default).
+  `requirePermission()` (`src/lib/auth/guard.ts`) runs on every admin page, the layout and every server action.
+  It requires sign-in, an admin-capable role, a replaced temporary password and MFA, then answers 403 if the role lacks the permission.
+- **Pages:** the dashboard (G-01), audit log viewer (G-19) and settings (G-20, owner only, Zod-validated, every save audited).
+  Content, Projects, Pricing, Leads and Media are placeholders until T5–T7.
+
+```bash
+npm test               # unit tests: RBAC matrix, settings validation, audit filters (no DB)
+npm run admin:verify   # integration: per-role access over HTTP, settings save + audit, audit filters
+npx tsx scripts/screenshots-admin.ts   # admin screenshots → docs/screenshots/admin-*
+```

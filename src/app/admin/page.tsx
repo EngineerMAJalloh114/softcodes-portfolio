@@ -1,24 +1,63 @@
 import type { Metadata } from "next";
-import { AuthShell } from "@/components/auth/AuthShell";
-import { requireAdmin } from "@/lib/auth/guard";
-import { SignOutButtons } from "./SignOutButtons";
+import Link from "next/link";
+import { AuditTable } from "@/components/admin/AuditTable";
+import { Card, EmptyState, PageHeader, StatCard } from "@/components/admin/ui";
+import { queryAuditLog } from "@/lib/admin/audit-log";
+import { dashboardCounts } from "@/lib/admin/dashboard";
+import { requirePermission } from "@/lib/auth/guard";
+import { can } from "@/lib/auth/permissions";
 
-export const metadata: Metadata = { title: "Admin" };
+export const metadata: Metadata = { title: "Dashboard" };
 
-/** Protected placeholder. The admin UI itself is T4. */
-export default async function AdminPage() {
-  const { session, role } = await requireAdmin();
+/** G-01 Owner dashboard. */
+export default async function DashboardPage() {
+  const { user, role } = await requirePermission("dashboard.view");
+  const showAudit = can(role, "audit.view");
+  const [counts, latest] = await Promise.all([
+    dashboardCounts(),
+    showAudit ? queryAuditLog({ page: 1 }, 10) : Promise.resolve(null),
+  ]);
+
   return (
-    <AuthShell
-      title="Admin"
-      intro={
-        <>
-          Signed in as <span className="font-semibold text-text">{session.user.email}</span> ({role}), with
-          two-factor authentication on. The admin panel arrives in the next release.
-        </>
-      }
-    >
-      <SignOutButtons />
-    </AuthShell>
+    <>
+      <PageHeader title="Dashboard" intro={<>Welcome back, {user.name.split(" ")[0] || user.email}.</>} />
+
+      <section aria-label="Totals" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard label="Leads" value={counts.leads} hint={counts.leads ? undefined : "Quote form arrives in T7"} />
+        <StatCard label="Projects" value={counts.projects} />
+        <StatCard
+          label="Content items"
+          value={counts.contentItems}
+          hint={`${counts.content.sections} sections · ${counts.content.services} services · ${counts.content.stack} stack`}
+        />
+        <StatCard label="Media" value={counts.media} hint={counts.media ? undefined : "Uploads arrive in T5"} />
+      </section>
+
+      {counts.leads === 0 && (
+        <Card className="mt-6">
+          <EmptyState compact title="No leads yet" body="When the quote form goes live (T7), new enquiries will show up here." />
+        </Card>
+      )}
+
+      {showAudit && latest && (
+        <section aria-labelledby="latest-activity" className="mt-10">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <h2 id="latest-activity" className="text-xl font-extrabold tracking-tight text-text">
+              Latest activity
+            </h2>
+            <Link href="/admin/audit" className="text-sm font-semibold text-muted hover:text-text">
+              View full audit log →
+            </Link>
+          </div>
+          <Card>
+            {latest.rows.length ? (
+              <AuditTable rows={latest.rows} />
+            ) : (
+              <EmptyState title="No activity yet" body="Sign-ins and changes will be listed here." />
+            )}
+          </Card>
+        </section>
+      )}
+    </>
   );
 }
