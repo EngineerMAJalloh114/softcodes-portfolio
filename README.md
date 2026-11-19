@@ -98,3 +98,23 @@ npm test               # unit tests: RBAC matrix, settings validation, audit fil
 npm run admin:verify   # integration: per-role access over HTTP, settings save + audit, audit filters
 npx tsx scripts/screenshots-admin.ts   # admin screenshots → docs/screenshots/admin-*
 ```
+
+## Content management + media — T5
+
+The public site reads its content from the database. `src/content/site.ts` is only the seed source, plus the fallback for builds with no database (CI).
+
+- **Editing:** use Admin → **Content** (every section, plus the Services and Stack lists), **Projects** and **Media**.
+  - Each section and collection is described once, in `src/lib/content/defs.ts`. That spec drives both the form and its Zod validation.
+  - Contact email, WhatsApp and location come from Settings.
+- **Drafts:** **Save draft** keeps a change private. **Preview draft** opens the page with drafts shown (Next Draft Mode, content editors only). **Publish** makes it live.
+- **Going live:** published content is cached (tag `content`). Every save calls `updateTag("content")`, so the next request shows the change with no redeploy. Pages also revalidate hourly as a safety net.
+- **Media (Neon object storage):**
+  - Images (JPEG/PNG/WebP/GIF/AVIF, ≤ 5 MB) go to the public bucket by default; PDFs (≤ 15 MB) go to the private one.
+  - Files are type-checked by their bytes; SVG is refused.
+  - Content refers to a file as `media:<id>`. Replacing a file keeps the id, and a file that's still in use can't be deleted.
+- **Access:** `content.write` and `media.manage` (owner, admin). Every change writes an audit row.
+
+```bash
+npm run content:verify   # end-to-end: denial, draft/preview/publish live, upload → project, audit (see script header)
+npx tsx --conditions=react-server scripts/screenshots-t5.ts   # admin screenshots → docs/screenshots/admin-t5-*
+```

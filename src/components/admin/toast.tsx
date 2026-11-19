@@ -21,6 +21,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             data-toast={t.tone}
+            data-toast-id={t.id}
             className={`pointer-events-auto max-w-md rounded-2xl border px-5 py-3 text-sm font-semibold shadow-[0_8px_40px_-12px_var(--glow-strong)] ${
               t.tone === "success" ? "border-border bg-btn-bg text-btn-fg" : "border-text bg-surface text-text"
             }`}

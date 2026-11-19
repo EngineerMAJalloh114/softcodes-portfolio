@@ -52,7 +52,7 @@ export function CollectionList({
     <ol className="divide-y divide-border/70">
       {rows.map((r, i) => (
         <li key={r.id} className="flex flex-wrap items-center gap-3 py-4" data-row={r.title}>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 basis-full sm:basis-0 sm:flex-1">
             <Link href={`${adminBase}/${r.id}`} className="font-semibold text-text hover:underline">
               {r.title}
             </Link>

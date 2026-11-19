@@ -109,7 +109,8 @@ function MediaCard({ item, onChanged }: { item: MediaItem; onChanged: () => void
       <div className="relative aspect-[4/3] bg-bg">
         {item.kind === "image" ? (
           item.visibility === "public" ? (
-            <Image src={item.url} alt={item.alt} fill sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+            // Admin thumbnails load straight from the public bucket (no optimisation needed here).
+            <Image src={item.url} alt={item.alt} fill unoptimized sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
           ) : (
             <img src={item.url} alt={item.alt} className="h-full w-full object-cover" />
           )
