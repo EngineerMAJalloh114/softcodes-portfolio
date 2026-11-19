@@ -150,7 +150,7 @@ async function main() {
     /* ---------- settings server action (HTTP) ---------- */
     const t0 = new Date(Date.now() - 1000);
     // Denied roles: the action's permission check answers 403 before the body is read.
-    const good = { contactEmail: "engineermohamedabassjalloh3855@gmail.com", whatsapp: "+232 32 829 316", location: "Freetown, Sierra Leone", depositPercent: "40", currencies: ["USD", "SLE"] };
+    const good = { contactEmail: "engineermohamedabassjalloh3855@gmail.com", whatsapp: "+232 32 829 316", location: "Freetown, Sierra Leone", depositPercent: "40", currencies: ["USD", "SLE"], whatsappButton: "on" };
     const before = await db.select().from(schema.settings).where(eq(schema.settings.key, "payments.deposit_percent"));
 
     for (const u of [admin, staff, client]) {

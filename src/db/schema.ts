@@ -342,32 +342,85 @@ export const media = pgTable(
 /* Leads                                                               */
 /* ------------------------------------------------------------------ */
 
+/** Lead pipeline (T7a). "quoted" replaced the unused "qualified" (migration 0006). */
 export const leadStatus = pgEnum("lead_status", [
   "new",
   "contacted",
-  "qualified",
+  "quoted",
   "won",
   "lost",
   "spam",
 ]);
 
+/** Quote requests (M-03). `reference` is the public number, e.g. SC-LEAD-2026-0001. */
 export const leads = pgTable(
   "leads",
   {
     id: uuid("id").primaryKey().defaultRandom(),
+    reference: text("reference").notNull().unique(),
     name: text("name").notNull(),
     email: text("email").notNull(),
     phone: text("phone"),
+    company: text("company"),
+    /** Pricing package slug, or "other". */
     projectType: text("project_type"),
+    /** Budget range key (see src/lib/leads/schema.ts) in `budgetCurrency`. */
     budget: text("budget"),
+    budgetCurrency: text("budget_currency"),
     deadline: text("deadline"),
     message: text("message").notNull(),
+    /** How they found us (J-04), e.g. "search", "referral". */
     source: text("source").notNull().default("website"),
     status: leadStatus("status").notNull().default("new"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index("leads_status_created_idx").on(t.status, t.createdAt)],
+  (t) => [
+    index("leads_status_created_idx").on(t.status, t.createdAt),
+    check("leads_budget_currency", sql`${t.budgetCurrency} is null or ${t.budgetCurrency} in ('USD', 'SLE')`),
+  ],
+);
+
+/** Internal notes on a lead (admin only, never shown to the client). */
+export const leadNotes = pgTable(
+  "lead_notes",
+  {
+    id: serial("id").primaryKey(),
+    leadId: uuid("lead_id")
+      .notNull()
+      .references(() => leads.id, { onDelete: "cascade" }),
+    authorId: text("author_id").references(() => users.id, { onDelete: "set null" }),
+    body: text("body").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("lead_notes_lead_idx").on(t.leadId, t.createdAt)],
+);
+
+/** Atomic per-key counters (lead reference numbers per year; invoices later). */
+export const counters = pgTable("counters", {
+  key: text("key").primaryKey(),
+  value: integer("value").notNull().default(0),
+});
+
+/**
+ * Owner notifications (T7a). Stored for every event; `email` records what the email
+ * adapter did ("sent", "logged" in development, "not_configured" until Resend — T7b).
+ */
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: serial("id").primaryKey(),
+    kind: text("kind").notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    href: text("href"),
+    entityId: text("entity_id"),
+    email: text("email").notNull().default("not_configured"),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    readBy: text("read_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("notifications_unread_idx").on(t.readAt, t.createdAt)],
 );
 
 /* ------------------------------------------------------------------ */

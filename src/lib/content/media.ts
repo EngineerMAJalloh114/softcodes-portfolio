@@ -165,7 +165,7 @@ export async function updateAlt(actor: Actor, id: string, alt: unknown): Promise
 export async function findReferences(id: string): Promise<string[]> {
   const ref = `%media:${id}%`;
   const db = getDb();
-  const [sections, projects] = await Promise.all([
+  const [sections, projects, cv] = await Promise.all([
     db
       .select({ key: schema.contentSections.key })
       .from(schema.contentSections)
@@ -174,8 +174,16 @@ export async function findReferences(id: string): Promise<string[]> {
       .select({ name: schema.projects.name })
       .from(schema.projects)
       .where(sql`${schema.projects.screenshots}::text like ${ref} or coalesce(${schema.projects.draft}::text, '') like ${ref}`),
+    db
+      .select({ key: schema.settings.key })
+      .from(schema.settings)
+      .where(sql`${schema.settings.key} = 'site.cv_media_id' and ${schema.settings.value}::text = ${JSON.stringify(id)}`),
   ]);
-  return [...sections.map((s) => `section "${s.key}"`), ...projects.map((p) => `project "${p.name}"`)];
+  return [
+    ...sections.map((s) => `section "${s.key}"`),
+    ...projects.map((p) => `project "${p.name}"`),
+    ...cv.map(() => "Settings → CV file"),
+  ];
 }
 
 export async function deleteMedia(actor: Actor, id: string): Promise<Result> {

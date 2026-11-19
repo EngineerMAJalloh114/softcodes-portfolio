@@ -7,6 +7,7 @@ import { getDb, schema } from "@/db";
 import { getSettings } from "@/lib/admin/settings";
 import { publicUrl } from "@/lib/storage";
 import { mediaIdFromRef } from "./fields";
+import { mergeSeed } from "./merge";
 import { contactFrom, seedContent } from "./seed-content";
 import type { Project, SiteContent } from "./types";
 
@@ -14,6 +15,7 @@ import type { Project, SiteContent } from "./types";
 export const CONTENT_TAG = "content";
 
 type Row<T> = T & { published: boolean; draft: unknown };
+
 
 /** Live values, or (preview) live values overlaid with unpublished edits. */
 function view<T extends object>(row: Row<T>, preview: boolean): T {
@@ -38,8 +40,9 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
     const row = sectionRows.find((r) => r.key === key);
     if (!row) return seedValue;
     const value = preview && row.draft ? row.draft : row.data;
-    // Seed values fill any key not stored yet (e.g. a field added in a later release).
-    return { ...(seedValue as object), ...(value as object) } as SiteContent[K];
+    // Seed values fill any key not stored yet (e.g. a field added in a later release),
+    // one level deep too (e.g. new labels inside contact_section.form).
+    return mergeSeed(seedValue, value) as SiteContent[K];
   };
 
   const visible = <T extends { published: boolean }>(rows: T[]) => (preview ? rows : rows.filter((r) => r.published));
@@ -68,12 +71,12 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
   });
 
   const person = section<"person">("person", fallback.person);
-  const refs = [person.photo, ...projects.flatMap((p) => p.screenshots.map((s) => s.src))]
+  const refs = [person.photo, settings.cvMediaId ? `media:${settings.cvMediaId}` : null, ...projects.flatMap((p) => p.screenshots.map((s) => s.src))]
     .map(mediaIdFromRef)
     .filter((id): id is string => !!id);
   const media = refs.length
     ? await db
-        .select({ id: schema.media.id, key: schema.media.key, visibility: schema.media.visibility })
+        .select({ id: schema.media.id, key: schema.media.key, visibility: schema.media.visibility, mime: schema.media.mime })
         .from(schema.media)
         .where(inArray(schema.media.id, [...new Set(refs)]))
     : [];
@@ -135,6 +138,13 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
       };
     }),
     pages: section<"pages">("pages", fallback.pages),
+    features: {
+      whatsappButton: settings.whatsappButton,
+      cvUrl: (() => {
+        const cv = media.find((m) => m.id === settings.cvMediaId);
+        return cv && cv.visibility === "public" && cv.mime === "application/pdf" ? publicUrl(cv.key) : null;
+      })(),
+    },
     preview,
     source: "db",
   };

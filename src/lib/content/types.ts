@@ -23,6 +23,8 @@ export type SiteContent = {
   packages: (seed.PricingPackage & { isDraft?: boolean })[];
   faqs: (seed.Faq & { isDraft?: boolean })[];
   pages: typeof seed.pages;
+  /** From Settings: floating WhatsApp button on/off (M-06) and the public CV PDF URL (M-04). */
+  features: { whatsappButton: boolean; cvUrl: string | null };
   /** True when rendered from drafts (admin preview). */
   preview: boolean;
   /** Where the content came from: the database or the bundled seed (no DB at build). */

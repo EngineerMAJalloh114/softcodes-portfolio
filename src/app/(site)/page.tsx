@@ -2,12 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/Button";
 import { ContactDetails } from "@/components/ContactDetails";
-import { ContactForm } from "@/components/ContactForm";
+import { QuoteForm } from "@/components/QuoteForm";
 import { ArrowRight, SparkIcon } from "@/components/Icons";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { Container, Eyebrow, Section } from "@/components/Section";
 import { AboutContent } from "@/components/AboutContent";
+import { CvButton } from "@/components/CvButton";
 import { CurrencyToggle } from "@/components/pricing/CurrencyToggle";
 import { PackageCard } from "@/components/pricing/PackageCard";
 import { getSiteContent } from "@/lib/content/load";
@@ -100,6 +101,7 @@ function Hero({ c }: P) {
             <Button href={ctaHref(hero.secondaryCta, c.contact.whatsappDisplay)} variant="secondary">
               {hero.secondaryCta.label}
             </Button>
+            {c.features.cvUrl && <CvButton href={c.features.cvUrl} label={c.pages.about.cvLabel} />}
           </Reveal>
         </div>
       </Container>
@@ -261,7 +263,7 @@ function Contact({ c }: P) {
           <ContactDetails contact={c.contact} contactSection={contactSection} />
         </Reveal>
         <Reveal delay={150}>
-          <ContactForm contact={c.contact} contactSection={contactSection} />
+          <QuoteForm contact={c.contact} contactSection={contactSection} packages={c.packages} />
         </Reveal>
       </div>
     </Section>

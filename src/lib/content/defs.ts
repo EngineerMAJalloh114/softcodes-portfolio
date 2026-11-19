@@ -180,7 +180,7 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
   contact_section: {
     key: "contact_section",
     label: "Contact section",
-    description: "Contact section text and form labels. Email and WhatsApp come from Settings.",
+    description: "Contact section text and quote form labels. Email and WhatsApp come from Settings.",
     path: "/contact",
     fields: [
       eyebrow,
@@ -195,9 +195,19 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
         fields: [
           { name: "nameLabel", label: "Name field label", type: "text", max: 40 },
           { name: "emailLabel", label: "Email field label", type: "text", max: 40 },
+          { name: "phoneLabel", label: "Phone field label", type: "text", max: 60 },
+          { name: "companyLabel", label: "Company field label", type: "text", max: 60 },
+          { name: "projectTypeLabel", label: "Project type label", type: "text", max: 40, help: "Options are the published pricing packages." },
+          { name: "otherProjectLabel", label: "“Other” project option", type: "text", max: 40 },
+          { name: "budgetLabel", label: "Budget label", type: "text", max: 40 },
+          { name: "deadlineLabel", label: "Deadline label", type: "text", max: 40 },
+          { name: "deadlinePlaceholder", label: "Deadline example", type: "text", max: 60 },
           { name: "messageLabel", label: "Message field label", type: "text", max: 40 },
+          { name: "sourceLabel", label: "“How did you find us” label", type: "text", max: 60 },
           { name: "submitLabel", label: "Button text", type: "text", max: 40 },
           { name: "note", label: "Note under the form", type: "text", max: 160 },
+          { name: "successTitle", label: "Success heading", type: "text", max: 80 },
+          { name: "successBody", label: "Success message", type: "text", max: 200 },
           { name: "subjectPrefix", label: "Email subject prefix", type: "text", max: 60 },
         ],
       },
@@ -270,7 +280,10 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
       ]),
       meta("contact", "Contact page"),
       meta("softCodes", "Soft CODES page"),
-      meta("about", "About page", [{ name: "moreLabel", label: "\"More about me\" link (home)", type: "text", max: 40 }]),
+      meta("about", "About page", [
+        { name: "moreLabel", label: "\"More about me\" link (home)", type: "text", max: 40 },
+        { name: "cvLabel", label: "\"Download CV\" button", type: "text", max: 40, help: "Shown on About and in the hero only when a CV file is set in Settings." },
+      ]),
       meta("pricing", "Pricing page"),
       meta("faq", "FAQ page", [
         { name: "heading", label: "Heading", type: "text", max: 120 },

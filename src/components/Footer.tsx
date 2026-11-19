@@ -3,9 +3,10 @@ import type { SiteContent } from "@/lib/content/types";
 import { ThemeImage } from "./ThemeImage";
 
 export function Footer({ contact, footer }: Pick<SiteContent, "contact" | "footer">) {
+  // pb-24 on small screens: room for the floating WhatsApp button (M-06).
   return (
     <footer className="border-t border-border bg-surface">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-14 sm:px-8 md:flex-row md:items-end md:justify-between">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pt-14 pb-24 sm:px-8 md:flex-row md:pb-14 md:items-end md:justify-between">
         <div className="flex items-center gap-4">
           <ThemeImage name="softcodes-icon" alt="" width={977} height={977} className="block h-12 w-12 opacity-80" />
           <div>

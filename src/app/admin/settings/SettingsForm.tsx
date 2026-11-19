@@ -17,7 +17,9 @@ const label = "block text-sm font-semibold text-text";
 const fieldset = "rounded-2xl border border-border bg-surface p-6";
 const legend = "px-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted";
 
-export function SettingsForm({ initial }: { initial: Settings }) {
+export type CvOption = { id: string; filename: string };
+
+export function SettingsForm({ initial, cvOptions }: { initial: Settings; cvOptions: CvOption[] }) {
   const [state, action, pending] = useActionState<SettingsFormState, FormData>(saveSettingsAction, { status: "idle" });
   const e = state.fieldErrors ?? {};
 
@@ -80,6 +82,36 @@ export function SettingsForm({ initial }: { initial: Settings }) {
             <span className="mt-2 block text-xs font-normal text-muted">USD + SLE (DEC-25).</span>
             <FieldError errors={e.currencies} />
           </div>
+        </div>
+      </fieldset>
+
+      <fieldset className={fieldset}>
+        <legend className={legend}>Public site</legend>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className="flex items-center gap-3 text-sm font-semibold text-text">
+              <input type="checkbox" name="whatsappButton" defaultChecked={initial.whatsappButton} className="h-4 w-4" />
+              Show the floating WhatsApp button
+            </label>
+            <span className="mt-2 block text-xs font-normal text-muted">
+              On every public page, bottom right. It uses the WhatsApp number above (DEC-37).
+            </span>
+          </div>
+          <label className={label}>
+            CV file
+            <select name="cvMediaId" defaultValue={initial.cvMediaId ?? ""} className={inputClass} aria-invalid={!!e.cvMediaId}>
+              <option value="">No CV (hide the “Download CV” buttons)</option>
+              {cvOptions.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.filename}
+                </option>
+              ))}
+            </select>
+            <span className="mt-2 block text-xs font-normal text-muted">
+              Public PDFs from the media library. Upload one in Media with visibility “Public”.
+            </span>
+            <FieldError errors={e.cvMediaId} />
+          </label>
         </div>
       </fieldset>
 

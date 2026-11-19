@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { getSiteContent } from "@/lib/content/load";
 import { Footer } from "./Footer";
 import { Nav } from "./Nav";
+import { WhatsAppButton } from "./WhatsAppButton";
 
 /** Public-site chrome: nav, main landmark (skip-link target), footer. Content from the DB. */
 export async function SiteChrome({ children }: { children: ReactNode }) {
@@ -25,6 +26,7 @@ export async function SiteChrome({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer contact={c.contact} footer={c.footer} />
+      {c.features.whatsappButton && <WhatsAppButton href={c.contact.whatsappHireUrl} raised={c.preview} />}
     </>
   );
 }

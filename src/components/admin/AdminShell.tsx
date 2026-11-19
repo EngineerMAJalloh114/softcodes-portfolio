@@ -9,7 +9,7 @@ import { CloseIcon, MenuIcon } from "@/components/Icons";
 import { authClient } from "@/lib/auth/client";
 import { ToastProvider } from "./toast";
 
-export type ShellNavItem = { href: string; label: string; release: string | null };
+export type ShellNavItem = { href: string; label: string; release: string | null; badge?: number };
 
 /** Admin chrome: sidebar (drawer below lg) + top bar. Navigation is pre-filtered server-side. */
 export function AdminShell({
@@ -60,6 +60,15 @@ export function AdminShell({
                 }`}
               >
                 <span>{item.label}</span>
+                {!!item.badge && (
+                  <span
+                    data-unread-badge
+                    aria-label={`${item.badge} unread`}
+                    className="min-w-6 rounded-full bg-btn-bg px-2 py-0.5 text-center text-xs font-bold text-btn-fg tabular-nums"
+                  >
+                    {item.badge}
+                  </span>
+                )}
                 {item.release && (
                   <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted">
                     {item.release}

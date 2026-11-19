@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 
-type Currency = "USD" | "SLE";
+export type Currency = "USD" | "SLE";
 
 const STORAGE_KEY = "currency";
 
@@ -17,7 +17,7 @@ function subscribe(onChange: () => void) {
 }
 
 /** Applies the choice site-wide (<html data-currency>) and remembers it for this visitor. */
-function applyCurrency(next: Currency) {
+export function applyCurrency(next: Currency) {
   document.documentElement.dataset.currency = next;
   try {
     localStorage.setItem(STORAGE_KEY, next);
@@ -26,9 +26,14 @@ function applyCurrency(next: Currency) {
   }
 }
 
+/** The visitor's currency (DEC-25), shared by the pricing toggle and the quote form. */
+export function useCurrency(): Currency {
+  return useSyncExternalStore(subscribe, readCurrency, () => "USD" as Currency);
+}
+
 /** USD / SLE switch (DEC-25). The head script applies the saved choice before paint. */
 export function CurrencyToggle({ label }: { label: string }) {
-  const currency = useSyncExternalStore(subscribe, readCurrency, () => "USD" as Currency);
+  const currency = useCurrency();
 
   return (
     <div role="group" aria-label={label} className="inline-flex flex-wrap items-center gap-3">

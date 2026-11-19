@@ -14,7 +14,8 @@ export const PERMISSIONS = [
   "dashboard.view",
   "content.write", // T5: sections, services, stack, projects (create/edit/publish/delete)
   "media.manage", // T5: media library
-  "leads.view", // T7
+  "leads.read", // T7a: leads inbox (list, detail)
+  "leads.write", // T7a: lead status changes and internal notes
   "audit.view",
   "settings.view",
   "settings.write",
@@ -28,10 +29,11 @@ const MATRIX: Record<Role, readonly Permission[]> = {
     "dashboard.view",
     "content.write",
     "media.manage",
-    "leads.view",
+    "leads.read",
+    "leads.write",
     "audit.view",
   ],
-  staff: ["admin.access", "dashboard.view", "leads.view"],
+  staff: ["admin.access", "dashboard.view", "leads.read", "leads.write"], // DEC-36: Dashboard + Leads
   client: [], // client portal is R2 (F-02); no admin access
 };
 
@@ -55,7 +57,7 @@ export const ADMIN_NAV = [
   { href: "/admin/content", label: "Content", permission: "content.write", release: null },
   { href: "/admin/projects", label: "Projects", permission: "content.write", release: null },
   { href: "/admin/pricing", label: "Pricing", permission: "content.write", release: null },
-  { href: "/admin/leads", label: "Leads", permission: "leads.view", release: "T7" },
+  { href: "/admin/leads", label: "Leads", permission: "leads.read", release: null },
   { href: "/admin/media", label: "Media", permission: "media.manage", release: null },
   { href: "/admin/audit", label: "Audit log", permission: "audit.view", release: null },
   { href: "/admin/settings", label: "Settings", permission: "settings.view", release: null },
