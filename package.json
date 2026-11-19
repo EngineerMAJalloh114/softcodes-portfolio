@@ -13,7 +13,9 @@
     "db:seed": "tsx scripts/db/seed.ts",
     "db:verify": "tsx --conditions=react-server scripts/verify-t2.ts",
     "auth:create-owner": "tsx scripts/create-owner.ts",
-    "auth:verify": "tsx scripts/verify-t3.ts"
+    "auth:verify": "tsx scripts/verify-t3.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "admin:verify": "tsx --conditions=react-server scripts/verify-t4.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1172.0",

@@ -20,14 +20,14 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 | D. Official document management | 17 | 0 | 17 |
 | E. Intelligent design and preview system | 13 | 0 | 13 |
 | F. Client relationship and project management | 19 | 0 | 19 |
-| G. Business administration | 20 | 0 | 20 |
+| G. Business administration | 20 | 4 | 16 |
 | H. Automation and communication | 12 | 1 | 11 |
 | I. Maintenance and ongoing services | 11 | 0 | 11 |
 | J. Advanced business intelligence | 10 | 0 | 10 |
 | K. Security and infrastructure | 23 | 11 | 12 |
 | L. Future platform expansion | 13 | 0 | 13 |
-| M. Site features agreed in chat (2026-11-19) | 17 | 4 | 13 |
-| **Total** | **205** | **27** | **178** |
+| M. Site features agreed in chat (2026-11-19) | 17 | 5 | 12 |
+| **Total** | **205** | **32** | **173** |
 
 Counts *Implemented* includes *In development*. Nothing is Verified or Released yet: the site is not deployed.
 
@@ -1087,8 +1087,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner sees key counts and latest activity.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin dashboard — counts (leads, projects, content items = sections+services+stack, media) and latest 10 audit events; koala empty states (DEC-31). src/app/admin/page.tsx, src/lib/admin/dashboard.ts. Screenshots docs/screenshots/admin-dashboard-*. Quotes/payments counts arrive with R2/R3
+- **Decisions:** DEC-31
 
 ### G-02 — Staff management
 - **Description:** Invite/remove staff.
@@ -1107,8 +1108,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Permission matrix enforced server side.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403)
 
 ### G-04 — Client management
 - **Description:** Client records with contacts and history.
@@ -1267,8 +1268,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write visible with who/when/what.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin/audit — read-only, paginated (25/page), filters by actor (incl. system), action and date range (inclusive, UTC); owner/admin only (audit.view). Verified filters, pagination, 403 for staff, junk params ignored (scripts/verify-t4.ts, tests/settings-and-audit-filters.test.ts)
 
 ### G-20 — Administrative settings
 - **Description:** Global settings (contact details, deposit %, currencies).
@@ -1277,8 +1278,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Settings editable and audited.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin/settings (owner only) — contact email, WhatsApp, location; default deposit % (50, DEC-O8 still open); currencies USD+SLE (DEC-25). Zod validation; every save writes a settings.updated audit row with before/after (verified). Public site reads these values from T5
+- **Decisions:** DEC-25, DEC-O8 (open)
 
 ## H. Automation and communication
 
@@ -1683,7 +1685,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Admin cannot access panel without MFA.
 - **Status:** Implemented
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): TOTP MFA (Better Auth twoFactor) + 10 single-use recovery codes shown once at /auth/setup-mfa; requireAdmin() (src/lib/auth/guard.ts) redirects owner/admin to MFA setup before any /admin route loads; verified: /admin blocked until MFA set, TOTP login, recovery code single-use, per-user lockout after repeated bad codes
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): TOTP MFA (Better Auth twoFactor) + 10 single-use recovery codes shown once at /auth/setup-mfa; requireAdmin() (src/lib/auth/guard.ts) redirects owner/admin to MFA setup before any /admin route loads; verified: /admin blocked until MFA set, TOTP login, recovery code single-use, per-user lockout after repeated bad codes. T4 (PR #6, branch feat/t4-admin-shell): MFA now enforced for every role that may enter /admin (owner, admin, staff) on every /admin route — verified staff without MFA → /auth/setup-mfa
 
 ### K-05 — Role-based access control
 - **Description:** See G-03.
@@ -1692,8 +1694,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Server-side checks on every route/action.
-- **Status:** In development
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4)
+- **Status:** Implemented
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan()
 
 ### K-06 — Resource-level permissions
 - **Description:** Users access only their own records.
@@ -1793,7 +1795,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Invalid input rejected server side.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7)
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params
 
 ### K-16 — Audit logging
 - **Description:** Append-only audit log of sensitive actions.
@@ -1803,7 +1805,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after)
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
@@ -2089,8 +2091,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner signs in with MFA and edits all content.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): admin shell — sidebar (Dashboard, Content, Projects, Pricing, Leads, Media, Audit log, Settings; later items marked Coming in T5/T6/T7), top bar (user, theme toggle, sign out), collapsible drawer on mobile; MFA required on every /admin route. Remaining: content editing (T5–T7)
+- **Decisions:** DEC-15
 
 ### M-08 — Neon database
 - **Description:** Postgres on Neon (owner decision).
