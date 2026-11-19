@@ -4,8 +4,10 @@ export default defineConfig({
   // Declare your Neon services here
   auth: false,
   buckets: {
-    // "private" is the default; use "public_read" for anonymous reads
+    // DEC-32: Neon object storage. Private by default; reads need a signed URL.
     assets: { access: "private" },
+    // Anonymous reads for public site media (put a CDN in front before launch).
+    "public-assets": { access: "public_read" },
   },
   // Branch policy: per-branch tuning
   branch: (branch) => {
