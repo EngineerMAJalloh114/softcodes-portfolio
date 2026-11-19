@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/admin/ui";
-import { requirePermission } from "@/lib/auth/guard";
+import { CollectionIndex } from "@/components/admin/collectionPages";
 
 export const metadata: Metadata = { title: "Pricing" };
 
-export default async function PricingPage() {
-  await requirePermission("pricing.manage");
-  return <ComingSoon title="Pricing" release="T6" body="Manage 'from' prices in USD and SLE." />;
+/** G-06 pricing management: packages with 'from' prices in USD + SLE (DEC-38). */
+export default function PricingAdminPage() {
+  return <CollectionIndex collection="packages" />;
 }

@@ -1,10 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { saveSettings } from "@/lib/admin/settings";
 import { clientIp } from "@/lib/auth/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { CONTENT_TAG } from "@/lib/content/load";
 
 export type SettingsFormState = {
   status: "idle" | "saved" | "error";
@@ -25,6 +26,8 @@ export async function saveSettingsAction(_prev: SettingsFormState, formData: For
   };
   const result = await saveSettings({ userId: user.id, role }, input, { ip: clientIp(await headers()) });
   if (!result.ok) return { status: "error", message: "Please fix the highlighted fields.", fieldErrors: result.fieldErrors };
+  // Contact details and every WhatsApp link (DEC-37) come from Settings: refresh the public site.
+  updateTag(CONTENT_TAG);
   revalidatePath("/admin/settings");
   revalidatePath("/admin");
   return {

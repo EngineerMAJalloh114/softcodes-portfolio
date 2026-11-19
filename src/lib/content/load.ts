@@ -24,11 +24,13 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
   const db = getDb();
   const fallback = seedContent();
 
-  const [sectionRows, serviceRows, stackRows, projectRows, settings] = await Promise.all([
+  const [sectionRows, serviceRows, stackRows, projectRows, packageRows, faqRows, settings] = await Promise.all([
     db.select().from(schema.contentSections),
     db.select().from(schema.services).orderBy(asc(schema.services.sortOrder), asc(schema.services.id)),
     db.select().from(schema.stackItems).orderBy(asc(schema.stackItems.sortOrder), asc(schema.stackItems.id)),
     db.select().from(schema.projects).orderBy(asc(schema.projects.sortOrder), asc(schema.projects.id)),
+    db.select().from(schema.pricingPackages).orderBy(asc(schema.pricingPackages.sortOrder), asc(schema.pricingPackages.id)),
+    db.select().from(schema.faqs).orderBy(asc(schema.faqs.sortOrder), asc(schema.faqs.id)),
     getSettings(),
   ]);
 
@@ -108,6 +110,30 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
     contactSection: section<"contactSection">("contact_section", fallback.contactSection),
     softCodes: section<"softCodes">("soft_codes", fallback.softCodes),
     footer: section<"footer">("footer", fallback.footer),
+    pricing: section<"pricing">("pricing", fallback.pricing),
+    packages: visible(packageRows).map((r) => {
+      const v = view(r, preview);
+      return {
+        slug: v.slug,
+        name: v.name,
+        summary: v.summary,
+        items: v.items,
+        priceUsdMinor: v.priceUsdMinor,
+        priceSleMinor: v.priceSleMinor,
+        unit: v.unit,
+        featured: v.featured,
+        ...(preview && !r.published ? { isDraft: true } : {}),
+      };
+    }),
+    faqs: visible(faqRows).map((r) => {
+      const v = view(r, preview);
+      return {
+        question: v.question,
+        answer: v.answer,
+        category: v.category as SiteContent["faqs"][number]["category"],
+        ...(preview && !r.published ? { isDraft: true } : {}),
+      };
+    }),
     pages: section<"pages">("pages", fallback.pages),
     preview,
     source: "db",

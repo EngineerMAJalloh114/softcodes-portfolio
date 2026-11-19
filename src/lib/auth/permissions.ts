@@ -14,7 +14,6 @@ export const PERMISSIONS = [
   "dashboard.view",
   "content.write", // T5: sections, services, stack, projects (create/edit/publish/delete)
   "media.manage", // T5: media library
-  "pricing.manage", // T6
   "leads.view", // T7
   "audit.view",
   "settings.view",
@@ -29,7 +28,6 @@ const MATRIX: Record<Role, readonly Permission[]> = {
     "dashboard.view",
     "content.write",
     "media.manage",
-    "pricing.manage",
     "leads.view",
     "audit.view",
   ],
@@ -56,7 +54,7 @@ export const ADMIN_NAV = [
   { href: "/admin", label: "Dashboard", permission: "dashboard.view", release: null },
   { href: "/admin/content", label: "Content", permission: "content.write", release: null },
   { href: "/admin/projects", label: "Projects", permission: "content.write", release: null },
-  { href: "/admin/pricing", label: "Pricing", permission: "pricing.manage", release: "T6" },
+  { href: "/admin/pricing", label: "Pricing", permission: "content.write", release: null },
   { href: "/admin/leads", label: "Leads", permission: "leads.view", release: "T7" },
   { href: "/admin/media", label: "Media", permission: "media.manage", release: null },
   { href: "/admin/audit", label: "Audit log", permission: "audit.view", release: null },

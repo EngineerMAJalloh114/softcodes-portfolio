@@ -195,6 +195,7 @@ export const contentSectionKey = pgEnum("content_section_key", [
   "footer",
   "pages",
   "process", // T5: process section (M-14 placeholder)
+  "pricing", // T6: pricing headings, notes and button labels
 ]);
 
 /**
@@ -263,6 +264,48 @@ export const stackItems = pgTable("stack_items", {
   sortOrder: integer("sort_order").notNull().default(0),
   published: boolean("published").notNull().default(true),
   /** Unpublished edits (T5); live columns change only on publish. */
+  draft: jsonb("draft"),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
+  updatedAt: updatedAt(),
+});
+
+/**
+ * Pricing packages (A-08, G-06, M-15; T6). 'From' prices per currency in integer minor
+ * units (DEC-25, DEC-38). Supersedes the T2 `prices` table for the site (kept, unused).
+ */
+export const pricingPackages = pgTable(
+  "pricing_packages",
+  {
+    id: serial("id").primaryKey(),
+    slug: text("slug").notNull().unique(),
+    name: text("name").notNull(),
+    summary: text("summary").notNull(),
+    items: jsonb("items").$type<string[]>().notNull().default([]),
+    priceUsdMinor: bigint("price_usd_minor", { mode: "number" }).notNull(),
+    priceSleMinor: bigint("price_sle_minor", { mode: "number" }).notNull(),
+    /** Shown after the price, e.g. "/month". Empty for one-off prices. */
+    unit: text("unit").notNull().default(""),
+    featured: boolean("featured").notNull().default(false),
+    sortOrder: integer("sort_order").notNull().default(0),
+    published: boolean("published").notNull().default(false),
+    draft: jsonb("draft"),
+    updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    check("pricing_packages_usd_nonnegative", sql`${t.priceUsdMinor} >= 0`),
+    check("pricing_packages_sle_nonnegative", sql`${t.priceSleMinor} >= 0`),
+  ],
+);
+
+/** FAQs (A-09; T6). Seeded as drafts — the owner approves the copy (DEC-21). */
+export const faqs = pgTable("faqs", {
+  id: serial("id").primaryKey(),
+  question: text("question").notNull().unique(),
+  answer: text("answer").notNull(),
+  category: text("category").notNull().default("general"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  published: boolean("published").notNull().default(false),
   draft: jsonb("draft"),
   updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
   updatedAt: updatedAt(),

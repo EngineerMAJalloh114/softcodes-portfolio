@@ -19,6 +19,9 @@ export type SiteContent = {
   contactSection: typeof seed.contactSection;
   softCodes: typeof seed.softCodes;
   footer: typeof seed.footer;
+  pricing: typeof seed.pricing;
+  packages: (seed.PricingPackage & { isDraft?: boolean })[];
+  faqs: (seed.Faq & { isDraft?: boolean })[];
   pages: typeof seed.pages;
   /** True when rendered from drafts (admin preview). */
   preview: boolean;
@@ -26,4 +29,4 @@ export type SiteContent = {
   source: "db" | "seed";
 };
 
-export type { Project, ProjectStatus, ProjectType } from "@/content/site";
+export type { Faq, PricingPackage, Project, ProjectStatus, ProjectType } from "@/content/site";

@@ -1,5 +1,6 @@
 import * as seed from "@/content/site";
 import type { SiteContent } from "./types";
+import { HIRE_MESSAGE, whatsappUrl } from "./whatsapp";
 
 /**
  * Site content from src/content/site.ts. Used to seed the DB and as the fallback when no
@@ -21,19 +22,21 @@ export function seedContent(): SiteContent {
     contactSection: seed.contactSection,
     softCodes: seed.softCodes,
     footer: seed.footer,
+    pricing: seed.pricing,
+    packages: seed.packages,
+    faqs: [], // seeded FAQs are drafts (DEC-21): nothing public until approved
     pages: seed.pages,
     preview: false,
     source: "seed",
   };
 }
 
-/** WhatsApp links derived from the display number in Settings. */
+/** Contact details; WhatsApp links are always derived from the Settings number (DEC-37). */
 export function contactFrom(email: string, whatsappDisplay: string): SiteContent["contact"] {
-  const digits = whatsappDisplay.replace(/\D/g, "");
   return {
     email,
     whatsappDisplay,
-    whatsappUrl: `https://wa.me/${digits}`,
-    whatsappHireUrl: `https://wa.me/${digits}?text=${encodeURIComponent("Hi Mohamed, I'd like to talk about a project.")}`,
+    whatsappUrl: whatsappUrl(whatsappDisplay),
+    whatsappHireUrl: whatsappUrl(whatsappDisplay, HIRE_MESSAGE),
   };
 }

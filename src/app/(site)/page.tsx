@@ -6,9 +6,12 @@ import { ContactForm } from "@/components/ContactForm";
 import { ArrowRight, SparkIcon } from "@/components/Icons";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
-import { MascotPlaceholder } from "@/components/MascotPlaceholder";
 import { Container, Eyebrow, Section } from "@/components/Section";
+import { AboutContent } from "@/components/AboutContent";
+import { CurrencyToggle } from "@/components/pricing/CurrencyToggle";
+import { PackageCard } from "@/components/pricing/PackageCard";
 import { getSiteContent } from "@/lib/content/load";
+import { ctaHref } from "@/lib/content/whatsapp";
 import type { SiteContent } from "@/lib/content/types";
 
 // Content comes from the CMS (cached; admin saves refresh it). Hourly safety net.
@@ -25,6 +28,7 @@ export default async function Home() {
       <Services c={c} />
       {c.process.visible && <Process c={c} />}
       <FeaturedProjects c={c} />
+      {c.packages.length > 0 && <PricingTeaser c={c} />}
       <Stack c={c} />
       <Contact c={c} />
     </>
@@ -89,11 +93,11 @@ function Hero({ c }: P) {
             </p>
           </Reveal>
           <Reveal delay={400} className="mt-10 flex flex-wrap gap-4">
-            <Button href={hero.primaryCta.href}>
+            <Button href={ctaHref(hero.primaryCta, c.contact.whatsappDisplay)}>
               {hero.primaryCta.label}
               <ArrowRight />
             </Button>
-            <Button href={hero.secondaryCta.href} variant="secondary">
+            <Button href={ctaHref(hero.secondaryCta, c.contact.whatsappDisplay)} variant="secondary">
               {hero.secondaryCta.label}
             </Button>
           </Reveal>
@@ -103,60 +107,11 @@ function Hero({ c }: P) {
   );
 }
 
-function Portrait({ c }: P) {
-  const { person } = c;
-  return (
-    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_0_80px_-30px_var(--glow)]">
-      {person.photo ? (
-        <Image
-          src={person.photo}
-          alt={person.photoAlt}
-          fill
-          sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 90vw"
-          className="object-cover object-top"
-        />
-      ) : (
-        <MascotPlaceholder
-          label={person.photoAlt}
-          note="Photo coming soon"
-          sizes="(min-width: 1024px) 380px, 90vw"
-        />
-      )}
-    </div>
-  );
-}
-
 function About({ c }: P) {
   const { about } = c;
   return (
     <Section id="about" eyebrow={about.eyebrow} heading={about.heading}>
-      {/* TODO(DEC-30): interim 2-column layout (photo + bio). The owner will supply the
-          final About layout reference and a new photo (public/brand/me.jpg). */}
-      <div className="grid items-start gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:gap-16">
-        <Reveal className="mx-auto w-full max-w-sm md:max-w-none">
-          <Portrait c={c} />
-        </Reveal>
-        <div>
-          <Reveal className="space-y-6 text-lg leading-relaxed text-muted">
-            {/* TODO: bio is placeholder copy — edit it in Admin → Content → About (DEC-21). */}
-            {about.paragraphs.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
-          </Reveal>
-          <Reveal delay={150} className="mt-10">
-            <dl className="divide-y divide-border rounded-2xl border border-border bg-surface">
-              {about.facts.map((f) => (
-                <div key={f.label} className="p-6">
-                  <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-                    {f.label}
-                  </dt>
-                  <dd className="mt-2 font-semibold text-text">{f.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
-        </div>
-      </div>
+      <AboutContent c={c} variant="short" />
     </Section>
   );
 }
@@ -235,6 +190,33 @@ function FeaturedProjects({ c }: P) {
           className="inline-flex items-center gap-2 font-semibold text-text hover:text-muted"
         >
           {projectsSection.allLabel}
+          <ArrowRight />
+        </Link>
+      </Reveal>
+    </Section>
+  );
+}
+
+/** A-08 teaser: featured packages (or the first three) + link to /pricing. */
+function PricingTeaser({ c }: P) {
+  const { pricing } = c;
+  const featured = c.packages.filter((p) => p.featured);
+  const shown = (featured.length ? featured : c.packages).slice(0, 3);
+  return (
+    <Section id="pricing" eyebrow={pricing.eyebrow} heading={pricing.heading} intro={pricing.intro}>
+      <div className="mb-8">
+        <CurrencyToggle label={pricing.currencyLabel} />
+      </div>
+      <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {shown.map((pkg, i) => (
+          <Reveal as="li" key={pkg.slug} delay={i * 80}>
+            <PackageCard pkg={pkg} pricing={pricing} compact />
+          </Reveal>
+        ))}
+      </ul>
+      <Reveal className="mt-10">
+        <Link href="/pricing" className="inline-flex items-center gap-2 font-semibold text-text hover:underline">
+          {pricing.teaserLinkLabel}
           <ArrowRight />
         </Link>
       </Reveal>

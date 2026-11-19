@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CTA_KINDS, WHATSAPP_HOST_RE } from "./whatsapp";
 
 /**
  * Field specs for admin content forms. One spec drives both the admin form (UI) and
@@ -15,7 +16,11 @@ export type Field =
   | { name: string; label: string; type: "select"; options: readonly { value: string; label: string }[]; help?: string }
   | { name: string; label: string; type: "stringList"; itemLabel: string; max?: number; itemMax?: number; multiline?: boolean; help?: string }
   | { name: string; label: string; type: "list"; itemLabel: string; fields: Field[]; max?: number; help?: string }
-  | { name: string; label: string; type: "group"; fields: Field[]; help?: string };
+  | { name: string; label: string; type: "group"; fields: Field[]; help?: string }
+  /** Call to action: label + link type (whatsapp | url | anchor). WhatsApp uses the Settings number (DEC-37). */
+  | { name: string; label: string; type: "cta"; help?: string }
+  /** Money in integer minor units (cents); the form shows major units (e.g. 3,500). */
+  | { name: string; label: string; type: "money"; currency: "USD" | "SLE"; help?: string };
 
 /** Links: site paths, in-page anchors, https URLs, mailto:, tel:, WhatsApp. */
 export const HREF_RE = /^(\/(?!\/)[^\s]*|#[\w-]*|https:\/\/[^\s]+|mailto:[^\s@]+@[^\s@]+|tel:\+?[0-9 ]+)$/;
@@ -41,7 +46,8 @@ function zodFor(field: Field): z.ZodType {
         .string()
         .trim()
         .max(2000)
-        .refine((v) => v === "" || HREF_RE.test(v), `${field.label}: use a /path, #anchor, https:// link, mailto: or tel:.`);
+        .refine((v) => v === "" || HREF_RE.test(v), `${field.label}: use a /path, #anchor, https:// link, mailto: or tel:.`)
+        .refine((v) => !WHATSAPP_HOST_RE.test(v), WHATSAPP_MESSAGE(field.label));
       return field.required === false ? base : base.refine((v) => v !== "", `${field.label} is required.`);
     }
     case "slug":
@@ -77,7 +83,51 @@ function zodFor(field: Field): z.ZodType {
       return z.array(objectSchema(field.fields)).max(field.max ?? 50, `${field.label}: too many items.`);
     case "group":
       return objectSchema(field.fields);
+    case "cta":
+      return ctaSchema(field.label);
+    case "money":
+      return z
+        .number({ error: `${field.label}: enter an amount.` })
+        .int(`${field.label}: whole cents only.`)
+        .min(0, `${field.label} can't be negative.`)
+        .max(1_000_000_000, `${field.label} is too large.`);
   }
+}
+
+const WHATSAPP_MESSAGE = (label: string) =>
+  `${label}: don't type WhatsApp links — use the WhatsApp link type; the number comes from Settings (DEC-37).`;
+
+export function ctaSchema(label: string) {
+  return z
+    .object({
+      label: z.string().trim().min(1, `${label}: button text is required.`).max(60),
+      kind: z.enum(CTA_KINDS.map((k) => k.value) as ["whatsapp", "url", "anchor"], { error: `${label}: choose a link type.` }),
+      href: z.string().trim().max(2000).default(""),
+    })
+    .superRefine((v, ctx) => {
+      if (v.kind === "whatsapp") return; // href ignored: built from Settings
+      if (WHATSAPP_HOST_RE.test(v.href)) {
+        ctx.addIssue({ code: "custom", path: ["href"], message: WHATSAPP_MESSAGE(label) });
+      } else if (v.kind === "anchor" && !/^(\/[^\s#]*)?#[\w-]+$/.test(v.href)) {
+        ctx.addIssue({ code: "custom", path: ["href"], message: `${label}: an anchor looks like #services or /#services.` });
+      } else if (v.kind === "url" && (!HREF_RE.test(v.href) || v.href.startsWith("#"))) {
+        ctx.addIssue({ code: "custom", path: ["href"], message: `${label}: use a /path or https:// link.` });
+      }
+    })
+    .transform((v) => (v.kind === "whatsapp" ? { ...v, href: "" } : v));
+}
+
+/** "3,500.50" → 350050 (minor units); null if not a valid amount. */
+export function parseMoney(input: string): number | null {
+  const clean = input.replace(/[\s,]/g, "").replace(/^(\$|le)/i, "");
+  if (!/^\d+(\.\d{1,2})?$/.test(clean)) return null;
+  return Math.round(Number(clean) * 100);
+}
+
+/** 350050 → "3,500.50"; whole amounts without decimals. */
+export function formatMajor(minor: number): string {
+  const major = minor / 100;
+  return major.toLocaleString("en-US", { minimumFractionDigits: minor % 100 ? 2 : 0, maximumFractionDigits: 2 });
 }
 
 /** Zod schema for an object described by `fields` (unknown keys are stripped). */
@@ -100,6 +150,10 @@ export function emptyValue(field: Field): unknown {
       return [];
     case "group":
       return emptyObject(field.fields);
+    case "cta":
+      return { label: "", kind: "url", href: "" };
+    case "money":
+      return 0;
     default:
       return "";
   }

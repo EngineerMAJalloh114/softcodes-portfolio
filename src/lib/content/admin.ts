@@ -42,6 +42,7 @@ function sectionSeed(key: SectionKey): Record<string, unknown> {
     person: s.person,
     services_section: { eyebrow: s.services.eyebrow, heading: s.services.heading },
     process: s.process,
+    pricing: s.pricing,
     projects_section: s.projectsSection,
     stack_section: { eyebrow: s.stack.eyebrow, heading: s.stack.heading },
     contact_section: s.contactSection,
@@ -116,6 +117,8 @@ const TABLES = {
   services: schema.services,
   stack: schema.stackItems,
   projects: schema.projects,
+  packages: schema.pricingPackages,
+  faqs: schema.faqs,
 } as const;
 
 // Narrow helper type: all three tables share these columns.
@@ -134,6 +137,8 @@ function uniqueViolation(error: unknown): boolean {
 
 function uniqueFieldError(c: CollectionKey): Record<string, string> {
   if (c === "projects") return { slug: "Another project already uses this slug." };
+  if (c === "packages") return { slug: "Another package already uses this ID." };
+  if (c === "faqs") return { question: "This question already exists." };
   if (c === "services") return { title: "Another service already has this title." };
   return { name: "This tool is already in the list." };
 }

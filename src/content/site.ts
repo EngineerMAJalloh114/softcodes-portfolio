@@ -2,6 +2,7 @@
  * Single source of truth for all text content on the site.
  * Edit this file to change copy, projects, services or contact details.
  */
+import { HIRE_MESSAGE, whatsappUrl, type Cta } from "@/lib/content/whatsapp";
 
 export type ProjectStatus = "Live" | "In development" | "Coming soon" | "Concept";
 
@@ -65,18 +66,18 @@ export const person = {
 export const contact = {
   email: "engineermohamedabassjalloh3855@gmail.com",
   whatsappDisplay: "+232 32 829 316",
-  whatsappUrl: "https://wa.me/23232829316",
-  whatsappHireUrl:
-    "https://wa.me/23232829316?text=" +
-    encodeURIComponent("Hi Mohamed, I'd like to talk about a project."),
+  // DEC-37: derived from the number; on the live site these come from Settings.
+  whatsappUrl: whatsappUrl("+232 32 829 316"),
+  whatsappHireUrl: whatsappUrl("+232 32 829 316", HIRE_MESSAGE),
 };
 
 export const nav = {
   links: [
-    { label: "About", href: "/#about" },
+    { label: "About", href: "/about" },
     { label: "Services", href: "/#services" },
     { label: "Projects", href: "/projects" },
-    { label: "Stack", href: "/#stack" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "FAQ", href: "/faq" },
     { label: "Contact", href: "/contact" },
   ],
   hireLabel: "Hire me",
@@ -87,8 +88,8 @@ export const hero = {
   name: person.name,
   title: site.title,
   pitch: "I build fast, fully customisable websites and business platforms.",
-  primaryCta: { label: "View Projects", href: "/projects" },
-  secondaryCta: { label: "Hire Me", href: contact.whatsappHireUrl },
+  primaryCta: { label: "View Projects", kind: "url", href: "/projects" } as Cta,
+  secondaryCta: { label: "Hire Me", kind: "whatsapp", href: "" } as Cta, // number from Settings (DEC-37)
 };
 
 export const about = {
@@ -358,6 +359,152 @@ export const processSection = {
   ],
 };
 
+/** Pricing copy (A-08). Prices themselves are packages below (DEC-38). */
+export const pricing = {
+  eyebrow: "Pricing",
+  heading: "Clear starting prices.",
+  intro: "Every project is different. These \u2018from\u2019 prices are a starting point \u2014 your final quote follows a short call about what you need.",
+  currencyLabel: "Show prices in",
+  fromLabel: "From",
+  requestQuoteLabel: "Request a quote",
+  bookCallLabel: "Book a call",
+  bookCallNote: "Online booking opens soon \u2014 message us to arrange a call.",
+  teaserLinkLabel: "See all prices",
+};
+
+export type PricingPackage = {
+  slug: string;
+  name: string;
+  summary: string;
+  items: string[];
+  priceUsdMinor: number;
+  priceSleMinor: number;
+  unit: string;
+  featured: boolean;
+};
+
+/** DEC-38 approved 'from' prices (minor units). Summaries/items: draft copy for owner review (DEC-21). */
+export const packages: PricingPackage[] = [
+  {
+    slug: "landing",
+    name: "Landing page",
+    summary: "A single, fast page that presents your business and turns visitors into enquiries.",
+    items: ["One-page design", "Mobile-first and fast", "WhatsApp and contact buttons", "Basic SEO setup"],
+    priceUsdMinor: 150_00,
+    priceSleMinor: 3_500_00,
+    unit: "",
+    featured: false,
+  },
+  {
+    slug: "business-site",
+    name: "Business site",
+    summary: "A multi-page website that makes an established business easy to trust.",
+    items: ["Up to 6 pages", "Services and gallery", "Contact form", "SEO setup"],
+    priceUsdMinor: 400_00,
+    priceSleMinor: 9_200_00,
+    unit: "",
+    featured: false,
+  },
+  {
+    slug: "site-admin",
+    name: "Site + admin",
+    summary: "A business site you update yourself \u2014 text, images and prices, no code needed.",
+    items: ["Everything in Business site", "Admin panel", "Image uploads", "Training session"],
+    priceUsdMinor: 900_00,
+    priceSleMinor: 20_700_00,
+    unit: "",
+    featured: true,
+  },
+  {
+    slug: "ecommerce-booking",
+    name: "E-commerce / booking",
+    summary: "Sell products or take bookings online, with an owner dashboard.",
+    items: ["Product or service catalogue", "Online booking or cart", "Payments (provider agreed per project)", "Orders and bookings dashboard"],
+    priceUsdMinor: 1_200_00,
+    priceSleMinor: 27_600_00,
+    unit: "",
+    featured: false,
+  },
+  {
+    slug: "web-app-platform",
+    name: "Web app / platform",
+    summary: "Custom platforms with accounts, roles and the workflows your business runs on.",
+    items: ["Custom features", "User accounts and roles", "Admin control center", "Integrations"],
+    priceUsdMinor: 2_500_00,
+    priceSleMinor: 57_500_00,
+    unit: "",
+    featured: false,
+  },
+  {
+    slug: "ui-brand",
+    name: "UI & brand",
+    summary: "Logo, colours and interface design for a consistent brand.",
+    items: ["Logo and colour palette", "UI design for key screens", "Brand guide"],
+    priceUsdMinor: 150_00,
+    priceSleMinor: 3_500_00,
+    unit: "",
+    featured: false,
+  },
+  {
+    slug: "maintenance",
+    name: "Maintenance",
+    summary: "Updates, backups and small changes every month.",
+    items: ["Security updates", "Backups and monitoring", "Small content changes", "Priority support"],
+    priceUsdMinor: 25_00,
+    priceSleMinor: 575_00,
+    unit: "/month",
+    featured: false,
+  },
+];
+
+export const FAQ_CATEGORIES = ["general", "process", "payments", "timelines", "ownership", "support"] as const;
+export type FaqCategory = (typeof FAQ_CATEGORIES)[number];
+export type Faq = { question: string; answer: string; category: FaqCategory };
+
+/** A-09 FAQ drafts — seeded unpublished; the owner approves the copy before publishing (DEC-21). */
+export const faqs: Faq[] = [
+  {
+    category: "process",
+    question: "How does a project start?",
+    answer: "With a short call about your business and goals. You then get a written proposal with the scope, timeline and price before any work begins.",
+  },
+  {
+    category: "payments",
+    question: "Do I pay everything upfront?",
+    answer: "No. A deposit (currently 50%) starts the project, and the balance is due when your site is ready to launch.",
+  },
+  {
+    category: "timelines",
+    question: "How long does a website take?",
+    answer: "A landing page usually takes 1\u20132 weeks and a business site 2\u20134 weeks. Platforms and web apps are planned in milestones; your proposal includes the timeline.",
+  },
+  {
+    category: "ownership",
+    question: "Who owns the website?",
+    answer: "You do. Once the final payment is made, the domain, content and design are yours, and you have full admin access.",
+  },
+  {
+    category: "process",
+    question: "How many revisions are included?",
+    answer: "Each stage includes two rounds of revisions. Bigger changes to the agreed scope are quoted separately before work continues.",
+  },
+  {
+    category: "support",
+    question: "Do you handle hosting?",
+    answer: "Yes. Sites run on reliable cloud hosting; setup is included, and any running costs are explained in your proposal.",
+  },
+  {
+    category: "support",
+    question: "What happens after launch?",
+    answer: "You manage your content from the admin panel. A maintenance plan covers updates, backups and small changes each month.",
+  },
+  {
+    category: "payments",
+    question: "How can I pay?",
+    answer: "Payment methods are confirmed in your proposal. Options for local and international clients, including mobile money, are being set up.",
+  },
+];
+
 export const footer = {
   tagline: "Software that feels effortless.",
   copyright: `© ${person.name} · Soft CODES`,
@@ -396,6 +543,22 @@ export const pages = {
     links: "Links",
     noLinks: "Links will be shared when the project launches.",
     screenshotPlaceholder: "Screenshot coming soon",
+  },
+  about: {
+    title: "About",
+    description: "Mohamed Abass Jalloh \u2014 software engineer in Freetown, Sierra Leone, and founder of Soft CODES.",
+    moreLabel: "More about me",
+  },
+  pricing: {
+    title: "Pricing",
+    description: "\u2018From\u2019 prices for websites, platforms and brand design by Soft CODES \u2014 in US dollars and Leones.",
+  },
+  faq: {
+    title: "FAQ",
+    description: "Answers to common questions about working with Soft CODES: process, payments, timelines and ownership.",
+    heading: "Questions & answers.",
+    intro: "Straight answers about how we work. Can\u2019t find yours? Ask us directly.",
+    empty: "Answers are on the way. In the meantime, ask us directly.",
   },
   notFound: {
     title: "Page not found",

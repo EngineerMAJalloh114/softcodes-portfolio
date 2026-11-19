@@ -91,7 +91,7 @@ The public pages live in the `(site)` route group, so the URLs are unchanged.
   `requirePermission()` (`src/lib/auth/guard.ts`) runs on every admin page, the layout and every server action.
   It requires sign-in, an admin-capable role, a replaced temporary password and MFA, then answers 403 if the role lacks the permission.
 - **Pages:** the dashboard (G-01), audit log viewer (G-19) and settings (G-20, owner only, Zod-validated, every save audited).
-  Content, Projects, Pricing, Leads and Media are placeholders until T5–T7.
+  Content, Projects, Pricing, Leads and Media were placeholders until T5–T7 (Leads arrives in T7).
 
 ```bash
 npm test               # unit tests: RBAC matrix, settings validation, audit filters (no DB)
@@ -117,4 +117,17 @@ The public site reads its content from the database. `src/content/site.ts` is on
 ```bash
 npm run content:verify   # end-to-end: denial, draft/preview/publish live, upload → project, audit (see script header)
 npx tsx --conditions=react-server scripts/screenshots-t5.ts   # admin screenshots → docs/screenshots/admin-t5-*
+```
+
+## Pricing, FAQs, About + WhatsApp links — T6
+
+- **WhatsApp (DEC-37):** every WhatsApp link is built from the number in Admin → **Settings** by one helper, `src/lib/content/whatsapp.ts`. That covers the hero button, the nav “Hire me” button, the contact card and the footer. Typing a `wa.me` link into a content field is refused. Hero buttons have a link type: **WhatsApp** (uses the Settings number), **URL** or **anchor**. Saving Settings updates the live site straight away.
+- **Pricing:** `/pricing` lists the published packages. Admin → **Pricing** edits each package: name, summary, included items, a 'from' price in USD and SLE (stored in minor units), a unit such as `/month`, Popular, order, draft or published. The DEC-38 prices are seeded as published. Each card has **Request a quote**, which goes to `/contact?package=<id>` (the wizard comes in R2), and **Book a call**, a placeholder until Cal.com arrives in T7. The home page shows a teaser. The USD/SLE choice is remembered per visitor and applied before the page paints.
+- **FAQs:** `/faq` shows published FAQs as an accordion with FAQPage structured data. Edit them in Admin → Content → **FAQs**. The 8 seeded FAQs are drafts: they stay hidden until the owner approves the copy and publishes them (DEC-21). **Preview draft** shows them first.
+- **About:** `/about` has the full About section (interim layout, TODO(DEC-30)). The home page keeps a short version with “More about me”.
+- **Access:** `content.write`, which only owner and admin have. Staff get Dashboard and Leads (DEC-36). Every change is validated and audited.
+
+```bash
+npm run t6:verify   # end-to-end: denial, package/FAQ create → draft hidden → publish → live, JSON-LD, WhatsApp number change, currency toggle, audit
+npx tsx --conditions=react-server scripts/screenshots-t6.ts   # → docs/screenshots/t6-*
 ```
