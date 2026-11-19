@@ -47,7 +47,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Site builds and renders all public routes in both themes at 1440/390.
 - **Status:** Implemented
-- **Evidence:** PR #1 (site v1), PR #2 (themes) merged to main; not yet deployed. T1 (branch feat/hero-koala): koala mascot on 404 and all "coming soon"/screenshot placeholders (src/app/not-found.tsx, src/components/MascotPlaceholder.tsx)
+- **Evidence:** PR #1 (site v1), PR #2 (themes) merged to main; not yet deployed. T1 (PR #3, branch feat/hero-koala): koala mascot on 404 and all "coming soon"/screenshot placeholders (src/app/not-found.tsx, src/components/MascotPlaceholder.tsx)
 - **Decisions:** DEC-03, DEC-28, DEC-31
 
 ### A-02 — Homepage
@@ -58,7 +58,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Home renders every section; hero shows portrait; CTAs work.
 - **Status:** Implemented
-- **Evidence:** src/app/page.tsx. T1 (branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png
+- **Evidence:** src/app/page.tsx. T1 (PR #3, branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png
 - **Decisions:** DEC-09 (superseded by DEC-29 for layout), DEC-29, DEC-30
 
 ### A-03 — About page
@@ -69,7 +69,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Bio approved by owner; editable from admin.
 - **Status:** In development
-- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6)
+- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (PR #3, branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6)
 - **Decisions:** DEC-21, DEC-30
 
 ### A-04 — Services
@@ -2036,7 +2036,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner-approved photo shown, face not cropped.
 - **Status:** In development
-- **Evidence:** Temporary photo in commit b290c8f; owner will supply a new photo (DEC-20). T1 (branch feat/hero-koala): per DEC-29/DEC-30 the hero now shows the koala mascot and the owner portrait moved to the About section (interim layout, TODO(DEC-30)); awaiting owner photo and About layout reference
+- **Evidence:** Temporary photo in commit b290c8f; owner will supply a new photo (DEC-20). T1 (PR #3, branch feat/hero-koala): per DEC-29/DEC-30 the hero now shows the koala mascot and the owner portrait moved to the About section (interim layout, TODO(DEC-30)); awaiting owner photo and About layout reference
 - **Decisions:** DEC-09, DEC-20, DEC-29, DEC-30
 
 ### M-03 — Quote request form
