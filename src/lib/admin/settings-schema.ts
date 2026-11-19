@@ -46,5 +46,5 @@ export const SETTING_KEYS = {
   currencies: "pricing.currencies",
 } as const;
 
-/** wa.me link from a display number (digits only). */
-export const whatsappUrl = (display: string) => `https://wa.me/${display.replace(/\D/g, "")}`;
+/** wa.me link from a display number (DEC-37: the single WhatsApp link builder). */
+export { whatsappUrl } from "@/lib/content/whatsapp";

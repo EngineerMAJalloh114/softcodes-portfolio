@@ -4,7 +4,8 @@
 import { useState } from "react";
 import { inputClass } from "@/components/auth/fields";
 import { listPickerImagesAction } from "@/app/admin/media/actions";
-import { emptyObject, emptyValue, type Field } from "@/lib/content/fields";
+import { emptyObject, emptyValue, formatMajor, parseMoney, type Field } from "@/lib/content/fields";
+import { CTA_KINDS } from "@/lib/content/whatsapp";
 
 type Errors = Record<string, string>;
 type Obj = Record<string, unknown>;
@@ -210,6 +211,45 @@ function FieldEditor({
         </fieldset>
       );
     }
+    case "cta": {
+      const v = (value as { label?: string; kind?: string; href?: string }) ?? {};
+      const set = (patch: object) => onChange({ label: v.label ?? "", kind: v.kind ?? "url", href: v.href ?? "", ...patch });
+      return (
+        <fieldset className="rounded-2xl border border-border p-4">
+          <legend className="px-2 text-sm font-semibold text-text">{field.label}</legend>
+          {help}
+          <div className="mt-2 grid gap-4 sm:grid-cols-2">
+            <label className={labelCls} htmlFor={`${id}-label`}>
+              Button text
+              <input id={`${id}-label`} name={`${path}.label`} className={inputClass} value={v.label ?? ""} maxLength={60} onChange={(e) => set({ label: e.target.value })} aria-invalid={!!errors[`${path}.label`]} />
+              <ErrorText error={errors[`${path}.label`]} />
+            </label>
+            <label className={labelCls} htmlFor={`${id}-kind`}>
+              Link type
+              <select id={`${id}-kind`} name={`${path}.kind`} className={inputClass} value={v.kind ?? "url"} onChange={(e) => set({ kind: e.target.value })}>
+                {CTA_KINDS.map((k) => (
+                  <option key={k.value} value={k.value}>
+                    {k.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {v.kind === "whatsapp" ? (
+              <p className="text-sm text-muted sm:col-span-2">Opens WhatsApp with the number from Settings — change it there (DEC-37).</p>
+            ) : (
+              <label className={`${labelCls} sm:col-span-2`} htmlFor={`${id}-href`}>
+                {v.kind === "anchor" ? "Section (e.g. #services or /#services)" : "Link (/path or https://…)"}
+                <input id={`${id}-href`} name={`${path}.href`} className={inputClass} value={v.href ?? ""} onChange={(e) => set({ href: e.target.value })} aria-invalid={!!errors[`${path}.href`]} />
+                <ErrorText error={errors[`${path}.href`]} />
+              </label>
+            )}
+          </div>
+          <ErrorText error={error} />
+        </fieldset>
+      );
+    }
+    case "money":
+      return <MoneyField id={id} label={field.label} currency={field.currency} value={Number(value ?? 0)} onChange={onChange} error={error} path={path} />;
     case "group":
       return (
         <fieldset className="rounded-2xl border border-border p-4">
@@ -251,6 +291,36 @@ function ListControls({ i, length, onMove, onRemove, label }: { i: number; lengt
         Remove
       </button>
     </div>
+  );
+}
+
+/** Amount typed in major units ("3,500"); stored as integer minor units. */
+function MoneyField({ id, label, currency, value, onChange, error, path }: { id: string; label: string; currency: "USD" | "SLE"; value: number; onChange: (v: unknown) => void; error?: string; path: string }) {
+  const [text, setText] = useState(() => formatMajor(value));
+  const [bad, setBad] = useState(false);
+  return (
+    <label className={labelCls} htmlFor={id}>
+      {label}
+      <span className="mt-2 flex items-center gap-2">
+        <span className="text-sm font-semibold text-muted">{currency === "USD" ? "$" : "Le"}</span>
+        <input
+          id={id}
+          name={path}
+          inputMode="decimal"
+          className={`${inputClass} mt-0`}
+          value={text}
+          onChange={(e) => {
+            setText(e.target.value);
+            const minor = parseMoney(e.target.value);
+            setBad(minor === null);
+            if (minor !== null) onChange(minor);
+          }}
+          aria-invalid={bad || !!error}
+        />
+      </span>
+      {bad && <ErrorText error={`${label}: enter an amount like 3,500 or 25.50.`} />}
+      <ErrorText error={error} />
+    </label>
   );
 }
 

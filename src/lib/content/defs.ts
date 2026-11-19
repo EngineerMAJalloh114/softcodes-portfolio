@@ -1,4 +1,4 @@
-import { PROJECT_STATUSES_LIST, PROJECT_TYPE_OPTIONS } from "./options";
+import { FAQ_CATEGORY_OPTIONS, PROJECT_STATUSES_LIST, PROJECT_TYPE_OPTIONS } from "./options";
 import { objectSchema, type Field } from "./fields";
 
 /**
@@ -45,6 +45,7 @@ export const SECTION_KEYS = [
   "person",
   "services_section",
   "process",
+  "pricing",
   "projects_section",
   "stack_section",
   "contact_section",
@@ -69,8 +70,8 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
       { name: "name", label: "Name", type: "text", max: 80 },
       { name: "title", label: "Title", type: "text", max: 120 },
       { name: "pitch", label: "Pitch", type: "textarea", max: 300 },
-      link("primaryCta", "Primary button"),
-      link("secondaryCta", "Secondary button"),
+      { name: "primaryCta", label: "Primary button", type: "cta" },
+      { name: "secondaryCta", label: "Secondary button", type: "cta", help: "WhatsApp uses the number in Settings (DEC-37)." },
     ],
   },
   about: {
@@ -138,6 +139,23 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
           { name: "body", label: "Description", type: "textarea", max: 300 },
         ],
       },
+    ],
+  },
+  pricing: {
+    key: "pricing",
+    label: "Pricing — page & teaser",
+    description: "Pricing page heading and notes, the home page teaser, and the button labels. Prices are in Admin → Pricing.",
+    path: "/pricing",
+    fields: [
+      eyebrow,
+      heading,
+      { name: "intro", label: "Intro", type: "textarea", max: 400 },
+      { name: "currencyLabel", label: "Currency switch label", type: "text", max: 40 },
+      { name: "fromLabel", label: "\"From\" label", type: "text", max: 20 },
+      { name: "requestQuoteLabel", label: "\"Request a quote\" button", type: "text", max: 40 },
+      { name: "bookCallLabel", label: "\"Book a call\" button", type: "text", max: 40 },
+      { name: "bookCallNote", label: "Note until online booking opens (T7)", type: "text", max: 160 },
+      { name: "teaserLinkLabel", label: "Home teaser link text", type: "text", max: 40 },
     ],
   },
   projects_section: {
@@ -252,6 +270,13 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
       ]),
       meta("contact", "Contact page"),
       meta("softCodes", "Soft CODES page"),
+      meta("about", "About page", [{ name: "moreLabel", label: "\"More about me\" link (home)", type: "text", max: 40 }]),
+      meta("pricing", "Pricing page"),
+      meta("faq", "FAQ page", [
+        { name: "heading", label: "Heading", type: "text", max: 120 },
+        { name: "intro", label: "Intro", type: "textarea", max: 300 },
+        { name: "empty", label: "Message when no FAQs are published", type: "text", max: 200 },
+      ]),
       {
         name: "caseStudy",
         label: "Case study labels",
@@ -292,7 +317,7 @@ export const isSectionKey = (v: unknown): v is SectionKey =>
 /* Collections                                                         */
 /* ------------------------------------------------------------------ */
 
-export const COLLECTION_KEYS = ["services", "stack", "projects"] as const;
+export const COLLECTION_KEYS = ["services", "stack", "projects", "packages", "faqs"] as const;
 export type CollectionKey = (typeof COLLECTION_KEYS)[number];
 
 export type CollectionDef = {
@@ -368,7 +393,41 @@ export const COLLECTION_DEFS: Record<CollectionKey, CollectionDef> = {
       linkList("links", "Links"),
     ],
   },
+  packages: {
+    key: "packages",
+    label: "Pricing packages",
+    singular: "package",
+    titleField: "name",
+    description: "Packages and their \u2018from\u2019 prices in USD and SLE (DEC-25, DEC-38).",
+    path: "/pricing",
+    adminPath: "/admin/pricing",
+    fields: [
+      { name: "name", label: "Package name", type: "text", max: 60 },
+      { name: "slug", label: "Short ID", type: "slug", help: "Used for links, e.g. /contact?package=<id>." },
+      { name: "summary", label: "Summary", type: "textarea", max: 300 },
+      { name: "items", label: "What's included", type: "stringList", itemLabel: "Item", max: 12 },
+      { name: "priceUsdMinor", label: "From price (USD)", type: "money", currency: "USD" },
+      { name: "priceSleMinor", label: "From price (SLE)", type: "money", currency: "SLE" },
+      { name: "unit", label: "Unit after the price", type: "text", max: 20, required: false, help: "e.g. /month — leave empty for one-off prices." },
+      { name: "featured", label: "Highlight this package (and show it on the home page)", type: "boolean" },
+    ],
+  },
+  faqs: {
+    key: "faqs",
+    label: "FAQs",
+    singular: "FAQ",
+    titleField: "question",
+    description: "Questions and answers on the FAQ page (FAQPage structured data).",
+    path: "/faq",
+    adminPath: "/admin/content/faqs",
+    fields: [
+      { name: "question", label: "Question", type: "text", max: 200 },
+      { name: "answer", label: "Answer", type: "textarea", max: 2000 },
+      { name: "category", label: "Category", type: "select", options: FAQ_CATEGORY_OPTIONS },
+    ],
+  },
 };
+
 
 export const collectionSchema = (key: CollectionKey) => objectSchema(COLLECTION_DEFS[key].fields);
 export const isCollectionKey = (v: unknown): v is CollectionKey =>

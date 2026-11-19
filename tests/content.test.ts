@@ -13,6 +13,7 @@ const sectionSeed: Record<string, unknown> = {
   person: (({ location, ...rest }) => (void location, rest))(seed.person), // location lives in Settings
   services_section: { eyebrow: seed.services.eyebrow, heading: seed.services.heading },
   process: seed.process,
+  pricing: seed.pricing,
   projects_section: seed.projectsSection,
   stack_section: { eyebrow: seed.stack.eyebrow, heading: seed.stack.heading },
   contact_section: seed.contactSection,
@@ -41,7 +42,7 @@ describe("content field specs (A-15, K-15)", () => {
     for (const name of seed.stack.items) assert.ok(collectionSchema("stack").safeParse({ name }).success);
   });
   it("rejects bad input with messages", () => {
-    const r = sectionSchema("hero").safeParse({ ...seed.hero, pitch: "", primaryCta: { label: "x", href: "javascript:alert(1)" } });
+    const r = sectionSchema("hero").safeParse({ ...seed.hero, pitch: "", primaryCta: { label: "x", kind: "url", href: "javascript:alert(1)" } });
     assert.equal(r.success, false);
     const paths = r.error!.issues.map((i) => i.path.join("."));
     assert.ok(paths.includes("pitch") && paths.includes("primaryCta.href"));

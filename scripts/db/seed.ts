@@ -72,7 +72,6 @@ export async function seed(db: ScriptDb) {
   const sections: { key: (typeof schema.contentSectionKey.enumValues)[number]; data: unknown }[] = [
     { key: "site", data: siteContent },
     { key: "person", data: content.person },
-    { key: "contact", data: content.contact },
     { key: "nav", data: content.nav },
     { key: "hero", data: content.hero },
     { key: "about", data: content.about },
@@ -84,6 +83,7 @@ export async function seed(db: ScriptDb) {
     { key: "footer", data: content.footer },
     { key: "pages", data: content.pages },
     { key: "process", data: content.processSection },
+    { key: "pricing", data: content.pricing },
   ];
 
   const excluded = (col: string) => sql.raw(`excluded."${col}"`);
@@ -115,6 +115,15 @@ export async function seed(db: ScriptDb) {
       .insert(schema.stackItems)
       .values(stackNames.map((name, i) => ({ name, sortOrder: i })))
       .onConflictDoNothing({ target: schema.stackItems.name }),
+    // T6: DEC-38 packages published; FAQs seeded as drafts (DEC-21). Never overwrite CMS edits.
+    db
+      .insert(schema.pricingPackages)
+      .values(content.packages.map((p, i) => ({ ...p, sortOrder: i, published: true })))
+      .onConflictDoNothing({ target: schema.pricingPackages.slug }),
+    db
+      .insert(schema.faqs)
+      .values(content.faqs.map((f, i) => ({ ...f, sortOrder: i, published: false })))
+      .onConflictDoNothing({ target: schema.faqs.question }),
     db
       .insert(schema.prices)
       .values(
@@ -139,7 +148,7 @@ export async function seed(db: ScriptDb) {
 export async function countRows(db: ScriptDb) {
   const tables = [
     "roles", "users", "sessions", "accounts", "verifications", "settings", "audit_log",
-    "content_sections", "services", "projects", "stack_items", "media", "leads", "prices",
+    "content_sections", "services", "projects", "stack_items", "media", "leads", "prices", "pricing_packages", "faqs",
   ];
   const out: Record<string, number> = {};
   for (const t of tables) {

@@ -29,6 +29,20 @@
       "when": 1795094064177,
       "tag": "0003_content_cms",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795106130250,
+      "tag": "0004_pricing_faqs",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795106131068,
+      "tag": "0005_t6_content_data",
+      "breakpoints": true
     }
   ]
 }
