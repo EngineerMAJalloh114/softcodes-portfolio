@@ -100,6 +100,7 @@ export default async function LeadPage({ params }: PageProps<"/admin/leads/[id]"
 
           <Card>
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">History</h2>
+            {!history.length && <p className="mt-4 text-sm text-muted">No recorded changes yet.</p>}
             <ol className="mt-4 space-y-3 text-sm">
               {history.map((h, i) => (
                 <li key={i}>

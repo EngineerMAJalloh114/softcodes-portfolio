@@ -131,3 +131,35 @@ npx tsx --conditions=react-server scripts/screenshots-t5.ts   # admin screenshot
 npm run t6:verify   # end-to-end: denial, package/FAQ create → draft hidden → publish → live, JSON-LD, WhatsApp number change, currency toggle, audit
 npx tsx --conditions=react-server scripts/screenshots-t6.ts   # → docs/screenshots/t6-*
 ```
+
+## Leads, WhatsApp button, CV — T7a
+
+T7 is split (DEC-40). T7a needs no external accounts. T7b adds the Cal.com embed, Resend email and the owner's CV file once those are supplied.
+
+- **Quote form (M-03):** `/contact` and the home contact section post to a server action (`src/app/(site)/contact/actions.ts`) instead of opening the email app.
+  - Fields: name, email, phone/WhatsApp, company, project type, budget range in USD or SLE, deadline, details, and how they found us (J-04).
+  - Project types are the published pricing packages plus "Other". "Request a quote" on `/pricing` pre-selects its package.
+  - Validated with Zod (`src/lib/leads/schema.ts`) and stored in `leads`. The visitor gets a reference number, e.g. `SC-LEAD-2026-0001`, from an atomic per-year counter.
+  - The form labels are editable in Admin → Content → Contact section.
+- **Spam protection (K-14):** no third-party captcha.
+  - A hidden honeypot field.
+  - A minimum fill time of 3 s (the form records when it was opened).
+  - At most 3 accepted requests per IP per 10 minutes, counted in the shared `rate_limits` table.
+- **Leads inbox:** Admin → **Leads**. Owner, admin and staff have `leads.read` and `leads.write`; clients are refused.
+  - The list has status counts, a status filter and search (name, email, company or reference).
+  - The detail view shows every field, status buttons (new, contacted, quoted, won, lost, spam), internal notes and a history.
+  - Status changes and notes are audited.
+  - The dashboard's **New leads** count links to the inbox.
+- **Owner notifications:** each lead stores a row in `notifications` and goes through the email adapter (`src/lib/email`).
+  - With no provider configured, nothing is sent (`email = not_configured`). In development the message is printed to the server log.
+  - Unread notifications show as a badge on **Leads**. Opening the lead marks them read.
+  - Resend in T7b is an adapter swap.
+- **Floating WhatsApp button (M-06):** on every public page, never in the admin. It uses the Settings number (DEC-37) and can be switched off in Settings → Public site.
+- **CV (M-04):** upload a PDF in Media with visibility **Public**, then choose it in Settings → **CV file**.
+  - "Download CV" then appears in the hero and on About. It is hidden when no CV is set.
+  - A file set as the CV can't be deleted.
+
+```bash
+npm run t7a:verify   # end-to-end: form → lead + reference, invalid/honeypot/too-fast/rate limit, inbox + permissions, status/notes audited, WhatsApp button, CV
+npx tsx --conditions=react-server scripts/screenshots-t7a.ts   # → docs/screenshots/t7a-*
+```

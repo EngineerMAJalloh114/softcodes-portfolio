@@ -177,7 +177,7 @@ export async function findReferences(id: string): Promise<string[]> {
     db
       .select({ key: schema.settings.key })
       .from(schema.settings)
-      .where(sql`${schema.settings.key} = 'site.cv_media_id' and ${schema.settings.value}::text = ${JSON.stringify(id)}`),
+      .where(sql`${schema.settings.key} = 'site.cv_media_id' and ${schema.settings.value}->>'mediaId' = ${id}`),
   ]);
   return [
     ...sections.map((s) => `section "${s.key}"`),

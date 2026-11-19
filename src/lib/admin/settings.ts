@@ -23,7 +23,8 @@ export async function getSettings(): Promise<Settings> {
     depositPercent: byKey.get(SETTING_KEYS.depositPercent) ?? DEFAULT_SETTINGS.depositPercent,
     currencies: byKey.get(SETTING_KEYS.currencies) ?? DEFAULT_SETTINGS.currencies,
     whatsappButton: byKey.get(SETTING_KEYS.whatsappButton) ?? DEFAULT_SETTINGS.whatsappButton,
-    cvMediaId: byKey.get(SETTING_KEYS.cvMediaId) ?? DEFAULT_SETTINGS.cvMediaId,
+    // Stored as { mediaId } (settings.value is NOT NULL, and "no CV" is a valid choice).
+    cvMediaId: (byKey.get(SETTING_KEYS.cvMediaId) as { mediaId?: string | null } | undefined)?.mediaId ?? DEFAULT_SETTINGS.cvMediaId,
   };
   const parsed = settingsSchema.safeParse(merged);
   return parsed.success ? parsed.data : DEFAULT_SETTINGS;
@@ -75,7 +76,7 @@ export async function saveSettings(
     { key: SETTING_KEYS.depositPercent, value: next.depositPercent },
     { key: SETTING_KEYS.currencies, value: next.currencies },
     { key: SETTING_KEYS.whatsappButton, value: next.whatsappButton },
-    { key: SETTING_KEYS.cvMediaId, value: next.cvMediaId },
+    { key: SETTING_KEYS.cvMediaId, value: { mediaId: next.cvMediaId } },
   ];
   await db
     .insert(schema.settings)

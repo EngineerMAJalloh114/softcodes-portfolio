@@ -147,11 +147,11 @@ async function main() {
       const [pkgRow] = await db.select().from(schema.pricingPackages).where(eq(schema.pricingPackages.slug, pkgSlug));
       check("package stored unpublished with minor units ($99 → 9900, Le 2,300 → 230000)", !!pkgRow && !pkgRow.published && pkgRow.priceUsdMinor === 9900 && pkgRow.priceSleMinor === 230000);
       check("draft package NOT on /pricing", !(await publicText("/pricing")).text.includes(`T6 Test Package ${run}`));
-      check("publish package → toast", (await clickToast(page, page.getByRole("button", { name: "Publish" }))).includes("Published"));
+      check("publish package → toast", (await clickToast(page, page.getByRole("button", { name: "Publish", exact: true }))).includes("Published"));
       const published = await eventually("/pricing", (t) => t.includes(`T6 Test Package ${run}`));
       check("published package on /pricing with $99 / Le 2,300", published.text.includes(`T6 Test Package ${run}`) && published.text.includes("$99") && published.text.includes("Le 2,300"));
       await page.locator('[name="priceUsdMinor"]').fill("120");
-      check("edit price + publish → toast", (await clickToast(page, page.getByRole("button", { name: "Publish" }))).includes("Published"));
+      check("edit price + publish → toast", (await clickToast(page, page.getByRole("button", { name: "Publish", exact: true }))).includes("Published"));
       const edited = await eventually("/pricing", (t) => t.includes("$120"));
       check("price change is live immediately (G-06)", edited.text.includes("$120"));
 
@@ -163,7 +163,7 @@ async function main() {
       check("create FAQ as draft → toast", (await clickToast(page, page.getByRole("button", { name: "Create as draft" }))).includes("Created as a draft"));
       await page.waitForURL(/\/admin\/content\/faqs\/\d+$/, { timeout: 15_000 });
       check("draft FAQ NOT on /faq", !(await publicText("/faq")).text.includes(faqQuestion));
-      check("publish FAQ → toast", (await clickToast(page, page.getByRole("button", { name: "Publish" }))).includes("Published"));
+      check("publish FAQ → toast", (await clickToast(page, page.getByRole("button", { name: "Publish", exact: true }))).includes("Published"));
       const faqLive = await eventually("/faq", (t) => t.includes(faqQuestion));
       const ld = faqLive.text.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] ?? "";
       check("published FAQ on /faq inside an accordion (<details>)", faqLive.text.includes(faqQuestion) && /<details[^>]*data-faq/.test(faqLive.text));
