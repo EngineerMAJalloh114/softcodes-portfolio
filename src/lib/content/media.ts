@@ -199,3 +199,20 @@ export async function deleteMedia(actor: Actor, id: string): Promise<Result> {
   });
   return { ok: true };
 }
+
+/** Thumbnail URLs for every media:<id> reference inside a content value (admin editors). */
+export async function previewsFor(value: unknown): Promise<Record<string, string>> {
+  const refs = new Set<string>();
+  const walk = (v: unknown) => {
+    if (typeof v === "string" && v.startsWith("media:")) refs.add(v);
+    else if (Array.isArray(v)) v.forEach(walk);
+    else if (v && typeof v === "object") Object.values(v).forEach(walk);
+  };
+  walk(value);
+  const out: Record<string, string> = {};
+  for (const ref of refs) {
+    const item = await getMedia(ref.slice("media:".length));
+    if (item) out[ref] = item.url;
+  }
+  return out;
+}

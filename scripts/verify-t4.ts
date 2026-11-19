@@ -144,7 +144,7 @@ async function main() {
     const ownerDash = await owner.client.get("/admin");
     check(
       "owner dashboard: counts, latest activity, 'Coming in' badges",
-      ["Leads", "Projects", "Content items", "Media", "Latest activity", "Coming in T5", "Coming in T6", "Coming in T7"].every((s) => ownerDash.text.includes(s)),
+      ["Leads", "Projects", "Content items", "Media", "Latest activity", "Coming in T6", "Coming in T7"].every((s) => ownerDash.text.includes(s)),
     );
 
     /* ---------- settings server action (HTTP) ---------- */

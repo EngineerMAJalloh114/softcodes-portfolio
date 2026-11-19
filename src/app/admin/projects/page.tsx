@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/admin/ui";
-import { requirePermission } from "@/lib/auth/guard";
+import { CollectionIndex } from "@/components/admin/collectionPages";
 
 export const metadata: Metadata = { title: "Projects" };
 
-export default async function ProjectsPage() {
-  await requirePermission("content.write");
-  return <ComingSoon title="Projects" release="T5" body="Add, edit and publish projects and case studies." />;
+export default function ProjectsAdminPage() {
+  return <CollectionIndex collection="projects" />;
 }

@@ -7,6 +7,7 @@ import { ThemeImage } from "@/components/ThemeImage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CloseIcon, MenuIcon } from "@/components/Icons";
 import { authClient } from "@/lib/auth/client";
+import { ToastProvider } from "./toast";
 
 export type ShellNavItem = { href: string; label: string; release: string | null };
 
@@ -152,7 +153,7 @@ export function AdminShell({
         </div>
 
         <main id="admin-main" className="min-w-0 flex-1 px-4 py-8 sm:px-8 lg:px-10">
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </main>
       </div>
     </div>
