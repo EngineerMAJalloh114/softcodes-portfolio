@@ -37,6 +37,10 @@ Every decision is recorded here with date and the features it affects. Changes c
 | DEC-29 | 2026-11-19 | Hero: koala image as full-width background, text left / koala right; hero stays dark in both themes (supersedes DEC-09 layout) | A-02, M-02 |
 | DEC-30 | 2026-11-19 | Owner portrait moves to the About section; owner will supply the photo and the About layout reference | A-03, M-02 |
 | DEC-31 | 2026-11-19 | Koala mascot used on 404 and empty/'coming soon' states | A-01 |
+| DEC-32 | 2026-11-19 | File storage: Neon object storage replaces Cloudflare R2 (supersedes DEC-16; Cloudflare account blocked 7 days). Condition: must support private objects + expiring signed URLs, else fall back to R2 | M-09, B-09, D-13 |
+| DEC-33 | 2026-11-19 | Neon project: org org-hidden-lake-52748571, project delicate-paper-51580609, branch production; services postgres + object-storage | M-08, M-09 |
+| DEC-34 | 2026-11-19 | Owner admin account email: engineermohamedabassjalloh3855@gmail.com | K-01, G-01 |
+| DEC-35 | 2026-11-19 | T7 (Cal.com, CV, Resend) and T8 (Vercel, Sentry) inputs deferred by owner | R1a T7, T8 |
 
 ## Open decisions (need owner answer)
 | # | Decision | Options | Recommendation | Why | Needed by |
