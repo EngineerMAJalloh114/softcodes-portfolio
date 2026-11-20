@@ -18,7 +18,8 @@
     "admin:verify": "tsx --conditions=react-server scripts/verify-t4.ts",
     "content:verify": "tsx --conditions=react-server scripts/verify-t5.ts",
     "t6:verify": "tsx --conditions=react-server scripts/verify-t6.ts",
-    "t7a:verify": "tsx --conditions=react-server scripts/verify-t7a.ts"
+    "t7a:verify": "tsx --conditions=react-server scripts/verify-t7a.ts",
+    "r1b-blog:verify": "tsx --conditions=react-server scripts/verify-r1b-blog.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1172.0",
@@ -27,6 +28,10 @@
     "@neon/env": "^2.1.7",
     "@neondatabase/serverless": "^1.2.1",
     "@smithy/node-http-handler": "^4.14.2",
+    "@tiptap/extension-image": "^3.34.0",
+    "@tiptap/pm": "^3.34.0",
+    "@tiptap/react": "^3.34.0",
+    "@tiptap/starter-kit": "^3.34.0",
     "@vercel/functions": "^3.11.3",
     "better-auth": "^1.7.26",
     "drizzle-orm": "^0.45.4",

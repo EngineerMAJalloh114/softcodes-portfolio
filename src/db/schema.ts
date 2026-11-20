@@ -21,6 +21,7 @@ import {
   serial,
   text,
   timestamp,
+  date,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
@@ -196,6 +197,7 @@ export const contentSectionKey = pgEnum("content_section_key", [
   "pages",
   "process", // T5: process section (M-14 placeholder)
   "pricing", // T6: pricing headings, notes and button labels
+  "blog", // R1b: blog page headings and labels
 ]);
 
 /**
@@ -310,6 +312,50 @@ export const faqs = pgTable("faqs", {
   updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
   updatedAt: updatedAt(),
 });
+
+/* ------------------------------------------------------------------ */
+/* Blog (M-05, R1b)                                                    */
+/* ------------------------------------------------------------------ */
+
+export const postCategories = pgTable("post_categories", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  description: text("description").notNull().default(""),
+  sortOrder: integer("sort_order").notNull().default(0),
+  published: boolean("published").notNull().default(false),
+  draft: jsonb("draft"),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
+  updatedAt: updatedAt(),
+});
+
+/**
+ * Blog posts. `body` is sanitised rich text JSON (DEC-42). `publishedAt` is the date shown
+ * and used for ordering; a published post with a future date stays hidden until that day.
+ */
+export const posts = pgTable(
+  "posts",
+  {
+    id: serial("id").primaryKey(),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    excerpt: text("excerpt").notNull().default(""),
+    coverImage: text("cover_image"),
+    category: text("category"),
+    tags: jsonb("tags").$type<string[]>().notNull().default([]),
+    body: jsonb("body").notNull(),
+    seoTitle: text("seo_title").notNull().default(""),
+    seoDescription: text("seo_description").notNull().default(""),
+    publishedAt: date("published_at", { mode: "string" }),
+    featured: boolean("featured").notNull().default(false),
+    sortOrder: integer("sort_order").notNull().default(0),
+    published: boolean("published").notNull().default(false),
+    draft: jsonb("draft"),
+    updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("posts_published_date_idx").on(t.published, t.publishedAt)],
+);
 
 /* ------------------------------------------------------------------ */
 /* Media (Neon object storage, DEC-32)                                 */

@@ -26,6 +26,9 @@ export function seedContent(): SiteContent {
     packages: seed.packages,
     faqs: [], // seeded FAQs are drafts (DEC-21): nothing public until approved
     pages: seed.pages,
+    blog: seed.blog,
+    posts: [], // the welcome post is a draft (DEC-21): nothing public until the owner publishes
+    postCategories: seed.postCategories,
     features: { whatsappButton: true, cvUrl: null },
     preview: false,
     source: "seed",

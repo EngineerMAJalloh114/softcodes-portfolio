@@ -14,6 +14,7 @@ const sectionSeed: Record<string, unknown> = {
   services_section: { eyebrow: seed.services.eyebrow, heading: seed.services.heading },
   process: seed.process,
   pricing: seed.pricing,
+  blog: seed.blog,
   projects_section: seed.projectsSection,
   stack_section: { eyebrow: seed.stack.eyebrow, heading: seed.stack.heading },
   contact_section: seed.contactSection,

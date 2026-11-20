@@ -46,6 +46,10 @@ Every decision is recorded here with date and the features it affects. Changes c
 | DEC-38 | 2026-11-19 | 'From' prices approved (closes DEC-O11): Landing $150/Le 3,500 · Business site $400/Le 9,200 · Site + admin $900/Le 20,700 · E-commerce/booking $1,200/Le 27,600 · Web app/platform $2,500/Le 57,500 · UI & brand $150/Le 3,500 · Maintenance $25/Le 575 per month | A-08, G-06, M-15 |
 | DEC-39 | 2026-11-19 | Dependabot policy: merge patch/minor PRs with green CI; close major-version PRs (planned upgrades only) | K-20 |
 | DEC-40 | 2026-11-19 | T7 split: T7a (no external accounts) now; T7b (Cal.com embed, Resend email, owner's CV file) when the owner supplies the inputs. Copy review for FAQs and pricing packages is done by the owner in the admin | R1a T7, M-03, M-04, M-06, A-11, H-01, A-09, A-08 |
+| DEC-41 | 2026-11-20 | R1b (blog, testimonials, filters, newsletter) runs before T7b/T8 | R1b, R1a T7b, T8 |
+| DEC-42 | 2026-11-20 | Blog uses a rich text editor (headings, bold/italic, lists, links, images from Media, code blocks, quotes); content stored as structured JSON, rendered server-side and sanitised | M-05, K-15 |
+| DEC-43 | 2026-11-20 | Newsletter signups stored as "pending" until Resend is live (T7b); then each gets a double opt-in email; only "confirmed" receive newsletters | M-13, H-01 |
+| DEC-44 | 2026-11-20 | Testimonials have no Review/rating structured data (Google self-serving review policy) | A-16, A-12 |
 
 ## Open decisions (need owner answer)
 | # | Decision | Options | Recommendation | Why | Needed by |

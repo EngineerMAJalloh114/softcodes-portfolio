@@ -200,7 +200,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Dependencies:** G-14
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
-- **Acceptance criteria:** Testimonials shown only after admin approval; Review structured data.
+- **Acceptance criteria:** Testimonials shown only after admin approval; no Review/rating structured data (DEC-44, Google self-serving review policy). _Was: "Review structured data" — changed 2026-11-20 by DEC-44._
 - **Status:** Planned
 - **Evidence:** —
 

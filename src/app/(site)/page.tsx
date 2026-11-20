@@ -9,11 +9,13 @@ import { Reveal } from "@/components/Reveal";
 import { Container, Eyebrow, Section } from "@/components/Section";
 import { AboutContent } from "@/components/AboutContent";
 import { CvButton } from "@/components/CvButton";
+import { PostCard } from "@/components/blog/PostCard";
+import { livePosts } from "@/lib/blog/posts";
 import { CurrencyToggle } from "@/components/pricing/CurrencyToggle";
 import { PackageCard } from "@/components/pricing/PackageCard";
 import { getSiteContent } from "@/lib/content/load";
 import { ctaHref } from "@/lib/content/whatsapp";
-import type { SiteContent } from "@/lib/content/types";
+import type { BlogPost, SiteContent } from "@/lib/content/types";
 
 // Content comes from the CMS (cached; admin saves refresh it). Hourly safety net.
 export const revalidate = 3600;
@@ -22,6 +24,7 @@ type P = { c: SiteContent };
 
 export default async function Home() {
   const c = await getSiteContent();
+  const latest = livePosts(c.posts, { preview: c.preview }).slice(0, 3);
   return (
     <>
       <Hero c={c} />
@@ -30,6 +33,7 @@ export default async function Home() {
       {c.process.visible && <Process c={c} />}
       <FeaturedProjects c={c} />
       {c.packages.length > 0 && <PricingTeaser c={c} />}
+      {latest.length > 0 && <LatestPosts c={c} posts={latest} />}
       <Stack c={c} />
       <Contact c={c} />
     </>
@@ -219,6 +223,29 @@ function PricingTeaser({ c }: P) {
       <Reveal className="mt-10">
         <Link href="/pricing" className="inline-flex items-center gap-2 font-semibold text-text hover:underline">
           {pricing.teaserLinkLabel}
+          <ArrowRight />
+        </Link>
+      </Reveal>
+    </Section>
+  );
+}
+
+/** M-05 home teaser: the three newest posts (featured first). Hidden when none are live. */
+function LatestPosts({ c, posts }: P & { posts: BlogPost[] }) {
+  const { blog } = c;
+  const nameOf = (slug: string | null) => c.postCategories.find((x) => x.slug === slug)?.name ?? null;
+  return (
+    <Section id="blog" eyebrow={blog.latestEyebrow} heading={blog.latestHeading}>
+      <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-latest-posts>
+        {posts.map((p, i) => (
+          <Reveal as="li" key={p.slug} delay={i * 80}>
+            <PostCard post={p} categoryName={nameOf(p.category)} readingLabel={blog.readingTimeLabel} />
+          </Reveal>
+        ))}
+      </ul>
+      <Reveal className="mt-10">
+        <Link href="/blog" className="inline-flex items-center gap-2 font-semibold text-text hover:underline">
+          {blog.latestLinkLabel}
           <ArrowRight />
         </Link>
       </Reveal>

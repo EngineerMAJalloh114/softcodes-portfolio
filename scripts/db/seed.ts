@@ -84,6 +84,7 @@ export async function seed(db: ScriptDb) {
     { key: "pages", data: content.pages },
     { key: "process", data: content.processSection },
     { key: "pricing", data: content.pricing },
+    { key: "blog", data: content.blog },
   ];
 
   const excluded = (col: string) => sql.raw(`excluded."${col}"`);
@@ -124,6 +125,15 @@ export async function seed(db: ScriptDb) {
       .insert(schema.faqs)
       .values(content.faqs.map((f, i) => ({ ...f, sortOrder: i, published: false })))
       .onConflictDoNothing({ target: schema.faqs.question }),
+    // R1b: blog categories published; the welcome post is a draft for the owner (DEC-21).
+    db
+      .insert(schema.postCategories)
+      .values(content.postCategories.map((c, i) => ({ ...c, sortOrder: i, published: true })))
+      .onConflictDoNothing({ target: schema.postCategories.slug }),
+    db
+      .insert(schema.posts)
+      .values({ ...content.welcomePost, sortOrder: 0, published: false })
+      .onConflictDoNothing({ target: schema.posts.slug }),
     db
       .insert(schema.prices)
       .values(
@@ -148,7 +158,7 @@ export async function seed(db: ScriptDb) {
 export async function countRows(db: ScriptDb) {
   const tables = [
     "roles", "users", "sessions", "accounts", "verifications", "settings", "audit_log",
-    "content_sections", "services", "projects", "stack_items", "media", "leads", "prices", "pricing_packages", "faqs",
+    "content_sections", "services", "projects", "stack_items", "media", "leads", "prices", "pricing_packages", "faqs", "post_categories", "posts",
   ];
   const out: Record<string, number> = {};
   for (const t of tables) {

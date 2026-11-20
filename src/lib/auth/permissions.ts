@@ -57,6 +57,7 @@ export const ADMIN_NAV = [
   { href: "/admin/content", label: "Content", permission: "content.write", release: null },
   { href: "/admin/projects", label: "Projects", permission: "content.write", release: null },
   { href: "/admin/pricing", label: "Pricing", permission: "content.write", release: null },
+  { href: "/admin/blog", label: "Blog", permission: "content.write", release: null },
   { href: "/admin/leads", label: "Leads", permission: "leads.read", release: null },
   { href: "/admin/media", label: "Media", permission: "media.manage", release: null },
   { href: "/admin/audit", label: "Audit log", permission: "audit.view", release: null },

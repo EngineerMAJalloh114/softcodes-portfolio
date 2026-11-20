@@ -6,6 +6,7 @@ import { inputClass } from "@/components/auth/fields";
 import { listPickerImagesAction } from "@/app/admin/media/actions";
 import { emptyObject, emptyValue, formatMajor, parseMoney, type Field } from "@/lib/content/fields";
 import { CTA_KINDS } from "@/lib/content/whatsapp";
+import { RichTextEditor } from "./RichTextEditor";
 
 type Errors = Record<string, string>;
 type Obj = Record<string, unknown>;
@@ -127,6 +128,50 @@ function FieldEditor({
           {field.label}
           <select id={id} name={path} className={inputClass} value={String(value ?? "")} onChange={(e) => onChange(e.target.value)}>
             {field.options.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          {help}
+          <ErrorText error={error} />
+        </label>
+      );
+    case "richtext":
+      return (
+        <div>
+          <label className={labelCls} htmlFor={id}>
+            {field.label}
+          </label>
+          <RichTextEditor id={id} value={value} onChange={onChange} invalid={!!error} />
+          {help}
+          <ErrorText error={error} />
+        </div>
+      );
+    case "date":
+      return (
+        <label className={labelCls} htmlFor={id}>
+          {field.label}
+          <input
+            id={id}
+            name={path}
+            type="date"
+            className={`${inputClass} sm:max-w-xs`}
+            value={String(value ?? "")}
+            onChange={(e) => onChange(e.target.value || null)}
+            aria-invalid={!!error}
+          />
+          {help}
+          <ErrorText error={error} />
+        </label>
+      );
+    case "ref":
+      return (
+        <label className={labelCls} htmlFor={id}>
+          {field.label}
+          <select id={id} name={path} className={inputClass} value={String(value ?? "")} onChange={(e) => onChange(e.target.value || null)} aria-invalid={!!error}>
+            <option value="">{field.emptyLabel}</option>
+            {(field.options ?? []).map((o) => (
               <option key={o.value} value={o.value}>
                 {o.label}
               </option>

@@ -1,5 +1,5 @@
 import "server-only";
-import { asc, inArray } from "drizzle-orm";
+import { asc, desc, inArray } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { draftMode } from "next/headers";
 import { cache } from "react";
@@ -9,7 +9,8 @@ import { publicUrl } from "@/lib/storage";
 import { mediaIdFromRef } from "./fields";
 import { mergeSeed } from "./merge";
 import { contactFrom, seedContent } from "./seed-content";
-import type { Project, SiteContent } from "./types";
+import type { BlogPost, Project, SiteContent } from "./types";
+import { imageRefs, readingMinutes, resolveDocImages, sanitizeDoc, type RichDoc } from "@/lib/blog/richtext";
 
 /** Cache tag for all public content. Admin saves call updateTag(CONTENT_TAG). */
 export const CONTENT_TAG = "content";
@@ -26,7 +27,7 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
   const db = getDb();
   const fallback = seedContent();
 
-  const [sectionRows, serviceRows, stackRows, projectRows, packageRows, faqRows, settings] = await Promise.all([
+  const [sectionRows, serviceRows, stackRows, projectRows, packageRows, faqRows, settings, postRows, categoryRows] = await Promise.all([
     db.select().from(schema.contentSections),
     db.select().from(schema.services).orderBy(asc(schema.services.sortOrder), asc(schema.services.id)),
     db.select().from(schema.stackItems).orderBy(asc(schema.stackItems.sortOrder), asc(schema.stackItems.id)),
@@ -34,6 +35,8 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
     db.select().from(schema.pricingPackages).orderBy(asc(schema.pricingPackages.sortOrder), asc(schema.pricingPackages.id)),
     db.select().from(schema.faqs).orderBy(asc(schema.faqs.sortOrder), asc(schema.faqs.id)),
     getSettings(),
+    db.select().from(schema.posts).orderBy(desc(schema.posts.publishedAt), desc(schema.posts.id)),
+    db.select().from(schema.postCategories).orderBy(asc(schema.postCategories.sortOrder), asc(schema.postCategories.id)),
   ]);
 
   const section = <K extends keyof SiteContent>(key: string, seedValue: SiteContent[K]): SiteContent[K] => {
@@ -71,7 +74,15 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
   });
 
   const person = section<"person">("person", fallback.person);
-  const refs = [person.photo, settings.cvMediaId ? `media:${settings.cvMediaId}` : null, ...projects.flatMap((p) => p.screenshots.map((s) => s.src))]
+  const postViews = visible(postRows).map((r) => ({ row: r, v: view(r, preview) }));
+  const postBodies = postViews.map(({ v }) => sanitizeDoc(v.body));
+  const refs = [
+    person.photo,
+    settings.cvMediaId ? `media:${settings.cvMediaId}` : null,
+    ...projects.flatMap((p) => p.screenshots.map((s) => s.src)),
+    ...postViews.map(({ v }) => v.coverImage),
+    ...postBodies.flatMap(imageRefs),
+  ]
     .map(mediaIdFromRef)
     .filter((id): id is string => !!id);
   const media = refs.length
@@ -87,6 +98,27 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
     return m && m.visibility === "public" ? publicUrl(m.key) : null; // missing/private → placeholder
   };
   for (const p of projects) p.screenshots = p.screenshots.map((s) => ({ ...s, src: resolve(s.src) }));
+
+  // Blog posts: body images re-resolved from their media refs (missing/private → dropped).
+  const posts: BlogPost[] = postViews.map(({ row, v }, i) => {
+    const body: RichDoc = resolveDocImages(postBodies[i], (ref) => resolve(ref));
+    return {
+      slug: v.slug,
+      title: v.title,
+      excerpt: v.excerpt,
+      coverImage: resolve(v.coverImage),
+      category: v.category,
+      tags: v.tags,
+      body,
+      seoTitle: v.seoTitle,
+      seoDescription: v.seoDescription,
+      publishedAt: v.publishedAt,
+      featured: v.featured,
+      readingMinutes: readingMinutes(body),
+      updatedAt: row.updatedAt.toISOString(),
+      ...(preview && !row.published ? { isDraft: true } : {}),
+    };
+  });
 
   const servicesHeader = section<"services">("services_section", fallback.services);
   const stackHeader = section<"stack">("stack_section", fallback.stack);
@@ -138,6 +170,12 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
       };
     }),
     pages: section<"pages">("pages", fallback.pages),
+    blog: section<"blog">("blog", fallback.blog),
+    posts,
+    postCategories: visible(categoryRows).map((r) => {
+      const v = view(r, preview);
+      return { slug: v.slug, name: v.name, description: v.description };
+    }),
     features: {
       whatsappButton: settings.whatsappButton,
       cvUrl: (() => {
