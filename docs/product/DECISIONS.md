@@ -50,6 +50,7 @@ Every decision is recorded here with date and the features it affects. Changes c
 | DEC-42 | 2026-11-20 | Blog uses a rich text editor (headings, bold/italic, lists, links, images from Media, code blocks, quotes); content stored as structured JSON, rendered server-side and sanitised | M-05, K-15 |
 | DEC-43 | 2026-11-20 | Newsletter signups stored as "pending" until Resend is live (T7b); then each gets a double opt-in email; only "confirmed" receive newsletters | M-13, H-01 |
 | DEC-44 | 2026-11-20 | Testimonials have no Review/rating structured data (Google self-serving review policy) | A-16, A-12 |
+| DEC-45 | 2026-11-20 | From T8 on, schema/data migrations run on a Neon branch per PR (`neon checkout <pr-branch> --create`); production migrations run only after merge, as a deploy step. Never migrate production from a feature branch again | M-08, K-07, K-17, T8 |
 
 ## Open decisions (need owner answer)
 | # | Decision | Options | Recommendation | Why | Needed by |
