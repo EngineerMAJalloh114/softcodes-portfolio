@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { EmptyState } from "@/components/admin/ui";
 import { PostCard } from "@/components/blog/PostCard";
+import { NewsletterForm } from "@/components/NewsletterForm";
 import { Reveal } from "@/components/Reveal";
 import { Container, Eyebrow } from "@/components/Section";
 import { blogHref, livePosts, paginate, parseBlogQuery } from "@/lib/blog/posts";
@@ -99,6 +100,10 @@ export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
             )}
           </nav>
         )}
+
+        <div className="mt-16 max-w-2xl">
+          <NewsletterForm newsletter={c.newsletter} source="blog" />
+        </div>
 
         <p className="mt-12 text-sm">
           <a href="/blog/rss.xml" className="font-semibold text-muted hover:text-text">

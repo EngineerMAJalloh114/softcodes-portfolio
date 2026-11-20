@@ -47,6 +47,8 @@ export const SECTION_KEYS = [
   "process",
   "pricing",
   "blog",
+  "testimonials",
+  "newsletter",
   "projects_section",
   "stack_section",
   "contact_section",
@@ -140,6 +142,28 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
           { name: "body", label: "Description", type: "textarea", max: 300 },
         ],
       },
+    ],
+  },
+  testimonials: {
+    key: "testimonials",
+    label: "Testimonials — section",
+    description: "Heading of the testimonials section (home page). The quotes are in Content → Testimonials.",
+    path: "/",
+    fields: [eyebrow, heading],
+  },
+  newsletter: {
+    key: "newsletter",
+    label: "Newsletter signup",
+    description: "Text of the newsletter signup form (footer and blog). Subscribers are in Admin → Subscribers.",
+    path: "/blog",
+    fields: [
+      heading,
+      { name: "body", label: "Intro", type: "textarea", max: 300 },
+      { name: "emailLabel", label: "Email field label", type: "text", max: 40 },
+      { name: "consentLabel", label: "Consent checkbox text", type: "textarea", max: 300, help: "Stored with every signup as proof of consent." },
+      { name: "submitLabel", label: "Button text", type: "text", max: 40 },
+      { name: "successTitle", label: "Success heading", type: "text", max: 80 },
+      { name: "successBody", label: "Success message", type: "text", max: 200 },
     ],
   },
   blog: {
@@ -298,6 +322,12 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
       meta("projects", "Projects page", [
         { name: "heading", label: "Heading", type: "text", max: 120 },
         { name: "intro", label: "Intro", type: "textarea", max: 300 },
+        { name: "allLabel", label: "\"All\" filter label", type: "text", max: 30 },
+        { name: "typeFilterLabel", label: "Type filter label", type: "text", max: 30 },
+        { name: "tagFilterLabel", label: "Topic filter label", type: "text", max: 30 },
+        { name: "emptyHeading", label: "No matches heading", type: "text", max: 80 },
+        { name: "emptyBody", label: "No matches text", type: "text", max: 160 },
+        { name: "clearLabel", label: "\"Show all\" link", type: "text", max: 40 },
       ]),
       meta("contact", "Contact page"),
       meta("softCodes", "Soft CODES page"),
@@ -307,6 +337,13 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
       ]),
       meta("pricing", "Pricing page"),
       meta("blog", "Blog page"),
+      meta("unsubscribe", "Newsletter unsubscribe page", [
+        { name: "heading", label: "Heading", type: "text", max: 120 },
+        { name: "body", label: "Text", type: "text", max: 200 },
+        { name: "button", label: "Button", type: "text", max: 40 },
+        { name: "done", label: "After unsubscribing", type: "text", max: 200 },
+        { name: "invalid", label: "Invalid link", type: "text", max: 200 },
+      ]),
       meta("faq", "FAQ page", [
         { name: "heading", label: "Heading", type: "text", max: 120 },
         { name: "intro", label: "Intro", type: "textarea", max: 300 },
@@ -352,7 +389,7 @@ export const isSectionKey = (v: unknown): v is SectionKey =>
 /* Collections                                                         */
 /* ------------------------------------------------------------------ */
 
-export const COLLECTION_KEYS = ["services", "stack", "projects", "packages", "faqs", "posts", "postCategories"] as const;
+export const COLLECTION_KEYS = ["services", "stack", "projects", "packages", "faqs", "posts", "postCategories", "testimonials"] as const;
 export type CollectionKey = (typeof COLLECTION_KEYS)[number];
 
 export type CollectionDef = {
@@ -481,6 +518,37 @@ export const COLLECTION_DEFS: Record<CollectionKey, CollectionDef> = {
       { name: "seoDescription", label: "SEO description", type: "textarea", max: 160, required: false, help: "Optional. Defaults to the excerpt." },
       { name: "publishedAt", label: "Publish date", type: "date", help: "Shown on the post. Empty = today when you publish. A future date keeps the post hidden until that day." },
       { name: "featured", label: "Feature this post (shown first)", type: "boolean" },
+    ],
+  },
+  testimonials: {
+    key: "testimonials",
+    label: "Testimonials",
+    singular: "testimonial",
+    titleField: "name",
+    description: "Client quotes (A-16). Only published ones appear: on the home page and on the linked project's case study. No review structured data (DEC-44).",
+    path: "/",
+    adminPath: "/admin/content/testimonials",
+    fields: [
+      { name: "quote", label: "Quote", type: "textarea", max: 600, help: "The client's own words, with their permission." },
+      { name: "name", label: "Name", type: "text", max: 80 },
+      { name: "role", label: "Role", type: "text", max: 80, required: false, help: "e.g. Owner, Marketing lead." },
+      { name: "company", label: "Company", type: "text", max: 80, required: false },
+      { name: "photo", label: "Photo", type: "image", help: "Optional. A square photo works best." },
+      { name: "project", label: "Project", type: "ref", collection: "projects", emptyLabel: "Not linked to a project", help: "Also shows the quote on that case study." },
+      {
+        name: "rating",
+        label: "Rating (optional)",
+        type: "select",
+        options: [
+          { value: "", label: "No rating" },
+          { value: "5", label: "5 stars" },
+          { value: "4", label: "4 stars" },
+          { value: "3", label: "3 stars" },
+          { value: "2", label: "2 stars" },
+          { value: "1", label: "1 star" },
+        ],
+        help: "Shown as stars only — never as review data for search engines (DEC-44).",
+      },
     ],
   },
   postCategories: {

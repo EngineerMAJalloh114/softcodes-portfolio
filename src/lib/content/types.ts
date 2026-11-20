@@ -28,12 +28,28 @@ export type SiteContent = {
   /** Published posts (all posts in preview); filter by date with livePosts(). Body images resolved. */
   posts: BlogPost[];
   postCategories: seed.PostCategory[];
+  testimonialsSection: typeof seed.testimonialsSection;
+  /** Published testimonials (all in preview); photo resolved to a public URL. */
+  testimonials: Testimonial[];
+  newsletter: typeof seed.newsletter;
   /** From Settings: floating WhatsApp button on/off (M-06) and the public CV PDF URL (M-04). */
   features: { whatsappButton: boolean; cvUrl: string | null };
   /** True when rendered from drafts (admin preview). */
   preview: boolean;
   /** Where the content came from: the database or the bundled seed (no DB at build). */
   source: "db" | "seed";
+};
+
+export type Testimonial = {
+  id: number;
+  quote: string;
+  name: string;
+  role: string;
+  company: string;
+  photo: string | null;
+  project: string | null;
+  rating: number | null;
+  isDraft?: boolean;
 };
 
 export type BlogPost = {

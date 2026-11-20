@@ -147,9 +147,9 @@ async function main() {
 
     // invalid input: field errors, nothing stored
     await ap.waitForTimeout(3200);
-    await ap.locator('[name="name"]').fill("Test Visitor");
-    await ap.locator('[name="email"]').fill("not-an-email");
-    await ap.locator('[name="message"]').fill("too short");
+    await ap.locator('[data-quote-form] [name="name"]').fill("Test Visitor");
+    await ap.locator('[data-quote-form] [name="email"]').fill("not-an-email");
+    await ap.locator('[data-quote-form] [name="message"]').fill("too short");
     await ap.getByRole("button", { name: "Send request" }).click();
     await ap.locator('[data-form-error="invalid"]').waitFor({ timeout: 20_000 });
     const errs = await ap.evaluate(() => [...document.querySelectorAll('[aria-invalid="true"]')].map((e) => e.getAttribute("name")));
@@ -157,14 +157,14 @@ async function main() {
     check("…typed values are kept after the error", (await ap.evaluate(() => (document.querySelector('[name="name"]') as HTMLInputElement).value)) === "Test Visitor");
 
     // valid submission
-    await ap.locator('[name="email"]').fill(tagEmail("browser"));
-    await ap.locator('[name="company"]').fill("T7a Test Co");
-    await ap.locator('[name="phone"]').fill("+232 76 000 111");
-    await ap.locator('select[name="budgetCurrency"]').selectOption("SLE");
-    await ap.locator('select[name="budget"]').selectOption("1500-5000");
-    await ap.locator('[name="deadline"]').fill("End of next month");
-    await ap.locator('select[name="source"]').selectOption("referral");
-    await ap.locator('[name="message"]').fill("We would like a website with an admin panel for our shop. (automated T7a check)");
+    await ap.locator('[data-quote-form] [name="email"]').fill(tagEmail("browser"));
+    await ap.locator('[data-quote-form] [name="company"]').fill("T7a Test Co");
+    await ap.locator('[data-quote-form] [name="phone"]').fill("+232 76 000 111");
+    await ap.locator('[data-quote-form] select[name="budgetCurrency"]').selectOption("SLE");
+    await ap.locator('[data-quote-form] select[name="budget"]').selectOption("1500-5000");
+    await ap.locator('[data-quote-form] [name="deadline"]').fill("End of next month");
+    await ap.locator('[data-quote-form] select[name="source"]').selectOption("referral");
+    await ap.locator('[data-quote-form] [name="message"]').fill("We would like a website with an admin panel for our shop. (automated T7a check)");
     await ap.getByRole("button", { name: "Send request" }).click();
     await ap.locator("[data-lead-reference]").waitFor({ timeout: 20_000 });
     const reference = ((await ap.locator("[data-lead-reference]").textContent()) ?? "").trim();

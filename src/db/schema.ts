@@ -198,6 +198,8 @@ export const contentSectionKey = pgEnum("content_section_key", [
   "process", // T5: process section (M-14 placeholder)
   "pricing", // T6: pricing headings, notes and button labels
   "blog", // R1b: blog page headings and labels
+  "testimonials", // R1b: testimonials section heading
+  "newsletter", // R1b: newsletter signup labels
 ]);
 
 /**
@@ -355,6 +357,62 @@ export const posts = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [index("posts_published_date_idx").on(t.published, t.publishedAt)],
+);
+
+/* ------------------------------------------------------------------ */
+/* Testimonials (A-16, R1b) — no Review/rating structured data (DEC-44) */
+/* ------------------------------------------------------------------ */
+
+export const testimonials = pgTable(
+  "testimonials",
+  {
+    id: serial("id").primaryKey(),
+    quote: text("quote").notNull(),
+    name: text("name").notNull(),
+    role: text("role").notNull().default(""),
+    company: text("company").notNull().default(""),
+    photo: text("photo"),
+    /** Slug of the project this is about (shown on that case study too). */
+    project: text("project"),
+    /** Optional "1"–"5" ("" = none); shown visually only, never as structured data (DEC-44). */
+    rating: text("rating").notNull().default(""),
+    sortOrder: integer("sort_order").notNull().default(0),
+    published: boolean("published").notNull().default(false),
+    draft: jsonb("draft"),
+    updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
+    updatedAt: updatedAt(),
+  },
+  (t) => [check("testimonials_rating_range", sql`${t.rating} in ('', '1', '2', '3', '4', '5')`)],
+);
+
+/* ------------------------------------------------------------------ */
+/* Newsletter (M-13, R1b) — DEC-43: pending until double opt-in (T7b)  */
+/* ------------------------------------------------------------------ */
+
+export const subscriberStatus = pgEnum("subscriber_status", ["pending", "confirmed", "unsubscribed"]);
+
+export const newsletterSubscribers = pgTable(
+  "newsletter_subscribers",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** Lower-cased, trimmed. */
+    email: text("email").notNull().unique(),
+    status: subscriberStatus("status").notNull().default("pending"),
+    /** When the visitor ticked the consent box, and the exact wording they agreed to. */
+    consentAt: timestamp("consent_at", { withTimezone: true }).notNull(),
+    consentText: text("consent_text").notNull(),
+    /** Where they signed up: "footer" or "blog". */
+    source: text("source").notNull().default("footer"),
+    /** For the unsubscribe link in every email (T7b) — random, unguessable. */
+    unsubscribeToken: text("unsubscribe_token").notNull().unique(),
+    /** For the double opt-in email (T7b). */
+    confirmToken: text("confirm_token").unique(),
+    confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+    unsubscribedAt: timestamp("unsubscribed_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("newsletter_status_idx").on(t.status, t.createdAt)],
 );
 
 /* ------------------------------------------------------------------ */

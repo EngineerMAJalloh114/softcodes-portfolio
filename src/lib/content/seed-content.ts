@@ -29,6 +29,9 @@ export function seedContent(): SiteContent {
     blog: seed.blog,
     posts: [], // the welcome post is a draft (DEC-21): nothing public until the owner publishes
     postCategories: seed.postCategories,
+    testimonialsSection: seed.testimonialsSection,
+    testimonials: [],
+    newsletter: seed.newsletter,
     features: { whatsappButton: true, cvUrl: null },
     preview: false,
     source: "seed",

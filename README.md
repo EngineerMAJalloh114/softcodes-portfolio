@@ -188,3 +188,26 @@ R1b runs before T7b and T8 (DEC-41).
 npm run r1b-blog:verify   # end-to-end: permissions, editor → draft hidden → publish → live/RSS/sitemap/home, sanitiser (action + tampered DB), scheduled post, audit
 npx tsx --conditions=react-server scripts/screenshots-r1b-blog.ts   # → docs/screenshots/r1b-blog-*
 ```
+
+## Testimonials, project filters, newsletter — R1b Part 2
+
+- **Testimonials (A-16):** Admin → Content → **Testimonials** (owner and admin).
+  - Fields: quote, name, role, company, photo (from Media), linked project, optional rating, draft/published.
+  - Published quotes appear in a "What clients say" section on the home page, and on the linked project's case study. Both are hidden when there are none.
+  - The rating shows as stars only. There is no Review/rating structured data (DEC-44).
+  - No testimonials are seeded: real quotes only.
+- **Project filters (M-11):** `/projects?type=app&tag=Payments`.
+  - Filters are plain links, so they work without JavaScript.
+  - Only types and topics in use are offered, and unknown values are ignored.
+  - When nothing matches, an empty state with the koala mascot is shown.
+- **Newsletter (M-13):** a signup form in the footer and on the blog: email plus a consent checkbox.
+  - Spam protection: honeypot, minimum fill time, at most 5 signups per IP per 10 minutes.
+  - Signups are stored as **pending**, with the consent time and the exact consent wording (DEC-43). Once Resend is set up (T7b), each gets a double opt-in email, and only **confirmed** subscribers receive newsletters.
+  - A duplicate address gets the same answer as a new one, so the form can't be used to check who's subscribed.
+  - Admin → **Subscribers** (owner and admin, `subscribers.manage`) lists subscribers with a status filter and a CSV export. The export is safe against spreadsheet formula injection, and every export is audited.
+  - Each subscriber has an unsubscribe token. `/newsletter/unsubscribe?token=…` needs a button press, so link scanners can't unsubscribe people.
+
+```bash
+npm run r1b-growth:verify   # testimonials publish/hide, filters + no-JS, signup pending, duplicates, spam, unsubscribe, CSV export audited, permissions
+npx tsx --conditions=react-server scripts/screenshots-r1b-growth.ts   # → docs/screenshots/r1b-growth-*
+```

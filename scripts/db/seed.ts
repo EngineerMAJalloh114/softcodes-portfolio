@@ -85,6 +85,8 @@ export async function seed(db: ScriptDb) {
     { key: "process", data: content.processSection },
     { key: "pricing", data: content.pricing },
     { key: "blog", data: content.blog },
+    { key: "testimonials", data: content.testimonialsSection },
+    { key: "newsletter", data: content.newsletter },
   ];
 
   const excluded = (col: string) => sql.raw(`excluded."${col}"`);
@@ -158,7 +160,7 @@ export async function seed(db: ScriptDb) {
 export async function countRows(db: ScriptDb) {
   const tables = [
     "roles", "users", "sessions", "accounts", "verifications", "settings", "audit_log",
-    "content_sections", "services", "projects", "stack_items", "media", "leads", "prices", "pricing_packages", "faqs", "post_categories", "posts",
+    "content_sections", "services", "projects", "stack_items", "media", "leads", "prices", "pricing_packages", "faqs", "post_categories", "posts", "testimonials", "newsletter_subscribers",
   ];
   const out: Record<string, number> = {};
   for (const t of tables) {

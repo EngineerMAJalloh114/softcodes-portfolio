@@ -65,7 +65,7 @@ async function main() {
   const counts = await countRows(db);
   console.log("row counts:", counts);
   check("seed: 4 roles", counts.roles === 4);
-  check("seed: 15 content sections (incl. process T5, pricing T6, blog R1b)", counts.content_sections === 15, String(counts.content_sections));
+  check("seed: 17 content sections (incl. process T5, pricing T6, blog + testimonials + newsletter R1b)", counts.content_sections === 17, String(counts.content_sections));
   check("seed: 5 services", counts.services === 5);
   check("seed: 5 projects", counts.projects === 5);
   check("seed: 11 stack items", counts.stack_items === 11);

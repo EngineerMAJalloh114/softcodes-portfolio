@@ -7,6 +7,7 @@ import { Reveal } from "@/components/Reveal";
 import { Container } from "@/components/Section";
 import { MascotPlaceholder } from "@/components/MascotPlaceholder";
 import { StatusBadge } from "@/components/StatusBadge";
+import { TestimonialList } from "@/components/Testimonials";
 import { getProject, getPublishedContent, getSiteContent } from "@/lib/content/load";
 
 // Published projects are prerendered; new ones render on first visit (then cached).
@@ -34,7 +35,10 @@ export default async function CaseStudyPage({ params }: PageProps<"/projects/[sl
   const { slug } = await params;
   const project = await getProject(slug);
   if (!project) notFound();
-  const t = (await getSiteContent()).pages.caseStudy;
+  const c = await getSiteContent();
+  const t = c.pages.caseStudy;
+  // A-16: published testimonials linked to this project.
+  const quotes = c.testimonials.filter((q) => q.project === project.slug);
 
   return (
     <article className="pt-36 pb-24 sm:pt-44 sm:pb-32">
@@ -156,6 +160,15 @@ export default async function CaseStudyPage({ params }: PageProps<"/projects/[sl
             ))}
           </ul>
         </Reveal>
+
+        {quotes.length > 0 && (
+          <Reveal as="section" className="mt-20">
+            <h2 className="text-2xl font-extrabold tracking-tight text-text">{c.testimonialsSection.heading}</h2>
+            <div className="mt-6">
+              <TestimonialList items={quotes} />
+            </div>
+          </Reveal>
+        )}
       </Container>
     </article>
   );

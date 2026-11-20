@@ -10,6 +10,7 @@ import { Container, Eyebrow, Section } from "@/components/Section";
 import { AboutContent } from "@/components/AboutContent";
 import { CvButton } from "@/components/CvButton";
 import { PostCard } from "@/components/blog/PostCard";
+import { TestimonialList } from "@/components/Testimonials";
 import { livePosts } from "@/lib/blog/posts";
 import { CurrencyToggle } from "@/components/pricing/CurrencyToggle";
 import { PackageCard } from "@/components/pricing/PackageCard";
@@ -32,6 +33,11 @@ export default async function Home() {
       <Services c={c} />
       {c.process.visible && <Process c={c} />}
       <FeaturedProjects c={c} />
+      {c.testimonials.length > 0 && (
+        <Section id="testimonials" eyebrow={c.testimonialsSection.eyebrow} heading={c.testimonialsSection.heading}>
+          <TestimonialList items={c.testimonials.slice(0, 6)} />
+        </Section>
+      )}
       {c.packages.length > 0 && <PricingTeaser c={c} />}
       {latest.length > 0 && <LatestPosts c={c} posts={latest} />}
       <Stack c={c} />
