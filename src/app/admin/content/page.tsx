@@ -13,17 +13,19 @@ const fmt = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "
 /** A-15 / G-14: every public section and list, with draft status. */
 export default async function ContentPage() {
   await requirePermission("content.write");
-  const [sections, services, stack, faqs, packages] = await Promise.all([
+  const [sections, services, stack, faqs, packages, testimonials] = await Promise.all([
     listSections(),
     listCollection("services"),
     listCollection("stack"),
     listCollection("faqs"),
     listCollection("packages"),
+    listCollection("testimonials"),
   ]);
   const lists = [
     { def: COLLECTION_DEFS.services, rows: services },
     { def: COLLECTION_DEFS.stack, rows: stack },
     { def: COLLECTION_DEFS.faqs, rows: faqs },
+    { def: COLLECTION_DEFS.testimonials, rows: testimonials },
     { def: COLLECTION_DEFS.packages, rows: packages },
   ];
   return (

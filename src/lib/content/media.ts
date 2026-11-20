@@ -165,7 +165,7 @@ export async function updateAlt(actor: Actor, id: string, alt: unknown): Promise
 export async function findReferences(id: string): Promise<string[]> {
   const ref = `%media:${id}%`;
   const db = getDb();
-  const [sections, projects, cv, posts] = await Promise.all([
+  const [sections, projects, cv, posts, quotes] = await Promise.all([
     db
       .select({ key: schema.contentSections.key })
       .from(schema.contentSections)
@@ -184,12 +184,17 @@ export async function findReferences(id: string): Promise<string[]> {
       .where(
         sql`coalesce(${schema.posts.coverImage}, '') like ${ref} or ${schema.posts.body}::text like ${ref} or coalesce(${schema.posts.draft}::text, '') like ${ref}`,
       ),
+    db
+      .select({ name: schema.testimonials.name })
+      .from(schema.testimonials)
+      .where(sql`coalesce(${schema.testimonials.photo}, '') like ${ref} or coalesce(${schema.testimonials.draft}::text, '') like ${ref}`),
   ]);
   return [
     ...sections.map((s) => `section "${s.key}"`),
     ...projects.map((p) => `project "${p.name}"`),
     ...cv.map(() => "Settings → CV file"),
     ...posts.map((p) => `blog post "${p.title}"`),
+    ...quotes.map((q) => `testimonial from "${q.name}"`),
   ];
 }
 

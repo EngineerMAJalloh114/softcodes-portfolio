@@ -25,7 +25,7 @@ export async function SiteChrome({ children }: { children: ReactNode }) {
       <main id="main" className="flex-1">
         {children}
       </main>
-      <Footer contact={c.contact} footer={c.footer} />
+      <Footer contact={c.contact} footer={c.footer} newsletter={c.newsletter} />
       {c.features.whatsappButton && <WhatsAppButton href={c.contact.whatsappHireUrl} raised={c.preview} />}
     </>
   );

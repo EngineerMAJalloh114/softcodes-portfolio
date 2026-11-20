@@ -31,7 +31,7 @@ export type Field =
       name: string;
       label: string;
       type: "ref";
-      collection: "postCategories";
+      collection: "postCategories" | "projects";
       emptyLabel: string;
       help?: string;
       /** Filled in by the admin page from the DB (form only; validation checks the slug format). */

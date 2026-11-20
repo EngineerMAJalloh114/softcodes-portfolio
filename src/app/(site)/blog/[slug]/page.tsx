@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { optimisable, PostCard, PostMeta } from "@/components/blog/PostCard";
 import { RichText } from "@/components/blog/RichText";
+import { NewsletterForm } from "@/components/NewsletterForm";
 import { ArrowLeft } from "@/components/Icons";
 import { Reveal } from "@/components/Reveal";
 import { Container } from "@/components/Section";
@@ -98,6 +99,9 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
             ))}
           </ul>
         )}
+        <div className="mt-16">
+          <NewsletterForm newsletter={c.newsletter} source="blog" />
+        </div>
       </Container>
 
       {related.length > 0 && (

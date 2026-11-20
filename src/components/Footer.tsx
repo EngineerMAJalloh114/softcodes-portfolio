@@ -1,11 +1,18 @@
 import Link from "next/link";
 import type { SiteContent } from "@/lib/content/types";
+import { NewsletterForm } from "./NewsletterForm";
 import { ThemeImage } from "./ThemeImage";
 
-export function Footer({ contact, footer }: Pick<SiteContent, "contact" | "footer">) {
+export function Footer({ contact, footer, newsletter }: Pick<SiteContent, "contact" | "footer" | "newsletter">) {
   // pb-24 on small screens: room for the floating WhatsApp button (M-06).
   return (
     <footer className="border-t border-border bg-surface">
+      {/* M-13 newsletter signup */}
+      <div className="mx-auto w-full max-w-6xl px-6 pt-14 sm:px-8">
+        <div className="max-w-xl">
+          <NewsletterForm newsletter={newsletter} source="footer" compact />
+        </div>
+      </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pt-14 pb-24 sm:px-8 md:flex-row md:pb-14 md:items-end md:justify-between">
         <div className="flex items-center gap-4">
           <ThemeImage name="softcodes-icon" alt="" width={977} height={977} className="block h-12 w-12 opacity-80" />

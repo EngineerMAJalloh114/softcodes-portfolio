@@ -37,9 +37,10 @@ export async function CollectionIndex({ collection }: { collection: CollectionKe
 
 /** Fields with DB-backed options (e.g. a post's category) filled in for the form. */
 async function withOptions(fields: Field[]): Promise<Field[]> {
-  if (!fields.some((f) => f.type === "ref")) return fields;
-  const options = (await refOptions("postCategories")).map(({ value, label }) => ({ value, label }));
-  return fields.map((f) => (f.type === "ref" ? { ...f, options } : f));
+  const refs = fields.filter((f) => f.type === "ref");
+  if (!refs.length) return fields;
+  const options = Object.fromEntries(await Promise.all([...new Set(refs.map((f) => f.collection))].map(async (c) => [c, await refOptions(c)] as const)));
+  return fields.map((f) => (f.type === "ref" ? { ...f, options: options[f.collection] } : f));
 }
 
 /** Editor page for one item, or a blank form for `id === "new"`. */

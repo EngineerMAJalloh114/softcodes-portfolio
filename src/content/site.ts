@@ -533,6 +533,12 @@ export const pages = {
     description: "Websites, platforms and products built by Mohamed Abass Jalloh and Soft CODES.",
     heading: "All projects.",
     intro: "Every project, from live client sites to products in the works.",
+    allLabel: "All",
+    typeFilterLabel: "Type",
+    tagFilterLabel: "Topic",
+    emptyHeading: "No projects match this filter",
+    emptyBody: "Try another type or topic.",
+    clearLabel: "Show all projects",
   },
   contact: {
     title: "Contact",
@@ -573,6 +579,15 @@ export const pages = {
     intro: "Straight answers about how we work. Can\u2019t find yours? Ask us directly.",
     empty: "Answers are on the way. In the meantime, ask us directly.",
   },
+  unsubscribe: {
+    title: "Unsubscribe",
+    description: "Unsubscribe from the Soft CODES newsletter.",
+    heading: "Unsubscribe from the newsletter",
+    body: "Click the button to stop receiving the Soft CODES newsletter.",
+    button: "Unsubscribe",
+    done: "You're unsubscribed. You won't receive any more newsletters.",
+    invalid: "This unsubscribe link isn't valid. It may have been copied incorrectly.",
+  },
   blog: {
     title: "Blog",
     description: "Notes on building fast, owner-friendly websites and platforms — from Soft CODES in Freetown, Sierra Leone.",
@@ -608,6 +623,26 @@ export const postCategories: PostCategory[] = [
   { slug: "guides", name: "Guides", description: "Practical how-tos for business owners." },
   { slug: "updates", name: "Updates", description: "News from Soft CODES." },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Testimonials (A-16) and newsletter (M-13), R1b                      */
+/* ------------------------------------------------------------------ */
+
+/** No testimonials are seeded: real quotes only, added and approved by the owner. */
+export const testimonialsSection = {
+  eyebrow: "Testimonials",
+  heading: "What clients say.",
+};
+
+export const newsletter = {
+  heading: "Get new posts by email",
+  body: "Occasional notes on building websites and running a business online. No spam.",
+  emailLabel: "Email address",
+  consentLabel: "I agree to receive the Soft CODES newsletter by email. I can unsubscribe at any time.",
+  submitLabel: "Subscribe",
+  successTitle: "Thanks — you're on the list.",
+  successBody: "Before we send anything, we'll email you a link to confirm your subscription.",
+};
 
 /** Seeded as a draft only (DEC-21): the owner rewrites and publishes it. */
 export const welcomePost = {

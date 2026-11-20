@@ -45,6 +45,8 @@ function sectionSeed(key: SectionKey): Record<string, unknown> {
     process: s.process,
     pricing: s.pricing,
     blog: s.blog,
+    testimonials: s.testimonialsSection,
+    newsletter: s.newsletter,
     projects_section: s.projectsSection,
     stack_section: { eyebrow: s.stack.eyebrow, heading: s.stack.heading },
     contact_section: s.contactSection,
@@ -123,6 +125,7 @@ const TABLES = {
   faqs: schema.faqs,
   posts: schema.posts,
   postCategories: schema.postCategories,
+  testimonials: schema.testimonials,
 } as const;
 
 // Narrow helper type: all three tables share these columns.
@@ -151,6 +154,7 @@ function uniqueFieldError(c: CollectionKey): Record<string, string> {
   if (c === "faqs") return { question: "This question already exists." };
   if (c === "posts") return { slug: "Another post already uses this slug." };
   if (c === "postCategories") return { slug: "Another category already uses this slug." };
+  if (c === "testimonials") return { name: "That value is already in use." };
   if (c === "services") return { title: "Another service already has this title." };
   return { name: "This tool is already in the list." };
 }
@@ -175,11 +179,10 @@ export async function listCollection(c: CollectionKey): Promise<CollectionRow[]>
 }
 
 /** Options for a "ref" field: every item of the referenced collection (slug + name). */
-export async function refOptions(c: "postCategories"): Promise<{ id: number; value: string; label: string }[]> {
-  const t = schema.postCategories;
-  const rows = await getDb().select({ id: t.id, slug: t.slug, name: t.name }).from(t).orderBy(asc(t.sortOrder), asc(t.id));
-  void c;
-  return rows.map((r) => ({ id: r.id, value: r.slug, label: r.name }));
+export async function refOptions(c: "postCategories" | "projects"): Promise<{ value: string; label: string }[]> {
+  const t = c === "projects" ? schema.projects : schema.postCategories;
+  const rows = await getDb().select({ slug: t.slug, name: t.name }).from(t).orderBy(asc(t.sortOrder), asc(t.id));
+  return rows.map((r) => ({ value: r.slug, label: r.name }));
 }
 
 /** Current editable value (draft if any, else live) for one item. */

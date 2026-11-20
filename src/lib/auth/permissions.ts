@@ -16,6 +16,7 @@ export const PERMISSIONS = [
   "media.manage", // T5: media library
   "leads.read", // T7a: leads inbox (list, detail)
   "leads.write", // T7a: lead status changes and internal notes
+  "subscribers.manage", // R1b: newsletter subscribers (personal data) — list + CSV export
   "audit.view",
   "settings.view",
   "settings.write",
@@ -31,6 +32,7 @@ const MATRIX: Record<Role, readonly Permission[]> = {
     "media.manage",
     "leads.read",
     "leads.write",
+    "subscribers.manage",
     "audit.view",
   ],
   staff: ["admin.access", "dashboard.view", "leads.read", "leads.write"], // DEC-36: Dashboard + Leads
@@ -59,6 +61,7 @@ export const ADMIN_NAV = [
   { href: "/admin/pricing", label: "Pricing", permission: "content.write", release: null },
   { href: "/admin/blog", label: "Blog", permission: "content.write", release: null },
   { href: "/admin/leads", label: "Leads", permission: "leads.read", release: null },
+  { href: "/admin/subscribers", label: "Subscribers", permission: "subscribers.manage", release: null },
   { href: "/admin/media", label: "Media", permission: "media.manage", release: null },
   { href: "/admin/audit", label: "Audit log", permission: "audit.view", release: null },
   { href: "/admin/settings", label: "Settings", permission: "settings.view", release: null },

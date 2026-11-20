@@ -27,7 +27,7 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
   const db = getDb();
   const fallback = seedContent();
 
-  const [sectionRows, serviceRows, stackRows, projectRows, packageRows, faqRows, settings, postRows, categoryRows] = await Promise.all([
+  const [sectionRows, serviceRows, stackRows, projectRows, packageRows, faqRows, settings, postRows, categoryRows, testimonialRows] = await Promise.all([
     db.select().from(schema.contentSections),
     db.select().from(schema.services).orderBy(asc(schema.services.sortOrder), asc(schema.services.id)),
     db.select().from(schema.stackItems).orderBy(asc(schema.stackItems.sortOrder), asc(schema.stackItems.id)),
@@ -37,6 +37,7 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
     getSettings(),
     db.select().from(schema.posts).orderBy(desc(schema.posts.publishedAt), desc(schema.posts.id)),
     db.select().from(schema.postCategories).orderBy(asc(schema.postCategories.sortOrder), asc(schema.postCategories.id)),
+    db.select().from(schema.testimonials).orderBy(asc(schema.testimonials.sortOrder), asc(schema.testimonials.id)),
   ]);
 
   const section = <K extends keyof SiteContent>(key: string, seedValue: SiteContent[K]): SiteContent[K] => {
@@ -76,12 +77,14 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
   const person = section<"person">("person", fallback.person);
   const postViews = visible(postRows).map((r) => ({ row: r, v: view(r, preview) }));
   const postBodies = postViews.map(({ v }) => sanitizeDoc(v.body));
+  const testimonialViews = visible(testimonialRows).map((r) => ({ row: r, v: view(r, preview) }));
   const refs = [
     person.photo,
     settings.cvMediaId ? `media:${settings.cvMediaId}` : null,
     ...projects.flatMap((p) => p.screenshots.map((s) => s.src)),
     ...postViews.map(({ v }) => v.coverImage),
     ...postBodies.flatMap(imageRefs),
+    ...testimonialViews.map(({ v }) => v.photo),
   ]
     .map(mediaIdFromRef)
     .filter((id): id is string => !!id);
@@ -171,6 +174,19 @@ async function loadFromDb(preview: boolean): Promise<SiteContent> {
     }),
     pages: section<"pages">("pages", fallback.pages),
     blog: section<"blog">("blog", fallback.blog),
+    testimonialsSection: section<"testimonialsSection">("testimonials", fallback.testimonialsSection),
+    testimonials: testimonialViews.map(({ row, v }) => ({
+      id: row.id,
+      quote: v.quote,
+      name: v.name,
+      role: v.role,
+      company: v.company,
+      photo: resolve(v.photo),
+      project: v.project,
+      rating: v.rating ? Number(v.rating) : null,
+      ...(preview && !row.published ? { isDraft: true } : {}),
+    })),
+    newsletter: section<"newsletter">("newsletter", fallback.newsletter),
     posts,
     postCategories: visible(categoryRows).map((r) => {
       const v = view(r, preview);
@@ -208,7 +224,13 @@ async function loadOrFallback(preview: boolean): Promise<SiteContent> {
   }
 }
 
-const getPublished = unstable_cache(() => loadOrFallback(false), ["site-content", "v1"], {
+/**
+ * The cache key includes the content shape (its top-level keys), so a release that adds a
+ * field never reads an entry cached by an older build (the data cache survives deploys).
+ */
+const CONTENT_SHAPE = Object.keys(seedContent()).sort().join(",");
+
+const getPublished = unstable_cache(() => loadOrFallback(false), ["site-content", CONTENT_SHAPE], {
   tags: [CONTENT_TAG],
   revalidate: 3600, // safety net; saves revalidate immediately via the tag
 });
