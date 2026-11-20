@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePermission } from "@/lib/auth/guard";
-import { getItemForEdit, listCollection } from "@/lib/content/admin";
+import { getItemForEdit, listCollection, refOptions } from "@/lib/content/admin";
 import { COLLECTION_DEFS, type CollectionKey } from "@/lib/content/defs";
-import { emptyObject } from "@/lib/content/fields";
+import { emptyObject, type Field } from "@/lib/content/fields";
 import { previewsFor } from "@/lib/content/media";
 import { CollectionList } from "./CollectionList";
 import { ContentEditor } from "./ContentEditor";
@@ -35,12 +35,23 @@ export async function CollectionIndex({ collection }: { collection: CollectionKe
   );
 }
 
+/** Fields with DB-backed options (e.g. a post's category) filled in for the form. */
+async function withOptions(fields: Field[]): Promise<Field[]> {
+  if (!fields.some((f) => f.type === "ref")) return fields;
+  const options = (await refOptions("postCategories")).map(({ value, label }) => ({ value, label }));
+  return fields.map((f) => (f.type === "ref" ? { ...f, options } : f));
+}
+
 /** Editor page for one item, or a blank form for `id === "new"`. */
 export async function CollectionItem({ collection, id }: { collection: CollectionKey; id: string }) {
   await requirePermission("content.write");
-  const def = COLLECTION_DEFS[collection];
+  const def = { ...COLLECTION_DEFS[collection], fields: await withOptions(COLLECTION_DEFS[collection].fields) };
   const previewOf = (v: Record<string, unknown>) =>
-    collection === "projects" ? `/projects/${String(v.slug ?? "")}` : def.path.split("#")[0] || "/";
+    collection === "projects"
+      ? `/projects/${String(v.slug ?? "")}`
+      : collection === "posts"
+        ? `/blog/${String(v.slug ?? "")}`
+        : def.path.split("#")[0] || "/";
 
   if (id === "new") {
     const initial = emptyObject(def.fields);

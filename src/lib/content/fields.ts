@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isEmptyDoc, sanitizeDoc } from "@/lib/blog/richtext";
 import { CTA_KINDS, WHATSAPP_HOST_RE } from "./whatsapp";
 
 /**
@@ -20,7 +21,22 @@ export type Field =
   /** Call to action: label + link type (whatsapp | url | anchor). WhatsApp uses the Settings number (DEC-37). */
   | { name: string; label: string; type: "cta"; help?: string }
   /** Money in integer minor units (cents); the form shows major units (e.g. 3,500). */
-  | { name: string; label: string; type: "money"; currency: "USD" | "SLE"; help?: string };
+  | { name: string; label: string; type: "money"; currency: "USD" | "SLE"; help?: string }
+  /** Rich text (DEC-42): Tiptap JSON, sanitised by allowlist on save and again on render. */
+  | { name: string; label: string; type: "richtext"; required?: boolean; help?: string }
+  /** Calendar date YYYY-MM-DD, or empty (null). */
+  | { name: string; label: string; type: "date"; help?: string }
+  /** Slug of an item in another collection; options are loaded from the DB for the form. */
+  | {
+      name: string;
+      label: string;
+      type: "ref";
+      collection: "postCategories";
+      emptyLabel: string;
+      help?: string;
+      /** Filled in by the admin page from the DB (form only; validation checks the slug format). */
+      options?: { value: string; label: string }[];
+    };
 
 /** Links: site paths, in-page anchors, https URLs, mailto:, tel:, WhatsApp. */
 export const HREF_RE = /^(\/(?!\/)[^\s]*|#[\w-]*|https:\/\/[^\s]+|mailto:[^\s@]+@[^\s@]+|tel:\+?[0-9 ]+)$/;
@@ -91,6 +107,27 @@ function zodFor(field: Field): z.ZodType {
         .int(`${field.label}: whole cents only.`)
         .min(0, `${field.label} can't be negative.`)
         .max(1_000_000_000, `${field.label} is too large.`);
+    case "richtext": {
+      const base = z.unknown().transform(sanitizeDoc);
+      return field.required === false ? base : base.refine((d) => !isEmptyDoc(d), `${field.label} is empty.`);
+    }
+    case "date":
+      return z
+        .string()
+        .trim()
+        .nullable()
+        .transform((v) => (v ? v : null))
+        .refine(
+          (v) => v === null || (/^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(`${v}T00:00:00Z`))),
+          `${field.label}: use a date like 2026-11-20.`,
+        );
+    case "ref":
+      return z
+        .string()
+        .trim()
+        .nullable()
+        .transform((v) => (v ? v : null))
+        .refine((v) => v === null || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(v), `${field.label}: choose an option.`);
   }
 }
 
@@ -154,6 +191,11 @@ export function emptyValue(field: Field): unknown {
       return { label: "", kind: "url", href: "" };
     case "money":
       return 0;
+    case "richtext":
+      return { type: "doc", content: [{ type: "paragraph" }] };
+    case "date":
+    case "ref":
+      return null;
     default:
       return "";
   }

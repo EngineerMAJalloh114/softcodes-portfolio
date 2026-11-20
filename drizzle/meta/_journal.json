@@ -57,6 +57,20 @@
       "when": 1795128744407,
       "tag": "0007_t7a_contact_form_labels",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795166251824,
+      "tag": "0008_r1b_blog",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795166598329,
+      "tag": "0009_r1b_blog_nav",
+      "breakpoints": true
     }
   ]
 }

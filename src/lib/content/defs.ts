@@ -46,6 +46,7 @@ export const SECTION_KEYS = [
   "services_section",
   "process",
   "pricing",
+  "blog",
   "projects_section",
   "stack_section",
   "contact_section",
@@ -139,6 +140,26 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
           { name: "body", label: "Description", type: "textarea", max: 300 },
         ],
       },
+    ],
+  },
+  blog: {
+    key: "blog",
+    label: "Blog — page & home teaser",
+    description: "Blog page heading, labels and the home page “Latest posts” teaser. Posts are in Admin → Blog.",
+    path: "/blog",
+    fields: [
+      eyebrow,
+      heading,
+      { name: "intro", label: "Intro", type: "textarea", max: 400 },
+      { name: "allCategoriesLabel", label: "\"All posts\" filter label", type: "text", max: 40 },
+      { name: "emptyHeading", label: "Empty state heading", type: "text", max: 80 },
+      { name: "emptyBody", label: "Empty state text", type: "text", max: 200 },
+      { name: "readingTimeLabel", label: "Reading time label", type: "text", max: 20, help: "Shown after the number, e.g. “5 min read”." },
+      { name: "relatedHeading", label: "Related posts heading", type: "text", max: 60 },
+      { name: "latestEyebrow", label: "Home teaser eyebrow", type: "text", max: 40 },
+      { name: "latestHeading", label: "Home teaser heading", type: "text", max: 80 },
+      { name: "latestLinkLabel", label: "Home teaser link", type: "text", max: 40 },
+      { name: "rssLabel", label: "RSS link label", type: "text", max: 40 },
     ],
   },
   pricing: {
@@ -285,6 +306,7 @@ export const SECTION_DEFS: Record<SectionKey, SectionDef> = {
         { name: "cvLabel", label: "\"Download CV\" button", type: "text", max: 40, help: "Shown on About and in the hero only when a CV file is set in Settings." },
       ]),
       meta("pricing", "Pricing page"),
+      meta("blog", "Blog page"),
       meta("faq", "FAQ page", [
         { name: "heading", label: "Heading", type: "text", max: 120 },
         { name: "intro", label: "Intro", type: "textarea", max: 300 },
@@ -330,7 +352,7 @@ export const isSectionKey = (v: unknown): v is SectionKey =>
 /* Collections                                                         */
 /* ------------------------------------------------------------------ */
 
-export const COLLECTION_KEYS = ["services", "stack", "projects", "packages", "faqs"] as const;
+export const COLLECTION_KEYS = ["services", "stack", "projects", "packages", "faqs", "posts", "postCategories"] as const;
 export type CollectionKey = (typeof COLLECTION_KEYS)[number];
 
 export type CollectionDef = {
@@ -437,6 +459,42 @@ export const COLLECTION_DEFS: Record<CollectionKey, CollectionDef> = {
       { name: "question", label: "Question", type: "text", max: 200 },
       { name: "answer", label: "Answer", type: "textarea", max: 2000 },
       { name: "category", label: "Category", type: "select", options: FAQ_CATEGORY_OPTIONS },
+    ],
+  },
+  posts: {
+    key: "posts",
+    label: "Blog posts",
+    singular: "post",
+    titleField: "title",
+    description: "Articles on the blog (M-05). Drafts are private; publish to put a post live.",
+    path: "/blog",
+    adminPath: "/admin/blog",
+    fields: [
+      { name: "title", label: "Title", type: "text", max: 120 },
+      { name: "slug", label: "URL slug", type: "slug", help: "The post's address: /blog/<slug>." },
+      { name: "excerpt", label: "Excerpt", type: "textarea", max: 300, help: "One or two sentences for the blog list, home page and RSS." },
+      { name: "coverImage", label: "Cover image", type: "image", help: "Also used as the social sharing image." },
+      { name: "category", label: "Category", type: "ref", collection: "postCategories", emptyLabel: "No category" },
+      { name: "tags", label: "Tags", type: "stringList", itemLabel: "Tag", max: 10, itemMax: 30 },
+      { name: "body", label: "Article", type: "richtext" },
+      { name: "seoTitle", label: "SEO title", type: "text", max: 70, required: false, help: "Optional. Defaults to the title." },
+      { name: "seoDescription", label: "SEO description", type: "textarea", max: 160, required: false, help: "Optional. Defaults to the excerpt." },
+      { name: "publishedAt", label: "Publish date", type: "date", help: "Shown on the post. Empty = today when you publish. A future date keeps the post hidden until that day." },
+      { name: "featured", label: "Feature this post (shown first)", type: "boolean" },
+    ],
+  },
+  postCategories: {
+    key: "postCategories",
+    label: "Blog categories",
+    singular: "category",
+    titleField: "name",
+    description: "Categories for blog posts; the blog page can be filtered by them.",
+    path: "/blog",
+    adminPath: "/admin/blog/categories",
+    fields: [
+      { name: "name", label: "Name", type: "text", max: 40 },
+      { name: "slug", label: "URL slug", type: "slug", help: "Used in the filter link: /blog?category=<slug>." },
+      { name: "description", label: "Description", type: "textarea", max: 200, required: false },
     ],
   },
 };

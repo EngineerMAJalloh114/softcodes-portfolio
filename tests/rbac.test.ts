@@ -54,7 +54,7 @@ describe("RBAC matrix (G-03, K-05)", () => {
 
   it("staff and client cannot reach owner-only, audit or content routes", () => {
     for (const role of ["staff", "client"] as const) {
-      for (const path of ["/admin/settings", "/admin/audit", "/admin/content", "/admin/projects", "/admin/media", "/admin/content/sections/hero", "/admin/projects/abc", "/admin/pricing", "/admin/content/faqs"]) {
+      for (const path of ["/admin/settings", "/admin/audit", "/admin/content", "/admin/projects", "/admin/media", "/admin/content/sections/hero", "/admin/projects/abc", "/admin/pricing", "/admin/content/faqs", "/admin/blog", "/admin/blog/categories", "/admin/blog/3"]) {
         assert.equal(can(role, permissionForPath(path)!), false, `${role} ${path}`);
       }
     }

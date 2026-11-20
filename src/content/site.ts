@@ -78,6 +78,7 @@ export const nav = {
     { label: "Projects", href: "/projects" },
     { label: "Pricing", href: "/pricing" },
     { label: "FAQ", href: "/faq" },
+    { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ],
   hireLabel: "Hire me",
@@ -572,11 +573,84 @@ export const pages = {
     intro: "Straight answers about how we work. Can\u2019t find yours? Ask us directly.",
     empty: "Answers are on the way. In the meantime, ask us directly.",
   },
+  blog: {
+    title: "Blog",
+    description: "Notes on building fast, owner-friendly websites and platforms — from Soft CODES in Freetown, Sierra Leone.",
+  },
   notFound: {
     title: "Page not found",
     body: "This page wandered off. Let's get you back home.",
     cta: "Back to home",
   },
+};
+
+/* ------------------------------------------------------------------ */
+/* Blog (M-05, R1b)                                                    */
+/* ------------------------------------------------------------------ */
+
+export const blog = {
+  eyebrow: "Blog",
+  heading: "Notes from the workshop.",
+  intro: "How I plan, build and run websites and platforms — and what I learn along the way.",
+  allCategoriesLabel: "All posts",
+  emptyHeading: "No posts yet",
+  emptyBody: "The first articles are on the way.",
+  readingTimeLabel: "min read",
+  relatedHeading: "Keep reading",
+  latestEyebrow: "Blog",
+  latestHeading: "Latest posts.",
+  latestLinkLabel: "All posts",
+  rssLabel: "RSS feed",
+};
+
+export type PostCategory = { slug: string; name: string; description: string };
+export const postCategories: PostCategory[] = [
+  { slug: "guides", name: "Guides", description: "Practical how-tos for business owners." },
+  { slug: "updates", name: "Updates", description: "News from Soft CODES." },
+];
+
+/** Seeded as a draft only (DEC-21): the owner rewrites and publishes it. */
+export const welcomePost = {
+  slug: "welcome",
+  title: "Welcome to the Soft CODES blog",
+  excerpt: "Why I’m starting a blog, and what you can expect to read here.",
+  coverImage: null as string | null,
+  category: "updates" as string | null,
+  tags: ["soft codes", "news"],
+  body: {
+    type: "doc",
+    content: [
+      { type: "paragraph", content: [{ type: "text", text: "TODO(owner): replace this draft with your own words before publishing (DEC-21)." }] },
+      { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "Why a blog?" }] },
+      {
+        type: "paragraph",
+        content: [
+          { type: "text", text: "I build websites and platforms that owners can run themselves. Here I’ll share how I plan projects, what I learn while building them, and practical tips for running a business online in Sierra Leone." },
+        ],
+      },
+      { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "What to expect" }] },
+      {
+        type: "bulletList",
+        content: [
+          { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Behind-the-scenes notes from client projects" }] }] },
+          { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Guides for owners: content, payments, hosting" }] }] },
+          { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Updates on Soft CODES products" }] }] },
+        ],
+      },
+      {
+        type: "paragraph",
+        content: [
+          { type: "text", text: "Have a question you’d like answered? " },
+          { type: "text", text: "Get in touch", marks: [{ type: "link", attrs: { href: "/contact" } }] },
+          { type: "text", text: "." },
+        ],
+      },
+    ],
+  },
+  seoTitle: "",
+  seoDescription: "",
+  publishedAt: null as string | null,
+  featured: false,
 };
 
 export const featuredProjects = projects.filter((p) => p.featured);

@@ -44,6 +44,7 @@ function sectionSeed(key: SectionKey): Record<string, unknown> {
     services_section: { eyebrow: s.services.eyebrow, heading: s.services.heading },
     process: s.process,
     pricing: s.pricing,
+    blog: s.blog,
     projects_section: s.projectsSection,
     stack_section: { eyebrow: s.stack.eyebrow, heading: s.stack.heading },
     contact_section: s.contactSection,
@@ -120,11 +121,19 @@ const TABLES = {
   projects: schema.projects,
   packages: schema.pricingPackages,
   faqs: schema.faqs,
+  posts: schema.posts,
+  postCategories: schema.postCategories,
 } as const;
 
 // Narrow helper type: all three tables share these columns.
 type AnyTable = typeof schema.services;
 const table = (c: CollectionKey) => TABLES[c] as unknown as AnyTable;
+
+/** Blog posts get today's date when published without one (M-05). */
+function withPublishDefaults(c: CollectionKey, value: Record<string, unknown>, publish: boolean) {
+  if (c === "posts" && publish && !value.publishedAt) return { ...value, publishedAt: new Date().toISOString().slice(0, 10) };
+  return value;
+}
 
 /** Columns written from validated input (field names = Drizzle column keys). */
 function liveColumns(c: CollectionKey, value: Record<string, unknown>) {
@@ -140,6 +149,8 @@ function uniqueFieldError(c: CollectionKey): Record<string, string> {
   if (c === "projects") return { slug: "Another project already uses this slug." };
   if (c === "packages") return { slug: "Another package already uses this ID." };
   if (c === "faqs") return { question: "This question already exists." };
+  if (c === "posts") return { slug: "Another post already uses this slug." };
+  if (c === "postCategories") return { slug: "Another category already uses this slug." };
   if (c === "services") return { title: "Another service already has this title." };
   return { name: "This tool is already in the list." };
 }
@@ -163,6 +174,14 @@ export async function listCollection(c: CollectionKey): Promise<CollectionRow[]>
   return rows.map((r) => ({ ...r, title: String(r.title) }));
 }
 
+/** Options for a "ref" field: every item of the referenced collection (slug + name). */
+export async function refOptions(c: "postCategories"): Promise<{ id: number; value: string; label: string }[]> {
+  const t = schema.postCategories;
+  const rows = await getDb().select({ id: t.id, slug: t.slug, name: t.name }).from(t).orderBy(asc(t.sortOrder), asc(t.id));
+  void c;
+  return rows.map((r) => ({ id: r.id, value: r.slug, label: r.name }));
+}
+
 /** Current editable value (draft if any, else live) for one item. */
 export async function getItemForEdit(c: CollectionKey, id: number) {
   const t = table(c);
@@ -183,7 +202,7 @@ export async function createItem(actor: Actor, c: CollectionKey, input: unknown,
   try {
     const [row] = await db
       .insert(t)
-      .values({ ...liveColumns(c, parsed.data), sortOrder: max + 1, published: opts.publish, draft: null, updatedBy: actor.userId } as never)
+      .values({ ...liveColumns(c, withPublishDefaults(c, parsed.data, opts.publish)), sortOrder: max + 1, published: opts.publish, draft: null, updatedBy: actor.userId } as never)
       .returning({ id: t.id });
     await writeAudit({
       action: opts.publish ? "content.item.created_published" : "content.item.created",
@@ -211,7 +230,7 @@ export async function saveItem(actor: Actor, c: CollectionKey, id: number, input
       .update(t)
       .set(
         opts.publish
-          ? ({ ...liveColumns(c, parsed.data), published: true, draft: null, updatedBy: actor.userId } as never)
+          ? ({ ...liveColumns(c, withPublishDefaults(c, parsed.data, true)), published: true, draft: null, updatedBy: actor.userId } as never)
           : ({ draft: parsed.data, updatedBy: actor.userId } as never),
       )
       .where(eq(t.id, id))
