@@ -163,3 +163,28 @@ T7 is split (DEC-40). T7a needs no external accounts. T7b adds the Cal.com embed
 npm run t7a:verify   # end-to-end: form → lead + reference, invalid/honeypot/too-fast/rate limit, inbox + permissions, status/notes audited, WhatsApp button, CV
 npx tsx --conditions=react-server scripts/screenshots-t7a.ts   # → docs/screenshots/t7a-*
 ```
+
+## Blog — R1b Part 1
+
+R1b runs before T7b and T8 (DEC-41).
+
+- **Writing posts:** Admin → **Blog** (owner and admin, `content.write`).
+  - A post has: title, slug, excerpt, cover image (from Media), category, tags, article, SEO title and description, publish date, featured, and draft/published.
+  - Categories are under Blog → **Categories**.
+  - The editor (Tiptap) has headings, bold/italic, lists, links, images from Media, code blocks and quotes.
+- **Storage and safety (DEC-42):** the article is stored as JSON. `src/lib/blog/richtext.ts` cleans it against an allowlist when a post is saved, and again before the page renders it.
+  - Scripts, iframes, event handlers (`onerror`…), unknown attributes and `javascript:`/`data:` links are removed.
+  - Images must come from the media library.
+  - The renderer (`src/components/blog/RichText.tsx`) builds React elements and never injects HTML.
+- **Public pages:**
+  - `/blog`: featured posts first, then newest; filter by category (`?category=`, plain links, works without JS); 9 per page.
+  - `/blog/<slug>`: reading time, cover image and related posts.
+  - The home page shows "Latest posts" only when at least one post is published, and the nav has a Blog link.
+  - A post with a future publish date stays hidden until that day. An empty date becomes today when you publish.
+- **SEO:** each post has its own title, description and social image (its cover), plus `BlogPosting` structured data. The sitemap and the RSS feed (`/blog/rss.xml`) list published posts only.
+- **Seed:** one draft, "Welcome to the Soft CODES blog", for the owner to rewrite and publish (DEC-21). Nothing is published.
+
+```bash
+npm run r1b-blog:verify   # end-to-end: permissions, editor → draft hidden → publish → live/RSS/sitemap/home, sanitiser (action + tampered DB), scheduled post, audit
+npx tsx --conditions=react-server scripts/screenshots-r1b-blog.ts   # → docs/screenshots/r1b-blog-*
+```

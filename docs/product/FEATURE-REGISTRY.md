@@ -26,8 +26,8 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 | J. Advanced business intelligence | 10 | 1 | 9 |
 | K. Security and infrastructure | 23 | 11 | 12 |
 | L. Future platform expansion | 13 | 0 | 13 |
-| M. Site features agreed in chat (2026-11-19) | 17 | 10 | 7 |
-| **Total** | **205** | **43** | **162** |
+| M. Site features agreed in chat (2026-11-19) | 17 | 11 | 6 |
+| **Total** | **205** | **44** | **161** |
 
 Counts *Implemented* includes *In development*. Nothing is Verified or Released yet: the site is not deployed.
 
@@ -162,7 +162,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every page has unique title/description; sitemap valid; Search Console verified after domain.
 - **Status:** In development
-- **Evidence:** Metadata/OG/sitemap/robots done; structured data + Search Console pending
+- **Evidence:** Metadata/OG/sitemap/robots done; structured data + Search Console pending. R1b Part 1 (branch feat/r1b-blog): blog posts — unique title/description per post, og:type article + cover image, BlogPosting structured data, posts in sitemap.xml (published, dated today or earlier), RSS feed /blog/rss.xml
+- **Decisions:** DEC-42
 
 ### A-13 — Accessibility
 - **Description:** WCAG 2.2 AA across the site.
@@ -203,6 +204,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Acceptance criteria:** Testimonials shown only after admin approval; no Review/rating structured data (DEC-44, Google self-serving review policy). _Was: "Review structured data" — changed 2026-11-20 by DEC-44._
 - **Status:** Planned
 - **Evidence:** —
+- **Decisions:** DEC-44
 
 ## B. Intelligent project acquisition
 
@@ -1223,7 +1225,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** See A-15.
 - **Status:** In development
-- **Evidence:** T5 (PR #14, branch feat/t5-content): CMS screens — section editors, collection lists (order, publish/unpublish) and item editors driven by one field spec (src/lib/content/defs.ts); drafts + Preview draft (Next Draft Mode, content.write only); Zod validation, unsaved-changes warning, success/error toasts. Remaining: pricing/FAQ screens (T6)
+- **Evidence:** T5 (PR #14, branch feat/t5-content): CMS screens — section editors, collection lists (order, publish/unpublish) and item editors driven by one field spec (src/lib/content/defs.ts); drafts + Preview draft (Next Draft Mode, content.write only); Zod validation, unsaved-changes warning, success/error toasts. Remaining: pricing/FAQ screens (T6). R1b Part 1 (branch feat/r1b-blog): Blog posts and categories in the admin (Admin → Blog)
 
 ### G-15 — Notification management
 - **Description:** Templates and on/off per event.
@@ -1799,7 +1801,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Invalid input rejected server side.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments. T6 (branch feat/t6-pricing-faq): Zod on packages (money in minor units, non-negative integers) and FAQs; hand-typed WhatsApp links rejected in every link field (DEC-37); CTA link type validated per kind. T7a (branch feat/t7a-leads): Zod on the quote form (lengths, email, phone pattern, project type must be a published package, budget/currency/source enums), lead status, notes and the new Settings fields
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments. T6 (branch feat/t6-pricing-faq): Zod on packages (money in minor units, non-negative integers) and FAQs; hand-typed WhatsApp links rejected in every link field (DEC-37); CTA link type validated per kind. T7a (branch feat/t7a-leads): Zod on the quote form (lengths, email, phone pattern, project type must be a published package, budget/currency/source enums), lead status, notes and the new Settings fields. R1b Part 1 (branch feat/r1b-blog): blog rich text sanitised by allowlist (src/lib/blog/richtext.ts) on every save and before render — script/iframe/unknown nodes dropped, event-handler and unknown attributes stripped, javascript:/data:/vbscript:/protocol-relative links removed, images only from the media library; Zod on all post/category fields (slug, date, category reference)
 
 ### K-16 — Audit logging
 - **Description:** Append-only audit log of sensitive actions.
@@ -1809,7 +1811,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted). T6 (branch feat/t6-pricing-faq): package and FAQ writes audited as content.item.* (created, published, deleted verified by scripts/verify-t6.ts). T7a (branch feat/t7a-leads): lead.created, lead.status_changed (who, from → to) and lead.note_added audited; shown as the lead's history; Settings CV/WhatsApp-button changes audited with settings.updated
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted). T6 (branch feat/t6-pricing-faq): package and FAQ writes audited as content.item.* (created, published, deleted verified by scripts/verify-t6.ts). T7a (branch feat/t7a-leads): lead.created, lead.status_changed (who, from → to) and lead.note_added audited; shown as the lead's history; Settings CV/WhatsApp-button changes audited with settings.updated. R1b Part 1 (branch feat/r1b-blog): blog post and category changes audited as content.item.* (created, draft_saved, published, deleted verified)
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
@@ -2077,8 +2079,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner publishes posts from admin; RSS + sitemap entries.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** R1b Part 1 (branch feat/r1b-blog): Admin → Blog — posts (title, slug, excerpt, cover image from Media, category, tags, rich text body, SEO title/description, publish date, featured, draft/published, preview) and categories, owner + admin only (content.write). Rich text per DEC-42: Tiptap editor (headings, bold/italic, lists, links, images from Media, code blocks, quotes), stored as JSON, allowlist-sanitised on save and again on render (no raw HTML). Public: /blog (featured first, newest first, category filter as plain links, 9 per page), /blog/[slug] (reading time, cover, related posts), home “Latest posts” (hidden when none), nav link. Future-dated posts stay hidden until their day. SEO: per-post metadata + OG image (cover), BlogPosting structured data, posts in the sitemap, RSS at /blog/rss.xml. Seed: one draft “Welcome to the Soft CODES blog” (DEC-21), nothing published. Proof: scripts/verify-r1b-blog.ts (npm run r1b-blog:verify, 47 checks), tests/r1b-blog.test.ts; screenshots docs/screenshots/r1b-blog-*
+- **Decisions:** DEC-21, DEC-41, DEC-42
 
 ### M-06 — WhatsApp chat button
 - **Description:** Floating button opening WhatsApp chat.

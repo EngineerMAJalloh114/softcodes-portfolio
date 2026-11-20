@@ -143,7 +143,7 @@ export function RichTextEditor({
 
   return (
     <div className={`mt-2 rounded-2xl border bg-bg ${invalid ? "border-text" : "border-field"}`}>
-      <div role="toolbar" aria-label="Formatting" className="flex flex-wrap gap-1.5 border-b border-border p-2">
+      <div role="toolbar" aria-label="Formatting" className="sticky top-16 z-10 flex flex-wrap gap-1.5 rounded-t-2xl border-b border-border bg-bg p-2">
         {tool("H2", state.h2, () => editor.chain().focus().toggleHeading({ level: 2 }).run(), { title: "Heading", testId: "h2" })}
         {tool("H3", state.h3, () => editor.chain().focus().toggleHeading({ level: 3 }).run(), { title: "Subheading", testId: "h3" })}
         {tool("B", state.bold, () => editor.chain().focus().toggleBold().run(), { title: "Bold", testId: "bold" })}
