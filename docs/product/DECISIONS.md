@@ -51,6 +51,7 @@ Every decision is recorded here with date and the features it affects. Changes c
 | DEC-43 | 2026-11-20 | Newsletter signups stored as "pending" until Resend is live (T7b); then each gets a double opt-in email; only "confirmed" receive newsletters | M-13, H-01 |
 | DEC-44 | 2026-11-20 | Testimonials have no Review/rating structured data (Google self-serving review policy) | A-16, A-12 |
 | DEC-45 | 2026-11-20 | From T8 on, schema/data migrations run on a Neon branch per PR (`neon checkout <pr-branch> --create`); production migrations run only after merge, as a deploy step. Never migrate production from a feature branch again | M-08, K-07, K-17, T8 |
+| DEC-46 | 2026-11-20 | MASTER-ROADMAP.md adopted as the strict execution order (P1–P8 build phases, L1–L3 launch track parked until owner inputs; Vercel suspended by owner) | All |
 
 ## Open decisions (need owner answer)
 | # | Decision | Options | Recommendation | Why | Needed by |

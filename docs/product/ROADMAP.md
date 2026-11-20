@@ -1,4 +1,6 @@
-# Soft CODES — Master Roadmap
+# Soft CODES — Release Overview
+
+> Execution order lives in **MASTER-ROADMAP.md** (DEC-46). This file describes releases only.
 
 Status: **DRAFT for owner review** · 2026-11-19
 
