@@ -208,7 +208,13 @@ async function loadOrFallback(preview: boolean): Promise<SiteContent> {
   }
 }
 
-const getPublished = unstable_cache(() => loadOrFallback(false), ["site-content", "v1"], {
+/**
+ * The cache key includes the content shape (its top-level keys), so a release that adds a
+ * field never reads an entry cached by an older build (the data cache survives deploys).
+ */
+const CONTENT_SHAPE = Object.keys(seedContent()).sort().join(",");
+
+const getPublished = unstable_cache(() => loadOrFallback(false), ["site-content", CONTENT_SHAPE], {
   tags: [CONTENT_TAG],
   revalidate: 3600, // safety net; saves revalidate immediately via the tag
 });
