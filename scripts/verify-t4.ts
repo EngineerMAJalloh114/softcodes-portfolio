@@ -52,8 +52,9 @@ function settingsActionId(): string {
  */
 async function callSettingsAction(client: Client, fields: Record<string, string | string[]>) {
   const form = new FormData();
+  // React 19.3 FormData argument encoding; "0" (the argument list) last — decoded in stream order.
+  for (const [k, v] of Object.entries(fields)) for (const one of [v].flat()) form.append(`_1_${k}`, one);
   form.append("0", JSON.stringify([{ status: "idle" }, "$K1"]));
-  for (const [k, v] of Object.entries(fields)) for (const one of [v].flat()) form.append(`1_${k}`, one);
   return client.raw("/admin/settings", { method: "POST", body: form, headers: { "next-action": settingsActionId(), accept: "text/x-component" } });
 }
 
@@ -143,14 +144,14 @@ async function main() {
     );
     const ownerDash = await owner.client.get("/admin");
     check(
-      "owner dashboard: counts, latest activity, 'Coming in T7' badge (Pricing shipped in T6)",
-      ["Leads", "Projects", "Content items", "Media", "Latest activity", "Coming in T7"].every((s) => ownerDash.text.includes(s)),
+      "owner dashboard: counts, latest activity; no 'Coming in' badges left (Leads shipped in T7a)",
+      ["New leads", "Projects", "Content items", "Media", "Latest activity"].every((s) => ownerDash.text.includes(s)) && !ownerDash.text.includes("Coming in T"),
     );
 
     /* ---------- settings server action (HTTP) ---------- */
     const t0 = new Date(Date.now() - 1000);
     // Denied roles: the action's permission check answers 403 before the body is read.
-    const good = { contactEmail: "engineermohamedabassjalloh3855@gmail.com", whatsapp: "+232 32 829 316", location: "Freetown, Sierra Leone", depositPercent: "40", currencies: ["USD", "SLE"] };
+    const good = { contactEmail: "engineermohamedabassjalloh3855@gmail.com", whatsapp: "+232 32 829 316", location: "Freetown, Sierra Leone", depositPercent: "40", currencies: ["USD", "SLE"], whatsappButton: "on" };
     const before = await db.select().from(schema.settings).where(eq(schema.settings.key, "payments.deposit_percent"));
 
     for (const u of [admin, staff, client]) {

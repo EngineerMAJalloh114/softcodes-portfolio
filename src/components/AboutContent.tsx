@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CvButton } from "./CvButton";
 import { ArrowRight } from "./Icons";
 import { MascotPlaceholder } from "./MascotPlaceholder";
 import { Reveal } from "./Reveal";
@@ -30,7 +31,7 @@ function Portrait({ person }: { person: SiteContent["person"] }) {
  * About layout reference and a new photo.
  */
 export function AboutContent({ c, variant }: { c: SiteContent; variant: "short" | "full" }) {
-  const { about, person, pages } = c;
+  const { about, person, pages, features } = c;
   const paragraphs = variant === "short" ? about.paragraphs.slice(0, 1) : about.paragraphs;
   return (
     <div className="grid items-start gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:gap-16">
@@ -45,14 +46,20 @@ export function AboutContent({ c, variant }: { c: SiteContent; variant: "short" 
           ))}
         </Reveal>
         {variant === "short" ? (
-          <Reveal delay={100} className="mt-8">
+          <Reveal delay={100} className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
             <Link href="/about" className="inline-flex items-center gap-2 font-semibold text-text hover:underline">
               {pages.about.moreLabel}
               <ArrowRight />
             </Link>
+            {features.cvUrl && <CvButton href={features.cvUrl} label={pages.about.cvLabel} variant="link" />}
           </Reveal>
         ) : (
           <Reveal delay={150} className="mt-10">
+            {features.cvUrl && (
+              <div className="mb-8">
+                <CvButton href={features.cvUrl} label={pages.about.cvLabel} />
+              </div>
+            )}
             <dl className="divide-y divide-border rounded-2xl border border-border bg-surface">
               {about.facts.map((f) => (
                 <div key={f.label} className="p-6">

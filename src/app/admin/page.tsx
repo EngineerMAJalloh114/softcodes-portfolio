@@ -23,7 +23,12 @@ export default async function DashboardPage() {
       <PageHeader title="Dashboard" intro={<>Welcome back, {user.name.split(" ")[0] || user.email}.</>} />
 
       <section aria-label="Totals" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Leads" value={counts.leads} hint={counts.leads ? undefined : "Quote form arrives in T7"} />
+        <StatCard
+          label="New leads"
+          value={counts.newLeads}
+          hint={`${counts.leads.toLocaleString("en")} ${counts.leads === 1 ? "lead" : "leads"} in total`}
+          href="/admin/leads?status=new"
+        />
         <StatCard label="Projects" value={counts.projects} />
         <StatCard
           label="Content items"
@@ -35,7 +40,7 @@ export default async function DashboardPage() {
 
       {counts.leads === 0 && (
         <Card className="mt-6">
-          <EmptyState compact title="No leads yet" body="When the quote form goes live (T7), new enquiries will show up here." />
+          <EmptyState compact title="No leads yet" body="Quote requests from the contact form will show up in Leads." />
         </Card>
       )}
 

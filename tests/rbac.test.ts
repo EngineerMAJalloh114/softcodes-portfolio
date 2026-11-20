@@ -23,10 +23,11 @@ const EXPECTED: Record<Role, Permission[]> = {
     "dashboard.view",
     "content.write",
     "media.manage",
-    "leads.view",
+    "leads.read",
+    "leads.write",
     "audit.view",
   ],
-  staff: ["admin.access", "dashboard.view", "leads.view"],
+  staff: ["admin.access", "dashboard.view", "leads.read", "leads.write"],
   client: [],
 };
 

@@ -23,10 +23,13 @@ export async function saveSettingsAction(_prev: SettingsFormState, formData: For
     location: formData.get("location"),
     depositPercent: formData.get("depositPercent"),
     currencies: formData.getAll("currencies"),
+    whatsappButton: formData.get("whatsappButton"),
+    cvMediaId: formData.get("cvMediaId"),
   };
   const result = await saveSettings({ userId: user.id, role }, input, { ip: clientIp(await headers()) });
   if (!result.ok) return { status: "error", message: "Please fix the highlighted fields.", fieldErrors: result.fieldErrors };
-  // Contact details and every WhatsApp link (DEC-37) come from Settings: refresh the public site.
+  // Contact details, every WhatsApp link (DEC-37), the WhatsApp button and the CV come from
+  // Settings: refresh the public site.
   updateTag(CONTENT_TAG);
   revalidatePath("/admin/settings");
   revalidatePath("/admin");

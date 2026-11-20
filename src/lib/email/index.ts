@@ -13,7 +13,7 @@ export type EmailMessage = {
   subject: string;
   text: string;
   /** What the email is for — used in logs and the audit trail. */
-  kind: "password-reset";
+  kind: "password-reset" | "lead-notification";
 };
 
 export interface EmailAdapter {

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
@@ -17,13 +18,20 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
   return <div className={`rounded-2xl border border-border bg-surface p-6 ${className}`}>{children}</div>;
 }
 
-export function StatCard({ label, value, hint }: { label: string; value: number; hint?: string }) {
-  return (
-    <Card>
+export function StatCard({ label, value, hint, href }: { label: string; value: number; hint?: string; href?: string }) {
+  const body = (
+    <>
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{label}</p>
       <p className="mt-3 text-4xl font-extrabold tracking-tight text-text tabular-nums">{value.toLocaleString("en")}</p>
       {hint && <p className="mt-2 text-sm text-muted">{hint}</p>}
-    </Card>
+    </>
+  );
+  if (!href) return <Card>{body}</Card>;
+  return (
+    <Link href={href} data-stat={label} className="block rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-[var(--border-hover)]">
+      {body}
+      <span className="mt-3 block text-sm font-semibold text-text">Open →</span>
+    </Link>
   );
 }
 

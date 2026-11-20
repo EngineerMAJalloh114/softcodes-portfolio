@@ -25,6 +25,13 @@ export const settingsSchema = z.object({
     .array(z.enum(CURRENCIES))
     .min(1, "Choose at least one currency.")
     .transform((list) => CURRENCIES.filter((c) => list.includes(c))), // stable order, no dupes
+  // M-06: floating WhatsApp button on public pages (checkbox: "on" / absent).
+  whatsappButton: z.preprocess((v) => v === true || v === "on" || v === "true", z.boolean()),
+  // M-04: CV file — a public PDF from the media library, or none.
+  cvMediaId: z.preprocess(
+    (v) => (v === "" || v === undefined ? null : v),
+    z.uuid("Choose a file from the media library.").nullable(),
+  ),
 });
 
 export type SettingsInput = z.input<typeof settingsSchema>;
@@ -37,6 +44,8 @@ export const DEFAULT_SETTINGS: Settings = {
   location: person.location,
   depositPercent: 50,
   currencies: ["USD", "SLE"],
+  whatsappButton: true,
+  cvMediaId: null,
 };
 
 /** Storage keys in the `settings` table. */
@@ -44,6 +53,8 @@ export const SETTING_KEYS = {
   contact: "site.contact",
   depositPercent: "payments.deposit_percent",
   currencies: "pricing.currencies",
+  whatsappButton: "site.whatsapp_button",
+  cvMediaId: "site.cv_media_id",
 } as const;
 
 /** wa.me link from a display number (DEC-37: the single WhatsApp link builder). */

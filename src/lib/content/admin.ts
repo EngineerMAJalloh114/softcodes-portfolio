@@ -3,6 +3,7 @@ import { and, asc, eq, gt, lt, desc, sql } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 import { writeAudit } from "@/lib/audit";
 import { assertCan, type Role } from "@/lib/auth/permissions";
+import { mergeSeed } from "./merge";
 import {
   COLLECTION_DEFS,
   SECTION_DEFS,
@@ -58,8 +59,8 @@ function sectionSeed(key: SectionKey): Record<string, unknown> {
 export async function getSectionForEdit(key: SectionKey) {
   const [row] = await getDb().select().from(schema.contentSections).where(eq(schema.contentSections.key, key));
   const seed = sectionSeed(key);
-  const published = { ...seed, ...((row?.data as object) ?? {}) };
-  const draft = row?.draft ? { ...published, ...(row.draft as object) } : null;
+  const published = mergeSeed(seed, row?.data ?? {}) as Record<string, unknown>;
+  const draft = row?.draft ? (mergeSeed(published, row.draft) as Record<string, unknown>) : null;
   return { published, draft, value: draft ?? published, hasDraft: !!draft, updatedAt: row?.updatedAt ?? null };
 }
 

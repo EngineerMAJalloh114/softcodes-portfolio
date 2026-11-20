@@ -319,9 +319,20 @@ export const contactSection = {
   form: {
     nameLabel: "Your name",
     emailLabel: "Your email",
+    phoneLabel: "Phone or WhatsApp (optional)",
+    companyLabel: "Company (optional)",
+    projectTypeLabel: "Project type",
+    otherProjectLabel: "Something else",
+    budgetLabel: "Budget",
+    deadlineLabel: "Deadline (optional)",
+    deadlinePlaceholder: "e.g. End of March",
     messageLabel: "Project details",
-    submitLabel: "Send email",
-    note: "This opens your email app with the message ready to send.",
+    sourceLabel: "How did you find us?",
+    submitLabel: "Send request",
+    note: "I reply within one working day. Your details are only used to answer your request.",
+    successTitle: "Thanks — your request is in.",
+    successBody: "Keep this reference number. I'll reply by email within one working day.",
+    // Owner notification email subject prefix (T7b, Resend).
     subjectPrefix: "Project enquiry from",
   },
 };
@@ -548,6 +559,7 @@ export const pages = {
     title: "About",
     description: "Mohamed Abass Jalloh \u2014 software engineer in Freetown, Sierra Leone, and founder of Soft CODES.",
     moreLabel: "More about me",
+    cvLabel: "Download CV",
   },
   pricing: {
     title: "Pricing",

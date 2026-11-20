@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ContactDetails } from "@/components/ContactDetails";
-import { ContactForm } from "@/components/ContactForm";
+import { QuoteForm } from "@/components/QuoteForm";
 import { Reveal } from "@/components/Reveal";
 import { Container, Eyebrow } from "@/components/Section";
 import { getSiteContent } from "@/lib/content/load";
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const { contact, contactSection } = await getSiteContent();
+  const { contact, contactSection, packages } = await getSiteContent();
   return (
     <section className="pt-36 pb-24 sm:pt-44 sm:pb-32">
       <Container>
@@ -34,7 +34,7 @@ export default async function ContactPage() {
             <ContactDetails contact={contact} contactSection={contactSection} />
           </Reveal>
           <Reveal delay={150}>
-            <ContactForm contact={contact} contactSection={contactSection} />
+            <QuoteForm contact={contact} contactSection={contactSection} packages={packages} />
           </Reveal>
         </div>
       </Container>

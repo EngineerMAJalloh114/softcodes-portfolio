@@ -23,11 +23,11 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 | G. Business administration | 20 | 6 | 14 |
 | H. Automation and communication | 12 | 1 | 11 |
 | I. Maintenance and ongoing services | 11 | 0 | 11 |
-| J. Advanced business intelligence | 10 | 0 | 10 |
+| J. Advanced business intelligence | 10 | 1 | 9 |
 | K. Security and infrastructure | 23 | 11 | 12 |
 | L. Future platform expansion | 13 | 0 | 13 |
-| M. Site features agreed in chat (2026-11-19) | 17 | 7 | 10 |
-| **Total** | **205** | **39** | **166** |
+| M. Site features agreed in chat (2026-11-19) | 17 | 10 | 7 |
+| **Total** | **205** | **43** | **162** |
 
 Counts *Implemented* includes *In development*. Nothing is Verified or Released yet: the site is not deployed.
 
@@ -58,7 +58,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Home renders every section; hero shows portrait; CTAs work.
 - **Status:** Implemented
-- **Evidence:** src/app/page.tsx. T1 (PR #3, branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png. T5 (PR #14, branch feat/t5-content): home page renders from the CMS (hero, about, services, process, featured projects, stack, contact). T6 (branch feat/t6-pricing-faq): hero CTAs are typed links (WhatsApp | URL | anchor; DEC-37) and the home page gains a pricing teaser and a short About with “More about me”
+- **Evidence:** src/app/page.tsx. T1 (PR #3, branch feat/hero-koala): hero rebuilt per DEC-29 — koala mascot full-width background (next/image, priority), text left / koala right on desktop, koala below text on mobile, always dark via scoped `data-theme="dark"`; portrait removed from hero. Measured hero text contrast ≥ 5.97:1 at 768–1440 and 390 in both themes. Screenshots: docs/screenshots/home-{1440,390}-{dark,light}.png. T5 (PR #14, branch feat/t5-content): home page renders from the CMS (hero, about, services, process, featured projects, stack, contact). T6 (branch feat/t6-pricing-faq): hero CTAs are typed links (WhatsApp | URL | anchor; DEC-37) and the home page gains a pricing teaser and a short About with “More about me”. T7a (branch feat/t7a-leads): hero “Download CV” (when set), floating WhatsApp button, contact section uses the quote form
 - **Decisions:** DEC-09 (superseded by DEC-29 for layout), DEC-29, DEC-30
 
 ### A-03 — About page
@@ -69,7 +69,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Bio approved by owner; editable from admin.
 - **Status:** In development
-- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (PR #3, branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6). T5 (PR #14, branch feat/t5-content): About bio, facts and portrait editable in the admin (portrait can come from the media library); final layout still TODO(DEC-30). T6 (branch feat/t6-pricing-faq): dedicated /about page (full About: portrait, bio, facts; interim layout, TODO(DEC-30) kept), linked from the nav; home keeps a short About with “More about me” → /about. Remaining: owner-approved bio and final layout (DEC-30)
+- **Evidence:** Partial: About is a home section only, placeholder bio. T1 (PR #3, branch feat/hero-koala): interim 2-column About (owner photo /brand/me.jpg + bio + facts), marked TODO(DEC-30); final layout, photo, approved bio and admin editing still pending (R1a T6). T5 (PR #14, branch feat/t5-content): About bio, facts and portrait editable in the admin (portrait can come from the media library); final layout still TODO(DEC-30). T6 (branch feat/t6-pricing-faq): dedicated /about page (full About: portrait, bio, facts; interim layout, TODO(DEC-30) kept), linked from the nav; home keeps a short About with “More about me” → /about. Remaining: owner-approved bio and final layout (DEC-30). T7a (branch feat/t7a-leads): “Download CV” on About when a CV is set (M-04)
 - **Decisions:** DEC-21, DEC-30
 
 ### A-04 — Services
@@ -142,7 +142,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Form delivers to owner inbox (R1 upgrade from mailto to server-side email).
 - **Status:** Implemented
-- **Evidence:** src/app/contact/page.tsx (mailto fallback)
+- **Evidence:** src/app/contact/page.tsx (mailto fallback). T7a (branch feat/t7a-leads): the mailto form is replaced by the stored quote request form (M-03); email and WhatsApp cards unchanged (from Settings). Owner inbox delivery = T7b (Resend)
 
 ### A-11 — Consultation booking
 - **Description:** Book a call via Cal.com embed (owner decision).
@@ -1090,7 +1090,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Owner sees key counts and latest activity.
 - **Status:** Implemented
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin dashboard — counts (leads, projects, content items = sections+services+stack, media) and latest 10 audit events; koala empty states (DEC-31). src/app/admin/page.tsx, src/lib/admin/dashboard.ts. Screenshots docs/screenshots/admin-dashboard-*. Quotes/payments counts arrive with R2/R3
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin dashboard — counts (leads, projects, content items = sections+services+stack, media) and latest 10 audit events; koala empty states (DEC-31). src/app/admin/page.tsx, src/lib/admin/dashboard.ts. Screenshots docs/screenshots/admin-dashboard-*. Quotes/payments counts arrive with R2/R3. T7a (branch feat/t7a-leads): dashboard “New leads” count links to the inbox (/admin/leads?status=new)
 - **Decisions:** DEC-31
 
 ### G-02 — Staff management
@@ -1111,7 +1111,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Permission matrix enforced server side.
 - **Status:** Implemented
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403). T5 (PR #14, branch feat/t5-content): content.write (sections, services, stack, projects) and media.manage — owner + admin; staff/client denied (unit + HTTP tests). T6 (branch feat/t6-pricing-faq): pricing and FAQ admin use content.write (owner + admin; staff = Dashboard + Leads, DEC-36); the separate pricing.manage permission was folded into content.write; staff/client 403 on pages and actions (tests/rbac.test.ts, scripts/verify-t6.ts)
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403). T5 (PR #14, branch feat/t5-content): content.write (sections, services, stack, projects) and media.manage — owner + admin; staff/client denied (unit + HTTP tests). T6 (branch feat/t6-pricing-faq): pricing and FAQ admin use content.write (owner + admin; staff = Dashboard + Leads, DEC-36); the separate pricing.manage permission was folded into content.write; staff/client 403 on pages and actions (tests/rbac.test.ts, scripts/verify-t6.ts). T7a (branch feat/t7a-leads): leads.read + leads.write for owner, admin and staff (staff = Dashboard + Leads, DEC-36); client denied (tests/rbac.test.ts, scripts/verify-t7a.ts)
 - **Decisions:** DEC-36
 
 ### G-04 — Client management
@@ -1283,7 +1283,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Settings editable and audited.
 - **Status:** Implemented
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin/settings (owner only) — contact email, WhatsApp, location; default deposit % (50, DEC-O8 still open); currencies USD+SLE (DEC-25). Zod validation; every save writes a settings.updated audit row with before/after (verified). Public site reads these values from T5. T6 (branch feat/t6-pricing-faq): the WhatsApp number in Settings is the single source for every WhatsApp link (hero, nav “Hire me”, contact, footer — DEC-37); saving Settings now refreshes the public site immediately (verified: change number → all pages use it, then restored)
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): /admin/settings (owner only) — contact email, WhatsApp, location; default deposit % (50, DEC-O8 still open); currencies USD+SLE (DEC-25). Zod validation; every save writes a settings.updated audit row with before/after (verified). Public site reads these values from T5. T6 (branch feat/t6-pricing-faq): the WhatsApp number in Settings is the single source for every WhatsApp link (hero, nav “Hire me”, contact, footer — DEC-37); saving Settings now refreshes the public site immediately (verified: change number → all pages use it, then restored). T7a (branch feat/t7a-leads): Settings → Public site: floating WhatsApp button on/off (M-06) and CV file (M-04)
 - **Decisions:** DEC-25, DEC-O8 (open), DEC-37
 
 ## H. Automation and communication
@@ -1302,7 +1302,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Emails delivered from verified domain; templates branded.
 - **Status:** In development
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): email adapter interface (src/lib/email) — dev-log adapter (development) and not-configured adapter (production, explicit error). Remaining: Resend adapter + verified domain (DEC-35, DEC-27)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): email adapter interface (src/lib/email) — dev-log adapter (development) and not-configured adapter (production, explicit error). Remaining: Resend adapter + verified domain (DEC-35, DEC-27). T7a (branch feat/t7a-leads): lead notifications go through the email adapter — with no provider configured nothing is sent; the notification is stored (notifications.email = not_configured) and shown as an unread badge in the admin; in development the dev-log adapter prints it. Resend = adapter swap (T7b)
 - **Decisions:** DEC-17, DEC-35
 
 ### H-02 — In-app notifications
@@ -1578,8 +1578,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Source captured on every lead.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T7a (branch feat/t7a-leads): source (“How did you find us?”: search, social, referral, WhatsApp, portfolio, other) captured on every lead. Remaining: analytics views (R7)
 
 ### J-05 — Quotation conversion rates
 - **Description:** Quotes sent vs accepted.
@@ -1699,7 +1699,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Server-side checks on every route/action.
 - **Status:** Implemented
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan(). T5 (PR #14, branch feat/t5-content): requirePermission on every content/media page and server action; services re-check assertCan; Draft Mode preview only for content.write; staff/client 403 verified (scripts/verify-t5.ts). T6 (branch feat/t6-pricing-faq): requirePermission(content.write) on /admin/pricing and /admin/content/faqs pages and actions; staff/client 403 verified over HTTP (scripts/verify-t6.ts)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan(). T5 (PR #14, branch feat/t5-content): requirePermission on every content/media page and server action; services re-check assertCan; Draft Mode preview only for content.write; staff/client 403 verified (scripts/verify-t5.ts). T6 (branch feat/t6-pricing-faq): requirePermission(content.write) on /admin/pricing and /admin/content/faqs pages and actions; staff/client 403 verified over HTTP (scripts/verify-t6.ts). T7a (branch feat/t7a-leads): requirePermission on the leads pages (leads.read) and actions (leads.write); client 403 on pages and the status action verified over HTTP
 
 ### K-06 — Resource-level permissions
 - **Description:** Users access only their own records.
@@ -1789,7 +1789,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Abuse returns 429; contact/newsletter protected.
 - **Status:** In development
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): database-backed limits (rate_limits table, shared across instances) — sign-in 5/5 min, MFA verify 5/5 min, reset request 3/15 min, reset 5/15 min, change password 5/15 min; verified 429s. Remaining: contact/newsletter/other APIs (T7)
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): database-backed limits (rate_limits table, shared across instances) — sign-in 5/5 min, MFA verify 5/5 min, reset request 3/15 min, reset 5/15 min, change password 5/15 min; verified 429s. Remaining: contact/newsletter/other APIs (T7). T7a (branch feat/t7a-leads): quote form protected without a third-party captcha — hidden honeypot field, minimum fill time (3 s, max 24 h), per-IP limit 3 per 10 min in the shared rate_limits table (atomic upsert); refusals verified by scripts/verify-t7a.ts. Remaining: newsletter (when built), other public APIs
 
 ### K-15 — Input validation
 - **Description:** Schema validation on every input (e.g. Zod).
@@ -1799,7 +1799,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Invalid input rejected server side.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments. T6 (branch feat/t6-pricing-faq): Zod on packages (money in minor units, non-negative integers) and FAQs; hand-typed WhatsApp links rejected in every link field (DEC-37); CTA link type validated per kind
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments. T6 (branch feat/t6-pricing-faq): Zod on packages (money in minor units, non-negative integers) and FAQs; hand-typed WhatsApp links rejected in every link field (DEC-37); CTA link type validated per kind. T7a (branch feat/t7a-leads): Zod on the quote form (lengths, email, phone pattern, project type must be a published package, budget/currency/source enums), lead status, notes and the new Settings fields
 
 ### K-16 — Audit logging
 - **Description:** Append-only audit log of sensitive actions.
@@ -1809,7 +1809,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted). T6 (branch feat/t6-pricing-faq): package and FAQ writes audited as content.item.* (created, published, deleted verified by scripts/verify-t6.ts)
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted). T6 (branch feat/t6-pricing-faq): package and FAQ writes audited as content.item.* (created, published, deleted verified by scripts/verify-t6.ts). T7a (branch feat/t7a-leads): lead.created, lead.status_changed (who, from → to) and lead.note_added audited; shown as the lead's history; Settings CV/WhatsApp-button changes audited with settings.updated
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
@@ -2055,8 +2055,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Submission stored and emailed; spam protected.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** T7a (branch feat/t7a-leads): quote request form on /contact and the home contact section — name, email, phone/WhatsApp, company, project type (published packages + Other; pre-selected from Pricing “Request a quote”), budget range in USD or SLE, deadline, details, how they found us. Server action, Zod validation, stored in leads with a reference number (SC-LEAD-YYYY-NNNN, atomic per-year counter) shown on success; owner notified in the admin (stored notification + unread badge). Spam protected (K-14). Proof: scripts/verify-t7a.ts (npm run t7a:verify, 46 checks), tests/t7a.test.ts; screenshots docs/screenshots/t7a-contact-*. Remaining: email to the owner via Resend (T7b, DEC-40)
+- **Decisions:** DEC-37, DEC-40
 
 ### M-04 — Downloadable CV
 - **Description:** PDF CV button for employers.
@@ -2065,8 +2066,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** CV PDF downloadable; uploaded/replaced from admin.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T7a (branch feat/t7a-leads): CV slot — Settings → “CV file” picks a public PDF from the media library (upload/replace in Media); “Download CV” shows on the hero and the About page (home + /about) only when a CV is set; the file can't be deleted while in use. Verified with a sample PDF (served as application/pdf). The owner's real CV file is a T7b input (DEC-40). Screenshots docs/screenshots/t7a-home-hero-*, t7a-about-*, t7a-admin-settings-*
+- **Decisions:** DEC-40
 
 ### M-05 — Blog / articles
 - **Description:** Posts with categories, cover images, SEO; written in admin.
@@ -2085,8 +2087,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Button visible on all pages, not covering content on mobile.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** Implemented
+- **Evidence:** T7a (branch feat/t7a-leads): floating WhatsApp button on every public page (not in the admin), link from the Settings number (DEC-37), on/off toggle in Settings; small round button bottom-right, footer gets extra bottom padding on mobile so nothing ends up hidden under it. Proof: scripts/verify-t7a.ts (follows a number change, hidden when switched off, absent in admin); screenshots docs/screenshots/t7a-home-hero-*, t7a-contact-*
+- **Decisions:** DEC-37
 
 ### M-07 — Admin panel
 - **Description:** Owner panel for all content and settings (Neon backend, owner decision).
