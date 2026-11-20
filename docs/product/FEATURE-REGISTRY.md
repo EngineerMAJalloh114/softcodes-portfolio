@@ -14,7 +14,7 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 
 | Category | Features | Implemented | Planned |
 |---|---|---|---|
-| A. Public website and brand experience | 16 | 14 | 2 |
+| A. Public website and brand experience | 16 | 15 | 1 |
 | B. Intelligent project acquisition | 18 | 0 | 18 |
 | C. Payments and financial management | 16 | 0 | 16 |
 | D. Official document management | 17 | 0 | 17 |
@@ -26,8 +26,8 @@ Every feature discussed for Soft CODES is listed here. Features are never delete
 | J. Advanced business intelligence | 10 | 1 | 9 |
 | K. Security and infrastructure | 23 | 11 | 12 |
 | L. Future platform expansion | 13 | 0 | 13 |
-| M. Site features agreed in chat (2026-11-19) | 17 | 11 | 6 |
-| **Total** | **205** | **44** | **161** |
+| M. Site features agreed in chat (2026-11-19) | 17 | 13 | 4 |
+| **Total** | **205** | **47** | **158** |
 
 Counts *Implemented* includes *In development*. Nothing is Verified or Released yet: the site is not deployed.
 
@@ -90,7 +90,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** All projects listed; filterable (see M-11).
 - **Status:** Implemented
-- **Evidence:** src/app/projects/page.tsx. T5 (PR #14, branch feat/t5-content): projects grid from the DB (published only; order set in the admin; drafts visible only in preview)
+- **Evidence:** src/app/projects/page.tsx. T5 (PR #14, branch feat/t5-content): projects grid from the DB (published only; order set in the admin; drafts visible only in preview). R1b Part 2 (branch feat/r1b-growth): filterable by type and topic (M-11)
 
 ### A-06 — Case studies
 - **Description:** Per-project page: problem, solution, features, stack, screenshots, result.
@@ -162,8 +162,8 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every page has unique title/description; sitemap valid; Search Console verified after domain.
 - **Status:** In development
-- **Evidence:** Metadata/OG/sitemap/robots done; structured data + Search Console pending. R1b Part 1 (branch feat/r1b-blog): blog posts — unique title/description per post, og:type article + cover image, BlogPosting structured data, posts in sitemap.xml (published, dated today or earlier), RSS feed /blog/rss.xml
-- **Decisions:** DEC-42
+- **Evidence:** Metadata/OG/sitemap/robots done; structured data + Search Console pending. R1b Part 1 (branch feat/r1b-blog): blog posts — unique title/description per post, og:type article + cover image, BlogPosting structured data, posts in sitemap.xml (published, dated today or earlier), RSS feed /blog/rss.xml. R1b Part 2 (branch feat/r1b-growth): testimonials carry no Review/AggregateRating structured data (DEC-44); filtered /projects views canonicalise to /projects; unsubscribe page noindex
+- **Decisions:** DEC-42, DEC-44
 
 ### A-13 — Accessibility
 - **Description:** WCAG 2.2 AA across the site.
@@ -202,9 +202,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Testimonials shown only after admin approval; no Review/rating structured data (DEC-44, Google self-serving review policy). _Was: "Review structured data" — changed 2026-11-20 by DEC-44._
-- **Status:** Planned
-- **Evidence:** —
-- **Decisions:** DEC-44
+- **Status:** Implemented
+- **Evidence:** R1b Part 2 (branch feat/r1b-growth): Admin → Content → Testimonials (owner + admin): quote, name, role, company, photo from Media, linked project, optional rating, draft/published, order; audited. Shown only when published (admin approval): home “What clients say” section (hidden when none) and on the linked project's case study. Rating shown as stars only; no Review/AggregateRating structured data (DEC-44). No testimonials seeded — real quotes only. Proof: scripts/verify-r1b-growth.ts (npm run r1b-growth:verify), tests/r1b-growth.test.ts; screenshots docs/screenshots/r1b-growth-home-testimonials-*, -case-study-testimonial-*, -admin-testimonial*
+- **Decisions:** DEC-44, DEC-41
 
 ## B. Intelligent project acquisition
 
@@ -1113,7 +1113,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Permission matrix enforced server side.
 - **Status:** Implemented
-- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403). T5 (PR #14, branch feat/t5-content): content.write (sections, services, stack, projects) and media.manage — owner + admin; staff/client denied (unit + HTTP tests). T6 (branch feat/t6-pricing-faq): pricing and FAQ admin use content.write (owner + admin; staff = Dashboard + Leads, DEC-36); the separate pricing.manage permission was folded into content.write; staff/client 403 on pages and actions (tests/rbac.test.ts, scripts/verify-t6.ts). T7a (branch feat/t7a-leads): leads.read + leads.write for owner, admin and staff (staff = Dashboard + Leads, DEC-36); client denied (tests/rbac.test.ts, scripts/verify-t7a.ts)
+- **Evidence:** T4 (PR #6, branch feat/t4-admin-shell): permission matrix for owner/admin/staff/client in one module (src/lib/auth/permissions.ts), deny by default; unit tests tests/rbac.test.ts (all role × permission pairs) + scripts/verify-t4.ts (every admin route per role over HTTP: expected 200/403). T5 (PR #14, branch feat/t5-content): content.write (sections, services, stack, projects) and media.manage — owner + admin; staff/client denied (unit + HTTP tests). T6 (branch feat/t6-pricing-faq): pricing and FAQ admin use content.write (owner + admin; staff = Dashboard + Leads, DEC-36); the separate pricing.manage permission was folded into content.write; staff/client 403 on pages and actions (tests/rbac.test.ts, scripts/verify-t6.ts). T7a (branch feat/t7a-leads): leads.read + leads.write for owner, admin and staff (staff = Dashboard + Leads, DEC-36); client denied (tests/rbac.test.ts, scripts/verify-t7a.ts). R1b Part 2 (branch feat/r1b-growth): new permission subscribers.manage (owner + admin; staff/client denied — subscriber emails are personal data)
 - **Decisions:** DEC-36
 
 ### G-04 — Client management
@@ -1701,7 +1701,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Server-side checks on every route/action.
 - **Status:** Implemented
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan(). T5 (PR #14, branch feat/t5-content): requirePermission on every content/media page and server action; services re-check assertCan; Draft Mode preview only for content.write; staff/client 403 verified (scripts/verify-t5.ts). T6 (branch feat/t6-pricing-faq): requirePermission(content.write) on /admin/pricing and /admin/content/faqs pages and actions; staff/client 403 verified over HTTP (scripts/verify-t6.ts). T7a (branch feat/t7a-leads): requirePermission on the leads pages (leads.read) and actions (leads.write); client 403 on pages and the status action verified over HTTP
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): server-side role check (owner|admin) in requireAdmin() for /admin. Remaining: full RBAC on every admin route/action (T4). T4 (PR #6, branch feat/t4-admin-shell): requirePermission() (src/lib/auth/guard.ts) on every admin page, layout and server action; forbidden() → HTTP 403; settings server action refused (403) for admin/staff/client with no write and no audit row; service functions re-check with assertCan(). T5 (PR #14, branch feat/t5-content): requirePermission on every content/media page and server action; services re-check assertCan; Draft Mode preview only for content.write; staff/client 403 verified (scripts/verify-t5.ts). T6 (branch feat/t6-pricing-faq): requirePermission(content.write) on /admin/pricing and /admin/content/faqs pages and actions; staff/client 403 verified over HTTP (scripts/verify-t6.ts). T7a (branch feat/t7a-leads): requirePermission on the leads pages (leads.read) and actions (leads.write); client 403 on pages and the status action verified over HTTP. R1b Part 2 (branch feat/r1b-growth): requirePermission on /admin/subscribers and the testimonials admin; the CSV export route checks subscribers.manage and answers 403 without data or audit row
 
 ### K-06 — Resource-level permissions
 - **Description:** Users access only their own records.
@@ -1791,7 +1791,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Abuse returns 429; contact/newsletter protected.
 - **Status:** In development
-- **Evidence:** T3 (PR #5, branch feat/t3-auth): database-backed limits (rate_limits table, shared across instances) — sign-in 5/5 min, MFA verify 5/5 min, reset request 3/15 min, reset 5/15 min, change password 5/15 min; verified 429s. Remaining: contact/newsletter/other APIs (T7). T7a (branch feat/t7a-leads): quote form protected without a third-party captcha — hidden honeypot field, minimum fill time (3 s, max 24 h), per-IP limit 3 per 10 min in the shared rate_limits table (atomic upsert); refusals verified by scripts/verify-t7a.ts. Remaining: newsletter (when built), other public APIs
+- **Evidence:** T3 (PR #5, branch feat/t3-auth): database-backed limits (rate_limits table, shared across instances) — sign-in 5/5 min, MFA verify 5/5 min, reset request 3/15 min, reset 5/15 min, change password 5/15 min; verified 429s. Remaining: contact/newsletter/other APIs (T7). T7a (branch feat/t7a-leads): quote form protected without a third-party captcha — hidden honeypot field, minimum fill time (3 s, max 24 h), per-IP limit 3 per 10 min in the shared rate_limits table (atomic upsert); refusals verified by scripts/verify-t7a.ts. Remaining: newsletter (when built), other public APIs. R1b Part 2 (branch feat/r1b-growth): newsletter signup protected — honeypot, minimum fill time, 5 per 10 min per IP (shared rate_limits table); verified by scripts/verify-r1b-growth.ts
 
 ### K-15 — Input validation
 - **Description:** Schema validation on every input (e.g. Zod).
@@ -1801,7 +1801,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Invalid input rejected server side.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments. T6 (branch feat/t6-pricing-faq): Zod on packages (money in minor units, non-negative integers) and FAQs; hand-typed WhatsApp links rejected in every link field (DEC-37); CTA link type validated per kind. T7a (branch feat/t7a-leads): Zod on the quote form (lengths, email, phone pattern, project type must be a published package, budget/currency/source enums), lead status, notes and the new Settings fields. R1b Part 1 (branch feat/r1b-blog): blog rich text sanitised by allowlist (src/lib/blog/richtext.ts) on every save and before render — script/iframe/unknown nodes dropped, event-handler and unknown attributes stripped, javascript:/data:/vbscript:/protocol-relative links removed, images only from the media library; Zod on all post/category fields (slug, date, category reference)
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): Zod validation on seed input (scripts/db/seed.ts) and on every storage input — key, MIME, size cap 25 MB, signed-URL TTL ≤ 1 h (src/lib/storage.ts). Remaining: validation on public forms/admin inputs (T3–T7). T4 (PR #6, branch feat/t4-admin-shell): Zod validation on settings saves and audit-log filter params. T5 (PR #14, branch feat/t5-content): Zod on every content save (field specs; links limited to /path, #anchor, https, mailto, tel; image refs), media uploads (sniffed type, size), action arguments. T6 (branch feat/t6-pricing-faq): Zod on packages (money in minor units, non-negative integers) and FAQs; hand-typed WhatsApp links rejected in every link field (DEC-37); CTA link type validated per kind. T7a (branch feat/t7a-leads): Zod on the quote form (lengths, email, phone pattern, project type must be a published package, budget/currency/source enums), lead status, notes and the new Settings fields. R1b Part 1 (branch feat/r1b-blog): blog rich text sanitised by allowlist (src/lib/blog/richtext.ts) on every save and before render — script/iframe/unknown nodes dropped, event-handler and unknown attributes stripped, javascript:/data:/vbscript:/protocol-relative links removed, images only from the media library; Zod on all post/category fields (slug, date, category reference). R1b Part 2 (branch feat/r1b-growth): Zod on testimonials (rating 1–5 or none, project reference), newsletter signup (email, explicit consent), filter params (unknown values ignored); CSV cells defused against formula injection
 
 ### K-16 — Audit logging
 - **Description:** Append-only audit log of sensitive actions.
@@ -1811,7 +1811,7 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Every admin write logged.
 - **Status:** In development
-- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted). T6 (branch feat/t6-pricing-faq): package and FAQ writes audited as content.item.* (created, published, deleted verified by scripts/verify-t6.ts). T7a (branch feat/t7a-leads): lead.created, lead.status_changed (who, from → to) and lead.note_added audited; shown as the lead's history; Settings CV/WhatsApp-button changes audited with settings.updated. R1b Part 1 (branch feat/r1b-blog): blog post and category changes audited as content.item.* (created, draft_saved, published, deleted verified)
+- **Evidence:** T2 (PR #4, branch feat/t2-data-foundation): audit_log table, append-only enforced by trigger (UPDATE/DELETE/TRUNCATE rejected — verified by scripts/verify-t2.ts). Remaining: log every admin write (T4). T3 (PR #5, branch feat/t3-auth): auth audit rows — sign_in, sign_in_failed, mfa_challenge, mfa_failed, mfa_enabled, sign_out, sign_out_everywhere, password_changed, password_reset_requested, password_reset (src/lib/auth/audit.ts); verified by scripts/verify-t3.ts. T4 (PR #6, branch feat/t4-admin-shell): settings saves audited (settings.updated with before/after). T5 (PR #14, branch feat/t5-content): audit rows for content.section.* (draft_saved, published, draft_discarded), content.item.* (created, draft_saved, published, unpublished, reordered, deleted) and media.* (uploaded, replaced, alt_updated, deleted). T6 (branch feat/t6-pricing-faq): package and FAQ writes audited as content.item.* (created, published, deleted verified by scripts/verify-t6.ts). T7a (branch feat/t7a-leads): lead.created, lead.status_changed (who, from → to) and lead.note_added audited; shown as the lead's history; Settings CV/WhatsApp-button changes audited with settings.updated. R1b Part 1 (branch feat/r1b-blog): blog post and category changes audited as content.item.* (created, draft_saved, published, deleted verified). R1b Part 2 (branch feat/r1b-growth): testimonials audited (content.item.*); newsletter.signup, newsletter.unsubscribed, newsletter.exported (who, status, row count) — audit rows hold subscriber ids, never email addresses
 
 ### K-17 — Database backups
 - **Description:** Automated backups with retention.
@@ -2144,8 +2144,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Category baseline.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Filter by website/platform/app/branding; URL reflects filter.
-- **Status:** Planned
-- **Evidence:** T5 (PR #14, branch feat/t5-content): data ready — projects have a filter type (website/platform/app/branding/other) and tags, editable in the admin; filter UI still planned (R1b)
+- **Status:** Implemented
+- **Evidence:** T5 (PR #14, branch feat/t5-content): data ready — projects have a filter type (website/platform/app/branding/other) and tags, editable in the admin; filter UI still planned (R1b). R1b Part 2 (branch feat/r1b-growth): /projects filters by type (website, platform, app, … — only types in use) and topic (tags from T5 fields); URL reflects the filter (?type=, ?tag=), plain links so it works without JavaScript (verified with JS disabled); unknown values ignored; empty state with the koala mascot and a “show all” link; labels editable in Admin → Content → Page metadata. Screenshots docs/screenshots/r1b-growth-projects-*
+- **Decisions:** DEC-41
 
 ### M-12 — Analytics
 - **Description:** Vercel Analytics (privacy-friendly).
@@ -2164,8 +2165,9 @@ Counts *Implemented* includes *In development*. Nothing is Verified or Released 
 - **Security:** Double opt-in; consent timestamp stored.
 - **Testing:** Category baseline.
 - **Acceptance criteria:** Double opt-in; unsubscribe link; stored in DB/provider.
-- **Status:** Planned
-- **Evidence:** —
+- **Status:** In development
+- **Evidence:** R1b Part 2 (branch feat/r1b-growth): signup form in the footer and on the blog (email + consent checkbox), spam protected (honeypot, minimum fill time, 5 per 10 min per IP); stored as “pending” with consent time and the exact consent wording shown on the site (DEC-43); duplicate addresses get the same answer (no account enumeration), re-signup after unsubscribing goes back to pending with fresh consent. Admin → Subscribers (owner + admin, subscribers.manage): status filter (pending/confirmed/unsubscribed), CSV export (formula-injection safe) — every export audited with its row count. Unsubscribe token per subscriber + public /newsletter/unsubscribe page (button press required, noindex), ready for the email links. Remaining (T7b): double opt-in email and sending via Resend
+- **Decisions:** DEC-43
 
 ### M-14 — Process section
 - **Description:** Discover → Design → Build → Launch → Support.
